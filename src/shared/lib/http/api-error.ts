@@ -11,6 +11,9 @@ export class ApiError extends Error {
 }
 
 const messages: Record<string, string> = {
+  INVALID_EMAIL_VERIFICATION_TOKEN:
+    'Liên kết xác thực không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu email mới.',
+  MAIL_DELIVERY_UNAVAILABLE: 'Chưa thể gửi email xác thực. Vui lòng thử lại sau.',
   INVALID_CREDENTIALS: 'Email hoặc mật khẩu chưa đúng.',
   AUTHENTICATION_REQUIRED: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   INVALID_REFRESH_TOKEN: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',

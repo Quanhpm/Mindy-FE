@@ -15,7 +15,11 @@ describe('API proxy boundary', () => {
     );
     expect(isAllowedEndpoint('GET', '../health/live')).toBe(false);
     expect(isAllowedEndpoint('GET', 'https://attacker.example')).toBe(false);
-    expect(isAllowedEndpoint('POST', 'auth/register')).toBe(false);
+    for (const path of ['auth/register', 'auth/email/verify', 'auth/email/resend']) {
+      expect(isAllowedEndpoint('POST', path)).toBe(true);
+      expect(isAllowedEndpoint('GET', path)).toBe(false);
+    }
+    expect(isAllowedEndpoint('POST', 'auth/email/verify/extra')).toBe(false);
   });
   it('rejects mutation requests from another origin or without an Origin', () => {
     const origin = 'http://localhost:3001';

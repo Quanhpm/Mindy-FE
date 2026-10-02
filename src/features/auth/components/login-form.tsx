@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -89,7 +90,7 @@ export function LoginForm() {
         <Icon name="arrow" size={18} />
       </button>
       <p className="form-help">
-        Chưa có tài khoản? Liên hệ quản lý trung tâm để được cấp quyền truy cập.
+        Chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link>
       </p>
     </form>
   );

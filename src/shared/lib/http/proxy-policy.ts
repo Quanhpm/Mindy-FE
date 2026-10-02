@@ -1,6 +1,6 @@
 const rules: readonly [string, RegExp][] = [
   ['GET', /^health\/live$/],
-  ['POST', /^auth\/(login|refresh|logout|logout-all)$/],
+  ['POST', /^auth\/(login|register|email\/resend|email\/verify|refresh|logout|logout-all)$/],
   ['GET', /^auth\/me$/],
   ['GET', /^admin\/users$/],
   ['POST', /^admin\/users$/],

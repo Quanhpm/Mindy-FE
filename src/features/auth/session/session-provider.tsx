@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { User } from '@/shared/api/contracts/identity';
 import { ApiError, errorMessage } from '@/shared/lib/http/api-error';
-import { currentUser, login, logout, recoverSession } from '../api/auth.browser';
+import { currentUser, login, logout, recoverSession, verifyEmail } from '../api/auth.browser';
 import type { LoginInput } from '../schemas/login.schema';
 
 type SessionState = 'loading' | 'authenticated' | 'anonymous' | 'error';
@@ -13,6 +13,7 @@ type SessionContextValue = {
   error: string | null;
   reload: () => Promise<void>;
   signIn: (input: LoginInput) => Promise<User>;
+  confirmEmail: (token: string) => Promise<User>;
   signOut: (all?: boolean) => Promise<void>;
 };
 
@@ -91,6 +92,16 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     return identity;
   }
 
+  async function confirmEmail(token: string): Promise<User> {
+    const identity = await verifyEmail(token);
+    generation.current += 1;
+    setUser(identity);
+    setState('authenticated');
+    setError(null);
+    announce('login');
+    return identity;
+  }
+
   async function signOut(all = false): Promise<void> {
     try {
       await logout(all);
@@ -102,7 +113,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SessionContext.Provider value={{ user, state, error, reload, signIn, signOut }}>
+    <SessionContext.Provider value={{ user, state, error, reload, signIn, confirmEmail, signOut }}>
       {children}
     </SessionContext.Provider>
   );

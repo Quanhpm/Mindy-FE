@@ -1,7 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '@/shared/lib/http/api-error';
 import { request } from '@/shared/lib/http/browser';
-import { authenticatedRequest, recoverSession } from './auth.browser';
+import {
+  authenticatedRequest,
+  recoverSession,
+  registerAccount,
+  resendVerification,
+  verifyEmail,
+} from './auth.browser';
 
 vi.mock('@/shared/lib/http/browser', () => ({ request: vi.fn() }));
 const user = {
@@ -66,5 +72,50 @@ describe('session recovery', () => {
     });
     expect(request).toHaveBeenCalledTimes(3);
     expect(listener).toHaveBeenCalledOnce();
+  });
+});
+
+describe('public registration', () => {
+  it('omits an empty optional phone and accepts the registration response', async () => {
+    vi.mocked(request).mockResolvedValue({ message: 'Accepted' });
+    await registerAccount({
+      email: 'test@example.com',
+      password: 'secret12',
+      displayName: 'Test',
+      phone: '',
+    });
+    expect(request).toHaveBeenCalledWith('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: 'test@example.com',
+        password: 'secret12',
+        displayName: 'Test',
+      }),
+    });
+  });
+  it('verifies with the URL token and returns the authenticated user', async () => {
+    vi.mocked(request).mockResolvedValue({ user, accessTokenExpiresAt: '2026-10-02T01:00:00Z' });
+    const token = 'a'.repeat(43);
+    await expect(verifyEmail(token)).resolves.toEqual(user);
+    expect(request).toHaveBeenCalledWith('/auth/email/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token, deviceName: 'Mindy Web' }),
+    });
+  });
+  it('rejects malformed tokens without making a request', async () => {
+    await expect(verifyEmail('short')).rejects.toThrow();
+    expect(request).not.toHaveBeenCalled();
+  });
+  it('sends resend requests and preserves backend failures', async () => {
+    vi.mocked(request).mockRejectedValue(
+      new ApiError(503, 'MAIL_DELIVERY_UNAVAILABLE', 'Unavailable'),
+    );
+    await expect(resendVerification('test@example.com')).rejects.toMatchObject({
+      code: 'MAIL_DELIVERY_UNAVAILABLE',
+    });
+    expect(request).toHaveBeenCalledWith('/auth/email/resend', {
+      method: 'POST',
+      body: JSON.stringify({ email: 'test@example.com' }),
+    });
   });
 });

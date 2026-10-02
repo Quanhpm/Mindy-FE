@@ -21,7 +21,7 @@ không yêu cầu đăng nhập. Frontend gọi qua adapter cùng origin bằng 
 | PATCH | /admin/users/:userId/status | 200 `User` |
 
 Users endpoints dành cho ADMIN và MANAGER. Mentor và Student chỉ có trang account hiện tại.
-Không có public registration, reset password, profile edit, role edit hoặc upload avatar.
+Có public registration dành cho STUDENT. Chưa có reset password, profile edit, role edit hoặc upload avatar.
 
 ## Payload
 
@@ -71,3 +71,10 @@ Frontend chỉ xác nhận thanh toán sau khi đọc trạng thái backend; kh�
 Link PayOS lỗi thì retry trên cùng order, không checkout tạo order mới. Học liệu chỉ dùng
 file READY. Flow tiền mặt/mentor xác nhận trong document/Flow.txt còn khác core docs:
 cần chốt trước khi triển khai luồng đó.
+
+## Public registration
+
+- POST /auth/register: { email, password (6–128), displayName (1–150), phone? (7–32) }; 202 { message }.
+- POST /auth/email/resend: { email }; 202 { message }, không tiết lộ email đã tồn tại.
+- POST /auth/email/verify: { token (32–512), deviceName? }; 200 cùng shape login và cookies.
+- /register gọi API đăng ký và gửi lại email. /verify-email?token=... xác thực khi người dùng nhấn nút, cập nhật session và chuyển về trang theo role. Không lưu token trong browser storage.

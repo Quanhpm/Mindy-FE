@@ -77,3 +77,34 @@ export async function login(input: LoginInput): Promise<User> {
 export async function logout(all: boolean): Promise<void> {
   await authenticatedRequest(all ? '/auth/logout-all' : '/auth/logout', { method: 'POST' });
 }
+
+export async function registerAccount(
+  input: import('../schemas/register.schema').RegisterInput,
+): Promise<void> {
+  z.object({ message: z.string() }).parse(
+    await request('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ ...input, phone: input.phone || undefined }),
+    }),
+  );
+}
+
+export async function resendVerification(email: string): Promise<void> {
+  z.object({ message: z.string() }).parse(
+    await request('/auth/email/resend', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+  );
+}
+
+export async function verifyEmail(token: string): Promise<User> {
+  z.string().min(32).max(512).parse(token);
+  const result = authResponseSchema.parse(
+    await request('/auth/email/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token, deviceName: 'Mindy Web' }),
+    }),
+  );
+  return result.user;
+}

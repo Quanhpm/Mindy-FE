@@ -1,5 +1,14 @@
 # Frontend progress
 
+## 2026-10-02 — Public registration and email verification
+
+- Added /register with DTO validation, registration API call, confirmation and resend action.
+- Added /verify-email?token=... with explicit verification, invalid/expired link feedback and role-based redirect.
+- Verification installs the returned identity in the session and announces login across tabs; tokens stay in HttpOnly cookies.
+- Existing /login API integration retained; added registration link and allowlisted the three public POST endpoints.
+- Validation: pnpm check passed (lint/boundaries, TypeScript, 19 unit tests, production build). API tests use mocks; live backend and deployment were not tested.
+
+
 ## 2026-10-02 — Temporary health check
 
 - Added a basic homepage button calling `GET /api/v1/health/live` through the same-origin adapter.
