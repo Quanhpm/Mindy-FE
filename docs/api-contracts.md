@@ -5,6 +5,9 @@ của repository `../Mindy-BE`. Docs kế hoạch mô tả tính năng tương l
 
 ## Identity đã có
 
+Health check: `GET /api/v1/health/live` trả `200 { status: 'ok', timestamp: string ISO }`,
+không yêu cầu đăng nhập. Frontend gọi qua adapter cùng origin bằng nút trên trang chủ.
+
 | Method | Path sau `/api/v1` | Response |
 | --- | --- | --- |
 | POST | /auth/login | 200 `{ user, accessTokenExpiresAt }` + cookies |

@@ -1,5 +1,12 @@
 # Frontend progress
 
+## 2026-10-02 — Temporary health check
+
+- Added a basic homepage button calling `GET /api/v1/health/live` through the same-origin adapter.
+- Validates the response and displays loading, backend status/time, or a retryable failure message.
+- Allowlisted only GET health/live and extended proxy policy checks.
+- Validation: lint/module boundaries, TypeScript, and 3 proxy policy tests passed.
+
 ## 2026-09-30 — Foundation + identity UI
 
 - Created separate `mindy-fe` sibling of `Mindy-BE`; source baseline: backend dev/b500dbf.

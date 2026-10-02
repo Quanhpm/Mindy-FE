@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { authCookies, isAllowedEndpoint, isAllowedOrigin } from './proxy-policy';
 
 describe('API proxy boundary', () => {
-  it('only forwards supported identity endpoints and methods', () => {
+  it('only forwards supported endpoints and methods', () => {
+    expect(isAllowedEndpoint('GET', 'health/live')).toBe(true);
+    expect(isAllowedEndpoint('POST', 'health/live')).toBe(false);
+    expect(isAllowedEndpoint('GET', 'health/ready')).toBe(false);
     expect(isAllowedEndpoint('POST', 'auth/login')).toBe(true);
     expect(
       isAllowedEndpoint('PATCH', 'admin/users/123e4567-e89b-42d3-a456-426614174000/status'),

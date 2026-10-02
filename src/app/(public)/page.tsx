@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HealthCheck } from '@/features/health/client';
 import { Brand } from '@/shared/ui/brand';
 import { Icon } from '@/shared/ui/icon';
 
@@ -27,6 +28,7 @@ export default function HomePage() {
           Vào không gian Mindy
           <Icon name="arrow" size={19} />
         </Link>
+        <HealthCheck />
         <div className="landing-values">
           <span>
             <Icon name="book" />
