@@ -13,6 +13,9 @@ const paths = {
   close: 'M6 6l12 12 M18 6 6 18',
   mail: 'M3 5h18v14H3Z M3 5l9 8 9-8',
   clock: 'M12 8v4l3 2 M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+  cart: 'M3 3h2l3 12h10l3-8H6 M10 20h.01 M18 20h.01',
+  search: 'M21 21l-5-5 M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
+  trash: 'M3 6h18 M9 6V3h6v3 M5 6l1 15h12l1-15 M10 10v7 M14 10v7',
 } as const;
 
 export function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: number }) {

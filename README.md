@@ -1,7 +1,7 @@
 # Mindy FE
 
 Frontend Next.js cho Mindy Center, đặt cạnh repository `Mindy-BE`.
-Tích hợp theo backend nhánh `dev`, commit `b500dbf`.
+Tích hợp theo backend `feat(api)/booking-sprint`, commit `577af2f`.
 
 ## Chạy local
 
@@ -16,7 +16,7 @@ pnpm hooks:install
 pnpm dev
 ```
 
-Mở **http://localhost:3001**. File `.env.local` mẫu đã được tạo trong lần scaffold này.
+Mở **http://localhost:3002**. File `.env.local` mẫu đã được tạo trong lần scaffold này.
 Ở máy mới, thực hiện lệnh copy như trên. Không commit `.env.local`.
 
 Backend phải chạy riêng. Chuẩn bị PostgreSQL, migration và seed admin theo README
@@ -25,7 +25,7 @@ trong `../Mindy-BE`, sau đó chạy `pnpm dev` tại thư mục backend. Dùng 
 
 ```dotenv
 API_BASE_URL=http://localhost:3000/api/v1
-APP_ORIGIN=http://localhost:3001
+APP_ORIGIN=http://localhost:3002
 ```
 
 - Nếu backend dùng cổng khác, sửa `API_BASE_URL` rồi khởi động lại frontend.
@@ -33,17 +33,21 @@ APP_ORIGIN=http://localhost:3001
 - Giữ hostname thống nhất (`localhost`), backend local dùng `COOKIE_SECURE=false`.
 - Khi deploy, dùng HTTPS, `COOKIE_SECURE=true` ở backend và origin production chính xác.
 - Các biến trên chỉ dùng ở server. Không cần JWT key, database URL hoặc Clerk key ở FE.
-- Chỉ proxy `/api/v1/*` phục vụ các endpoint identity đã cho phép. `/docs` thuộc backend.
+- Chỉ proxy `/api/v1/*` phục vụ endpoint đã allowlist. `/docs` thuộc backend.
 
 ## Phần đã triển khai
 
 - Landing và login, giao diện tiếng Việt, responsive.
 - Cookie auth: `/me`, refresh có single-flight và Web Locks giữa các tab, logout/logout-all.
 - Tài khoản cá nhân chỉ đọc theo API hiện tại.
-- ADMIN/MANAGER: list/filter/page users, tạo user, xem chi tiết, kích hoạt/tạm khóa.
+- ADMIN: users, categories/courses/units và classes/schedule/lifecycle.
+- Google sign-in/onboarding với dedicated navigation adapter.
+- Public courses/class detail và syllabus unit viewer có hai vùng scroll riêng.
+- STUDENT: giỏ lớp học thật, checkout tạo đơn giữ chỗ và own orders.
+  Checkout chưa hoàn tất thanh toán; PayOS/cash confirmation và ACTIVE learning chờ BE.
 - Loading/error/empty states, form validation theo DTO, confirmation cho đổi trạng thái.
 - API adapter cùng origin: allowlist route/method, kiểm tra Origin cho mutation,
-  giới hạn body, timeout, chuyển tiếp hai cookie và không cache response cá nhân.
+  giới hạn body, timeout, cookie policy theo endpoint và không cache response cá nhân.
 - Unit tests và E2E dùng API mô phỏng; CI, pre-commit và kiểm tra ranh giới module.
 
 ## Lệnh chất lượng
@@ -64,6 +68,10 @@ backend thật trước khi nghiệm thu tích hợp. Xem `docs/progress.md` đ�
 
 ## Tài liệu
 
+- [UI rules — Ocean Editorial](./docs/ui-rules.md): bắt buộc đọc trước khi tạo/sửa
+  giao diện; màu, typography, component, responsive và quy trình kiểm tra.
+- [Implementation phases](./docs/implement_phase/README.md): kế hoạch frontend
+  Phase 0–2 ngang phạm vi backend, task, API dependency, test và exit criteria.
 - `docs/architecture.md`: cấu trúc, ranh giới, state và auth.
 - `docs/api-contracts.md`: API thực tế, DTO, lỗi, các điểm cần phối hợp backend.
 - `docs/progress.md`: tiến độ và roadmap theo phase.

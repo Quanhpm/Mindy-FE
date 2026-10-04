@@ -54,7 +54,12 @@ export function UserDetail({ id }: { id: string }) {
   }
   if (error) return <ErrorPanel message={error} retry={() => setRevision((value) => value + 1)} />;
   if (!user) return <LoadingState />;
-  const action = user.status === 'ACTIVE' ? 'Tạm khóa tài khoản' : 'Kích hoạt tài khoản';
+  const action =
+    user.status === 'ACTIVE'
+      ? 'Tạm khóa tài khoản'
+      : user.status === 'PENDING_VERIFICATION'
+        ? 'Kích hoạt thủ công'
+        : 'Kích hoạt tài khoản';
   return (
     <>
       <Link className="back-link" href="/management/users">
@@ -103,7 +108,11 @@ export function UserDetail({ id }: { id: string }) {
           </div>
         </dl>
         <div className="profile-footer">
-          <p className="muted small">Tạm khóa sẽ ngăn tài khoản tiếp tục truy cập hệ thống.</p>
+          <p className="muted small">
+            {user.status === 'PENDING_VERIFICATION'
+              ? 'Tài khoản đang chờ xác thực email. Kích hoạt thủ công sẽ cho phép tài khoản đăng nhập.'
+              : 'Tạm khóa sẽ ngăn tài khoản tiếp tục truy cập hệ thống.'}
+          </p>
           <button
             type="button"
             className={`button ${user.status === 'ACTIVE' ? 'button-danger' : 'button-primary'}`}
@@ -129,7 +138,9 @@ export function UserDetail({ id }: { id: string }) {
         <p>
           {user.status === 'ACTIVE'
             ? `${user.displayName} sẽ không thể tiếp tục đăng nhập và sử dụng tài khoản.`
-            : `${user.displayName} có thể đăng nhập và sử dụng lại tài khoản.`}
+            : user.status === 'PENDING_VERIFICATION'
+              ? `Quản trị viên sẽ kích hoạt tài khoản của ${user.displayName} bằng thao tác này. Đây là thay đổi trạng thái tài khoản, không phải xác thực email.`
+              : `${user.displayName} có thể đăng nhập và sử dụng lại tài khoản.`}
         </p>
         {mutationError && (
           <p className="inline-error" role="alert">

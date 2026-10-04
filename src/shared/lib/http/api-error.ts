@@ -17,6 +17,8 @@ const messages: Record<string, string> = {
   INVALID_CREDENTIALS: 'Email hoặc mật khẩu chưa đúng.',
   AUTHENTICATION_REQUIRED: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   INVALID_REFRESH_TOKEN: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  INVALID_REGISTRATION_INTENT: 'Thông tin đăng ký Google đã hết hạn. Vui lòng bắt đầu lại.',
+  GOOGLE_AUTHENTICATION_FAILED: 'Chưa thể đăng nhập bằng Google. Vui lòng thử lại.',
   INSUFFICIENT_ROLE: 'Bạn chưa có quyền thực hiện thao tác này.',
   USER_EMAIL_ALREADY_EXISTS: 'Email này đã được sử dụng.',
   USER_PHONE_ALREADY_EXISTS: 'Số điện thoại này đã được sử dụng.',

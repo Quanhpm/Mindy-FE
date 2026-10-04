@@ -8,6 +8,7 @@ import { FormError } from '@/shared/components/feedback';
 import { errorMessage } from '@/shared/lib/http/api-error';
 import { registerAccount, resendVerification } from '../api/auth.browser';
 import { type RegisterInput, registerSchema } from '../schemas/register.schema';
+import { GoogleSignIn } from './google-sign-in';
 
 export function RegisterForm() {
   const [email, setEmail] = useState<string>();
@@ -94,6 +95,7 @@ export function RegisterForm() {
       <button className="button button-primary button-full" disabled={isSubmitting} type="submit">
         {isSubmitting ? 'Đang đăng ký…' : 'Đăng ký'}
       </button>
+      <GoogleSignIn disabled={isSubmitting} />
       <p className="form-help">
         Đã có tài khoản? <Link href="/login">Đăng nhập</Link>
       </p>

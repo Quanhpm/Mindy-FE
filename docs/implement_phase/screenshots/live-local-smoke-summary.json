@@ -1,0 +1,81 @@
+{
+  "kind": "live-local",
+  "mockedRequests": false,
+  "isolatedTestEnvironmentAcknowledged": true,
+  "runId": "mutin2ea-eeqc5",
+  "baseUrl": "http://127.0.0.1:3103",
+  "startedAt": "2026-10-04T07:45:08.578Z",
+  "status": "passed",
+  "registration": "Local SMTP capture + UI verification",
+  "passed": [
+    "BFF health and admin UI login",
+    "Create two active mentors and ownership student through admin users API",
+    "Create category, inactive course, units, reorder and activate using real UUIDs",
+    "Create four classes, schedule using class-unit UUIDs, and open",
+    "Public register, SMTP delivery, explicit UI verification and session",
+    "Anonymous public filters, course syllabus, class timetable and private-field omission",
+    "Anonymous login return preserves unit, access-cookie loss recovers same student, then add/remove/cart",
+    "CASH UI checkout creates every mentor split order with server snapshots",
+    "PAYOS UI checkout returns one pending order for two other classes",
+    "Own order list/status pagination/detail and backend ownership 403",
+    "Live PayOS deadline becomes server EXPIRED, releases seats and permits adding again",
+    "UI logout clears session and protected order/cart return requires login"
+  ],
+  "fixtures": {
+    "mentors": ["d92cb876-295d-4a55-b61c-744b88fab0ee", "10a62211-8775-40a6-8463-1447df5aa9ca"],
+    "otherStudent": "3c7e7ba2-23af-4abf-a9b3-b0f397ece441",
+    "category": "8e5ac7fa-722b-4675-8403-e4bcad46a983",
+    "course": "da1a9439-a5f3-4e0a-b84e-88ce4b899603",
+    "courseUnits": [
+      "7bc87552-7d69-48a4-9f60-dee049191b53",
+      "cc1d3f3f-454f-4a03-8054-0bf8266a57b2",
+      "2c1cf644-9617-45b3-9612-93405a9077b8"
+    ],
+    "classes": [
+      "fdf4bd0b-3207-4de9-8c4e-8055cb4db39b",
+      "3b57c409-e859-4034-9511-3685e9659280",
+      "cba95717-25f0-47d4-9903-dae9e30682d2",
+      "64793114-1040-4df3-8679-b526aa35b4fb"
+    ],
+    "student": "e1346750-16e8-4916-8a75-8688681d4584",
+    "cashOrders": ["b99094e6-ce4d-45a3-ac89-bcce530a3b74", "3918666d-74b2-41df-bdf5-d0b8a71f1f9d"],
+    "payosOrders": ["2b261b60-5579-4bb4-a228-b6ed725ff007"],
+    "expiredOrder": "2b261b60-5579-4bb4-a228-b6ed725ff007"
+  },
+  "screenshots": [
+    "live-local-admin-course-unit-1440.png",
+    "live-local-admin-course-unit-390.png",
+    "live-local-admin-class-1440.png",
+    "live-local-admin-class-390.png",
+    "live-local-verified-account-1440.png",
+    "live-local-verified-account-390.png",
+    "live-local-courses-1440.png",
+    "live-local-courses-390.png",
+    "live-local-public-unit-1440.png",
+    "live-local-public-unit-390.png",
+    "live-local-public-unit-drawer-390.png",
+    "live-local-public-class-1440.png",
+    "live-local-public-class-390.png",
+    "live-local-cart-1440.png",
+    "live-local-cart-390.png",
+    "live-local-checkout-1440.png",
+    "live-local-checkout-390.png",
+    "live-local-cash-receipts-1440.png",
+    "live-local-cash-receipts-390.png",
+    "live-local-payos-receipt-1440.png",
+    "live-local-payos-receipt-390.png",
+    "live-local-orders-1440.png",
+    "live-local-orders-390.png",
+    "live-local-order-detail-1440.png",
+    "live-local-order-detail-390.png",
+    "live-local-expired-order-1440.png",
+    "live-local-expired-order-390.png"
+  ],
+  "notVerified": [
+    "Google OAuth with a real provider account",
+    "PayOS payment link/webhook or cash payment confirmation (backend has no such APIs)",
+    "Learning access/progress after payment",
+    "Timeout/unknown-result fault injection (covered separately by mock QA)"
+  ],
+  "finishedAt": "2026-10-04T07:46:42.916Z"
+}

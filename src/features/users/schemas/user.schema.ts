@@ -8,8 +8,7 @@ export const createUserSchema = z.object({
     z.literal(''),
     z.string().trim().min(7, 'Số điện thoại cần ít nhất 7 ký tự.').max(32),
   ]),
-  // Match class-validator at the backend boundary; backend Swagger metadata currently drifts.
-  password: z.string().min(7, 'Mật khẩu cần ít nhất 7 ký tự.').max(32, 'Tối đa 32 ký tự.'),
+  password: z.string().min(12, 'Mật khẩu cần ít nhất 12 ký tự.').max(128, 'Tối đa 128 ký tự.'),
   role: z.enum(roles),
 });
 export type CreateUserInput = z.infer<typeof createUserSchema>;

@@ -1,0 +1,126 @@
+{
+  "baseURL": "http://localhost:3001",
+  "toolbarHidden": true,
+  "captures": [
+    {
+      "variant": "ocean-editorial",
+      "view": "home",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-home-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "home",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-home-mobile.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "courses",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-courses-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "courses",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-courses-mobile.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "cart",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-cart-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "cart",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-cart-mobile.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "login",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-login-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "login",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-login-mobile.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "register",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-register-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "register",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-register-mobile.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "admin",
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filename": "ocean-editorial-admin-desktop.png"
+    },
+    {
+      "variant": "ocean-editorial",
+      "view": "admin",
+      "device": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filename": "ocean-editorial-admin-mobile.png"
+    }
+  ]
+}

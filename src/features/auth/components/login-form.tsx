@@ -11,12 +11,15 @@ import { Icon } from '@/shared/ui/icon';
 import { homeForRole, safeReturnTo } from '../permissions/access-policy';
 import { type LoginInput, loginSchema } from '../schemas/login.schema';
 import { useSession } from '../session/session-provider';
+import { GoogleSignIn } from './google-sign-in';
 
 export function LoginForm() {
   const { signIn, user, state } = useSession();
   const router = useRouter();
   const [error, setError] = useState<string>();
   const [visible, setVisible] = useState(false);
+  const [googleError, setGoogleError] = useState<string>();
+  const [signedInHere, setSignedInHere] = useState(false);
   const {
     register,
     handleSubmit,
@@ -24,16 +27,31 @@ export function LoginForm() {
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
 
   useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get('error');
+    if (code === 'google_unavailable')
+      setGoogleError('Đăng nhập Google chưa khả dụng. Bạn có thể dùng email hoặc thử lại sau.');
+    if (code === 'google_authentication_failed')
+      setGoogleError('Không thể hoàn tất đăng nhập Google. Vui lòng thử lại.');
+  }, []);
+  useEffect(() => {
     if (state === 'authenticated' && user) {
-      const next = new URLSearchParams(window.location.search).get('next');
+      const params = new URLSearchParams(window.location.search);
+      const callbackError = params.get('error');
+      if (
+        !signedInHere &&
+        (callbackError === 'google_unavailable' || callbackError === 'google_authentication_failed')
+      )
+        return;
+      const next = params.get('next');
       router.replace(safeReturnTo(next, homeForRole(user.role)));
     }
-  }, [user, state, router]);
+  }, [user, state, router, signedInHere]);
 
   async function submit(values: LoginInput): Promise<void> {
     setError(undefined);
     try {
       await signIn(values);
+      setSignedInHere(true);
     } catch (cause) {
       setError(errorMessage(cause));
     }
@@ -80,15 +98,16 @@ export function LoginForm() {
           <FormError message={errors.password?.message} />
         </div>
       </div>
-      {error && (
+      {(error || googleError) && (
         <div className="inline-error" role="alert">
-          {error}
+          {error || googleError}
         </div>
       )}
       <button className="button button-primary button-full" type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
         <Icon name="arrow" size={18} />
       </button>
+      <GoogleSignIn disabled={isSubmitting} />
       <p className="form-help">
         Chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link>
       </p>

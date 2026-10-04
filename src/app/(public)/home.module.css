@@ -1,0 +1,115 @@
+.landing {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.header,
+.footer {
+  width: min(1200px, calc(100% - 64px));
+  margin: 0 auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  min-height: 96px;
+  border-bottom: 2px solid var(--primary);
+}
+.headerLinks {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.headerLinks > a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.main {
+  width: min(1280px, calc(100% - 64px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  flex: 1;
+}
+.story {
+  padding: 70px 60px 70px 0;
+  min-width: 0;
+}
+.story h1 {
+  font-size: clamp(40px, 4.5vw, 66px);
+  font-weight: 650;
+  line-height: 1.14;
+  letter-spacing: -2px;
+  margin: 24px 0;
+}
+.emphasis {
+  color: var(--primary);
+}
+.story > p:not(:first-child) {
+  max-width: 540px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.contents {
+  background: var(--soft);
+  padding: 40px 24px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.values {
+  display: grid;
+  width: 100%;
+}
+.values span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 650;
+}
+.footer {
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 850px) {
+  .main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .story {
+    padding: 48px 0;
+  }
+  .contents {
+    margin-bottom: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .header,
+  .footer,
+  .main {
+    width: calc(100% - 40px);
+  }
+  .header {
+    gap: 12px;
+    min-height: 80px;
+  }
+  .headerLinks {
+    gap: 12px;
+    font-size: 13px;
+  }
+  .headerLinks a:last-child {
+    padding: 12px;
+  }
+  .story h1 {
+    letter-spacing: -1.4px;
+  }
+}

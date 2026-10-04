@@ -1,0 +1,917 @@
+/* biome-ignore-all lint/style/noDescendingSpecificity: Component and responsive overrides intentionally follow base rules. */
+.expandedHome {
+  width: min(1280px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 16px 0 32px;
+}
+.sectionIndex {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  color: var(--preview-primary);
+  line-height: 1.8;
+}
+.expandedHome .homeTitle {
+  font-size: clamp(42px, 4.5vw, 66px);
+  letter-spacing: -2.8px;
+  line-height: 1.1;
+}
+.leadCopy {
+  color: var(--preview-muted);
+  line-height: 1.8;
+  font-size: 16px;
+  margin: 25px 0 30px;
+}
+.expandedHome .chapterTitle {
+  font-size: clamp(28px, 2.8vw, 38px);
+  line-height: 1.3;
+  letter-spacing: -1.2px;
+}
+.chapterHeading {
+  margin-bottom: 30px;
+}
+.chapterHeading .sectionIndex {
+  margin-bottom: 15px;
+}
+.learningSteps,
+.learningTopics {
+  padding: 70px 0;
+}
+.stepCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.stepCards article {
+  padding: 28px;
+  border: 1px solid var(--preview-border);
+  position: relative;
+  background: #fff;
+}
+.stepCards article > span {
+  font-size: 34px;
+  color: var(--preview-primary);
+  font-weight: 650;
+  display: block;
+  margin-bottom: 24px;
+}
+.stepCards h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.stepCards p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--preview-muted);
+  max-width: 280px;
+}
+.stepCards article > svg {
+  margin-top: 30px;
+  color: var(--preview-primary);
+}
+.topicCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.topicCards article {
+  background: #fff;
+  border: 1px solid var(--preview-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.topicCards article > div:last-child {
+  padding: 24px;
+}
+.topicSymbol {
+  white-space: nowrap;
+  background: var(--preview-soft);
+  color: var(--preview-primary);
+  padding: 30px;
+  min-height: 170px;
+  font-size: 50px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-family: monospace;
+}
+.topicSymbol span {
+  position: absolute;
+  font-family: inherit;
+  font-size: 11px;
+  left: 20px;
+  top: 15px;
+}
+.topicCards small {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--preview-muted);
+}
+.topicCards h3 {
+  margin: 10px 0 18px;
+}
+.topicCards a {
+  color: var(--preview-primary);
+  font-size: 13px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  font-weight: 600;
+}
+.closing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  padding: 40px;
+  background: var(--preview-soft);
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+.closing .sectionIndex {
+  margin-bottom: 15px;
+}
+.editorialCover {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  border-bottom: 1px solid var(--preview-primary);
+}
+.editorialMasthead {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  border-top: 2px solid var(--preview-primary);
+  border-bottom: 1px solid var(--preview-border);
+  padding: 18px 0;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: var(--preview-primary);
+}
+.editorialStory {
+  padding: 45px 50px 55px 0;
+}
+.issueNumber {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 82px;
+  line-height: 1;
+  letter-spacing: -5px;
+  color: var(--preview-primary);
+  font-weight: 600;
+  margin-bottom: 45px;
+}
+.issueNumber span {
+  writing-mode: vertical-rl;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+.editorialContents {
+  background: #164e73;
+  color: #fff;
+  padding: 30px;
+  --preview-focus: #fff;
+}
+.editorialContents .sectionIndex {
+  color: #cce5f5;
+  font-size: 9px;
+}
+.editorialContents > a {
+  padding: 24px 0;
+  border-bottom: 1px solid #ffffff40;
+  display: block;
+  position: relative;
+}
+.editorialContents a > span {
+  font-size: 10px;
+  color: #cce5f5;
+}
+.editorialContents h3 {
+  color: #fff;
+  font-size: 19px;
+  margin: 10px 0;
+}
+.editorialContents p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #d9ebf6;
+}
+.editorialContents svg {
+  position: absolute;
+  right: 0;
+  top: 22px;
+}
+.editorialStamp {
+  display: block;
+  margin-top: 30px;
+  font-size: 24px;
+  letter-spacing: -0.7px;
+  line-height: 1.1;
+  font-weight: 750;
+}
+.editorialHome .topicCards article {
+  border-radius: 0;
+  border: 0;
+  border-top: 1px solid var(--preview-primary);
+}
+.editorialHome .topicSymbol {
+  margin-top: 20px;
+}
+.editorialHome .topicCards article > div:last-child {
+  padding-left: 0;
+}
+.editorialHome .learningSteps {
+  border-top: 1px solid var(--preview-border);
+}
+.editorialHome .stepCards {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.editorialHome .stepCards article {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 44px;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid var(--preview-border);
+  padding: 28px 0;
+  gap: 25px;
+}
+.editorialHome .stepCards article > span,
+.editorialHome .stepCards h3,
+.editorialHome .stepCards svg {
+  margin: 0;
+}
+.editorialHome .closing {
+  background: transparent;
+  border-top: 2px solid var(--preview-primary);
+  border-radius: 0;
+  padding: 40px 0;
+}
+.expandedAuth {
+  min-height: calc(100svh - 55px);
+  padding: 0 40px 45px;
+}
+.newAuthHeader {
+  max-width: 1280px;
+  margin: auto;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.authBack {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--preview-muted);
+}
+.entryForm {
+  min-width: 0;
+}
+.entryForm .entryTitle {
+  font-size: 33px;
+  letter-spacing: -1.4px;
+  margin: 18px 0 12px;
+  line-height: 1.25;
+}
+.entrySubtitle {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--preview-muted);
+}
+.entryFoot {
+  text-align: center;
+  color: var(--preview-muted);
+  font-size: 10px;
+  margin-top: 26px;
+}
+.editorialAuth {
+  background: #fff;
+}
+.editorialAuth .newAuthHeader {
+  border-bottom: 2px solid var(--preview-primary);
+}
+.editorialEntry {
+  max-width: 1080px;
+  margin: 60px auto;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 100px;
+  align-items: start;
+}
+.editorialEntry > aside {
+  padding-right: 50px;
+  border-right: 1px solid var(--preview-border);
+}
+.editorialEntry h2 {
+  font-size: 58px;
+  line-height: 1.15;
+  letter-spacing: -2.5px;
+  margin: 28px 0;
+}
+.editorialEntry > aside > p {
+  color: var(--preview-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.editorialEntryNumber {
+  font-size: 95px;
+  font-weight: 500;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  letter-spacing: -5px;
+  color: var(--preview-primary);
+  margin-top: 60px;
+}
+.editorialEntryNumber > span {
+  font-size: 8px;
+  writing-mode: vertical-rl;
+  letter-spacing: 1px;
+}
+.entryMagazineFoot {
+  max-width: 1280px;
+  margin: auto;
+  padding: 24px 0;
+  border-top: 1px solid var(--preview-primary);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 9px;
+  color: var(--preview-muted);
+  letter-spacing: 0.9px;
+}
+.expandedAdmin {
+  min-height: calc(100svh - 55px);
+  background: var(--preview-bg);
+}
+.newAdminHeader {
+  height: 86px;
+  padding: 0 32px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-bottom: 1px solid var(--preview-border);
+}
+.newAdminHeader > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.adminWorkspaceLabel {
+  color: var(--preview-muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.newAdminProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.newAdminProfile > span {
+  text-align: right;
+}
+.newAdminProfile small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--preview-muted);
+}
+.newAdminProfile > b {
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--preview-soft);
+  color: var(--preview-primary);
+  font-size: 12px;
+}
+.newAdminMenu {
+  border: 0;
+  background: transparent;
+  color: var(--preview-text);
+  width: 44px;
+  height: 44px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.newAdminHeading {
+  margin-bottom: 28px;
+}
+.expandedAdmin .adminTitle {
+  font-size: 36px;
+  letter-spacing: -1.3px;
+  margin: 15px 0 12px;
+  line-height: 1.15;
+}
+.adminTitleBreak {
+  display: none;
+}
+.newAdminHeading > p:last-child {
+  color: var(--preview-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.metricStrip {
+  min-width: 0;
+}
+.metricStrip > div {
+  margin-bottom: 25px;
+}
+.newAdminTable {
+  min-width: 0;
+}
+.newAdminFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 30px;
+  color: var(--preview-muted);
+  font-size: 10px;
+  padding: 15px 0;
+}
+.newAdminFooter > span:last-child {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+.newAdminTopnav {
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-bottom: 1px solid var(--preview-border);
+}
+.newAdminTopnav > nav {
+  flex-direction: row;
+  gap: 15px;
+  min-width: 0;
+  overflow: auto;
+}
+.newAdminTopnav > nav > span {
+  display: none;
+}
+.newAdminTopnav > nav button {
+  white-space: nowrap;
+  padding: 15px 5px;
+  border-radius: 0;
+  min-height: 58px;
+  font-size: 12px;
+}
+.newAdminTopnav > nav button[aria-current="page"] {
+  background: transparent;
+  border-bottom: 2px solid var(--preview-primary);
+}
+.newAdminTopnav > nav button[aria-current="page"] > span:last-child {
+  display: none;
+}
+.newAdminTopnav > span {
+  color: var(--preview-muted);
+  font-size: 9px;
+  letter-spacing: 0.7px;
+  white-space: nowrap;
+}
+.editorialAdminFrame {
+  background: #fff;
+}
+.editorialAdminColumns {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 270px;
+  gap: 25px;
+  padding: 35px 32px;
+  max-width: 1600px;
+  margin: auto;
+  align-items: start;
+}
+.editorialAdminIntro {
+  border-right: 1px solid var(--preview-border);
+  padding-right: 25px;
+}
+.editorialAdminIntro .adminTitleBreak {
+  display: inline;
+}
+.editorialAdminIntro .adminTitle {
+  font-size: 32px;
+}
+.editorialAdminIntro .metricStrip > div {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.editorialAdminIntro .metricStrip article {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--preview-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 0;
+}
+.editorialAdminIntro .metricStrip article strong {
+  font-size: 30px;
+  margin: 7px 0;
+}
+.editorialAdminDate {
+  display: block;
+  font-size: 9px;
+  color: var(--preview-muted);
+  letter-spacing: 1px;
+  padding-top: 10px;
+}
+.editorialAdminDate strong {
+  display: block;
+  font-size: 75px;
+  line-height: 1.2;
+  letter-spacing: -4px;
+  color: var(--preview-primary);
+  font-weight: 500;
+}
+.editorialAdminFrame .newAdminFooter {
+  margin: 0 32px;
+  border-top: 1px solid var(--preview-border);
+}
+
+@media (max-width: 1150px) {
+  .editorialCover {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+  .editorialEntry {
+    gap: 50px;
+    grid-template-columns: 1fr 380px;
+  }
+  .editorialEntry h2 {
+    font-size: 47px;
+  }
+  .editorialAdminColumns {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .editorialAdminAgenda {
+    grid-column: 2;
+  }
+  .editorialAdminIntro {
+    grid-row: span 2;
+  }
+  .adminWorkspaceLabel {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  .expandedHome {
+    width: calc(100% - 48px);
+  }
+  .expandedHome .homeTitle {
+    font-size: 42px;
+  }
+  .stepCards {
+    gap: 15px;
+  }
+  .stepCards article {
+    padding: 22px;
+  }
+  .stepCards h3 {
+    font-size: 16px;
+  }
+  .topicCards {
+    gap: 15px;
+  }
+  .topicCards article > div:last-child {
+    padding: 20px;
+  }
+  .topicCards h3 {
+    font-size: 16px;
+  }
+  .topicCards a {
+    font-size: 12px;
+    gap: 15px;
+  }
+  .closing {
+    padding: 30px;
+  }
+  .closing .chapterTitle {
+    font-size: 29px;
+  }
+  .editorialCover {
+    grid-template-columns: 1fr;
+  }
+  .editorialStory {
+    padding-right: 0;
+  }
+  .editorialContents {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .editorialContents > .sectionIndex {
+    grid-column: 1 / -1;
+  }
+  .editorialContents h3 {
+    font-size: 16px;
+  }
+  .editorialContents > a {
+    border: 0;
+    padding: 10px 0;
+  }
+  .editorialContents p {
+    font-size: 12px;
+  }
+  .editorialStamp {
+    display: none;
+  }
+  .editorialHome .stepCards article {
+    grid-template-columns: 50px 1fr 1fr;
+    gap: 20px;
+  }
+  .editorialHome .stepCards svg {
+    display: none;
+  }
+  .expandedAuth {
+    padding: 0 24px 35px;
+  }
+  .newAuthHeader {
+    height: 88px;
+  }
+  .entryForm .entryTitle {
+    font-size: 28px;
+  }
+  .editorialEntry {
+    gap: 35px;
+    grid-template-columns: 0.85fr 1fr;
+    margin: 40px auto;
+  }
+  .editorialEntry > aside {
+    padding-right: 20px;
+  }
+  .editorialEntry h2 {
+    font-size: 37px;
+  }
+  .editorialAuth .newAuthHeader > .sectionIndex {
+    display: none;
+  }
+  .newAdminHeader {
+    padding: 0 24px;
+    height: 78px;
+  }
+  .newAdminHeader > div:first-child {
+    gap: 10px;
+  }
+  .newAdminMenu {
+    display: flex;
+  }
+  .newAdminTopnav {
+    padding: 0 24px;
+  }
+  .newAdminTopnav > span {
+    display: none;
+  }
+  .editorialAdminColumns {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+  }
+  .editorialAdminIntro {
+    grid-row: auto;
+    border: 0;
+    padding-right: 0;
+  }
+  .editorialAdminIntro .adminTitleBreak {
+    display: none;
+  }
+  .editorialAdminIntro .metricStrip > div {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+  }
+  .editorialAdminIntro .metricStrip article {
+    border: 0;
+    border-top: 1px solid var(--preview-border);
+  }
+  .editorialAdminDate {
+    display: none;
+  }
+  .editorialAdminAgenda {
+    grid-column: 1;
+  }
+  .editorialAdminFrame .newAdminFooter {
+    margin: 0 24px;
+  }
+}
+@media (max-width: 600px) {
+  .expandedHome {
+    width: calc(100% - 40px);
+    padding-top: 10px;
+  }
+  .expandedHome .homeTitle {
+    font-size: 37px;
+    letter-spacing: -1.6px;
+  }
+  .expandedHome .chapterTitle {
+    font-size: 28px;
+    letter-spacing: -1px;
+  }
+  .sectionIndex {
+    font-size: 9px;
+    letter-spacing: 1.1px;
+  }
+  .leadCopy {
+    font-size: 14px;
+    margin: 22px 0;
+  }
+  .leadCopy br {
+    display: none;
+  }
+  .learningSteps,
+  .learningTopics {
+    padding: 45px 0;
+  }
+  .stepCards,
+  .topicCards {
+    grid-template-columns: 1fr;
+  }
+  .stepCards article {
+    padding: 25px;
+  }
+  .stepCards article > span {
+    font-size: 28px;
+    margin-bottom: 18px;
+  }
+  .stepCards h3 {
+    font-size: 18px;
+  }
+  .topicCards article > div:last-child {
+    padding: 25px;
+  }
+  .topicCards h3 {
+    font-size: 19px;
+  }
+  .closing {
+    padding: 28px;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .closing .chapterTitle {
+    font-size: 25px;
+  }
+  .editorialMasthead {
+    font-size: 8px;
+    gap: 20px;
+    line-height: 1.8;
+  }
+  .editorialMasthead > span:nth-child(2) {
+    display: none;
+  }
+  .editorialStory {
+    padding: 35px 0;
+  }
+  .issueNumber {
+    font-size: 65px;
+    margin-bottom: 30px;
+  }
+  .editorialContents {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 28px;
+  }
+  .editorialContents > .sectionIndex {
+    margin-bottom: 10px;
+  }
+  .editorialContents > a {
+    border-bottom: 1px solid #ffffff35;
+    padding: 22px 0;
+  }
+  .editorialContents h3 {
+    font-size: 19px;
+  }
+  .editorialContents p {
+    font-size: 14px;
+  }
+  .editorialContents svg {
+    top: 20px;
+  }
+  .editorialHome .stepCards article {
+    grid-template-columns: 40px 1fr;
+    gap: 12px 18px;
+  }
+  .editorialHome .stepCards article > span {
+    grid-row: span 2;
+    font-size: 25px;
+  }
+  .editorialHome .stepCards p {
+    grid-column: 2;
+  }
+  .expandedAuth {
+    padding: 0 20px 30px;
+  }
+  .newAuthHeader {
+    height: 82px;
+    gap: 15px;
+  }
+  .authBack {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .entryForm .entryTitle {
+    font-size: 29px;
+    letter-spacing: -1.2px;
+  }
+  .entryForm .sectionIndex {
+    font-size: 8px;
+  }
+  .editorialEntry {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin: 30px auto;
+  }
+  .editorialEntry > aside {
+    border: 0;
+    border-bottom: 1px solid var(--preview-border);
+    padding: 0 0 30px;
+  }
+  .editorialEntry h2 {
+    font-size: 34px;
+    letter-spacing: -1.3px;
+    margin: 18px 0;
+  }
+  .editorialEntry h2 br {
+    display: none;
+  }
+  .editorialEntry h2 em {
+    display: block;
+  }
+  .editorialEntryNumber,
+  .editorialEntry > aside > p {
+    display: none;
+  }
+  .entryMagazineFoot {
+    font-size: 8px;
+    line-height: 1.8;
+  }
+  .entryMagazineFoot > span:last-child {
+    display: none;
+  }
+  .newAdminHeader {
+    padding: 0 20px;
+    gap: 12px;
+  }
+  .newAdminHeader > div:first-child {
+    gap: 6px;
+  }
+  .newAdminProfile > span {
+    display: none;
+  }
+  .newAdminProfile > b {
+    width: 33px;
+    height: 33px;
+    font-size: 10px;
+  }
+  .expandedAdmin .adminTitle {
+    font-size: 28px;
+    letter-spacing: -1px;
+  }
+  .newAdminHeading .sectionIndex {
+    font-size: 8px;
+  }
+  .newAdminHeading > p:last-child {
+    font-size: 12px;
+  }
+  .newAdminFooter {
+    font-size: 9px;
+    line-height: 1.8;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .newAdminTopnav {
+    padding: 0 20px;
+  }
+  .newAdminTopnav > nav {
+    gap: 18px;
+  }
+  .newAdminTopnav > nav button {
+    gap: 8px;
+    font-size: 12px;
+  }
+  .newAdminTopnav > nav button svg {
+    width: 17px;
+  }
+  .editorialAdminColumns {
+    padding: 28px 20px;
+    gap: 20px;
+  }
+  .editorialAdminIntro .metricStrip > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .editorialAdminIntro .metricStrip article {
+    padding: 18px 0;
+  }
+  .editorialAdminFrame .newAdminFooter {
+    margin: 0 20px;
+  }
+}

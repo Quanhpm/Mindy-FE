@@ -1,0 +1,141 @@
+.page {
+  min-width: 0;
+}
+.eyebrow {
+  color: var(--green);
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.toolbar {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.field label {
+  font-size: 13px;
+  font-weight: 650;
+}
+.field :is(input, select, textarea) {
+  width: 100%;
+  min-height: 49px;
+  padding: 12px 14px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font: inherit;
+}
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.field [aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.button,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  gap: 8px;
+  font-weight: 650;
+  font-size: 13px;
+  border: 1px solid var(--green);
+  border-radius: var(--radius);
+}
+.button {
+  background: var(--green);
+  color: white;
+}
+.button:hover:not(:disabled) {
+  background: var(--green-dark);
+}
+.secondaryButton {
+  background: white;
+  color: var(--green);
+}
+.secondaryButton:hover:not(:disabled) {
+  background: var(--soft);
+}
+.notice {
+  padding: 16px 20px;
+  border-left: 3px solid var(--green);
+  background: var(--soft);
+  color: var(--green);
+  margin-bottom: 24px;
+  overflow-wrap: anywhere;
+}
+.tableWrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.table th,
+.table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.table a {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.panel {
+  padding: 28px;
+  border: 1px solid var(--line);
+  background: white;
+}
+@media (max-width: 600px) {
+  .heading {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .toolbar {
+    gap: 12px;
+  }
+  .toolbar > * {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+  .panel {
+    padding: 20px;
+  }
+}

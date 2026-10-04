@@ -1,0 +1,99 @@
+.workspace {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  height: calc(100dvh - 275px);
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.rail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--line);
+}
+.railHeading {
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.railHeading h2 {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.railHeading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.railHeading a {
+  margin-bottom: 12px;
+}
+.railScroll {
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  flex: 1;
+  scrollbar-gutter: stable;
+}
+.content {
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 32px;
+  overflow-wrap: anywhere;
+  scrollbar-gutter: stable;
+}
+.mobileTrigger {
+  display: none;
+}
+.drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(340px, calc(100vw - 24px));
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--paper);
+}
+.drawer[open] {
+  display: flex;
+  flex-direction: column;
+}
+.drawer::backdrop {
+  background: #18324680;
+}
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 650;
+}
+@media (max-width: 850px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: calc(100dvh - 245px);
+    min-height: 340px;
+  }
+  .rail {
+    display: none;
+  }
+  .mobileTrigger {
+    display: flex;
+    margin: 12px 16px 0;
+  }
+  .content {
+    padding: 24px 20px;
+  }
+}

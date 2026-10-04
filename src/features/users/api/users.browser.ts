@@ -11,6 +11,23 @@ export async function listUsers(query: string, signal?: AbortSignal): Promise<Us
   return parsed.data;
 }
 
+export async function listAllActiveMentors(signal?: AbortSignal): Promise<User[]> {
+  const mentors: User[] = [];
+  for (let page = 1; ; page += 1) {
+    const query = new URLSearchParams({
+      page: String(page),
+      pageSize: '100',
+      role: 'MENTOR',
+      status: 'ACTIVE',
+    });
+    const result = await listUsers(query.toString(), signal);
+    mentors.push(...result.items);
+    if (page * result.pageSize >= result.total) return mentors;
+    if (result.items.length === 0 || result.pageSize <= 0)
+      throw new ApiError(502, 'INVALID_RESPONSE', 'Incomplete mentor pagination');
+  }
+}
+
 export async function getUser(id: string, signal?: AbortSignal): Promise<User> {
   return userSchema.parse(
     await authenticatedRequest(`/admin/users/${encodeURIComponent(id)}`, { signal }),

@@ -16,7 +16,9 @@ export async function request(path: string, options: RequestInit = {}): Promise<
       headers,
       credentials: 'same-origin',
       cache: 'no-store',
-      signal: options.signal ?? AbortSignal.timeout(15_000),
+      signal: options.signal
+        ? AbortSignal.any([options.signal, AbortSignal.timeout(15_000)])
+        : AbortSignal.timeout(15_000),
     });
   } catch (error) {
     if (options.signal?.aborted) throw error;

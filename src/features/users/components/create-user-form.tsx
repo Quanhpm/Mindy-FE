@@ -117,7 +117,7 @@ export function CreateUserForm() {
               aria-describedby="password-error"
               {...register('password')}
             />
-            <span className="muted small">Từ 7 đến 32 ký tự theo quy tắc kiểm tra hiện tại.</span>
+            <span className="muted small">Mật khẩu từ 12 đến 128 ký tự.</span>
             <div id="password-error">
               <FormError message={errors.password?.message} />
             </div>
@@ -153,7 +153,7 @@ export function CreateUserForm() {
               <span>Đồng hành và giảng dạy.</span>
             </li>
             <li>
-              <strong>Quản lý / Quản trị viên</strong>
+              <strong>Quản trị viên</strong>
               <span>Quản lý tài khoản và vận hành.</span>
             </li>
           </ul>

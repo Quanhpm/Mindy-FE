@@ -1,0 +1,235 @@
+.page {
+  min-width: 0;
+}
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 2px solid var(--primary);
+  border-bottom: 1px solid var(--border);
+  color: var(--primary);
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 650;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 40px 0 24px;
+}
+.heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
+}
+.textLink {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 650;
+}
+.help {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 345px;
+  gap: 40px;
+  align-items: start;
+  margin: 20px 0 40px;
+}
+.listHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.itemInfo {
+  min-width: 0;
+}
+.itemInfo h2 {
+  font-size: 21px;
+  margin: 12px 0 8px;
+}
+.itemInfo h2 a:hover,
+.courseLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.courseLink {
+  color: var(--primary);
+  font-size: 13px;
+}
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 0;
+  margin-top: 8px;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.removeButton:hover:not(:disabled) {
+  color: var(--danger);
+}
+.price {
+  text-align: right;
+  padding-top: 22px;
+  min-width: 0;
+}
+.price strong {
+  display: block;
+  color: var(--primary);
+  font-size: 21px;
+}
+.price span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+.changedPrice {
+  font-size: 12px;
+  color: var(--primary);
+  margin-top: 8px;
+}
+.unavailable {
+  padding: 12px 16px;
+  background: var(--soft);
+  border-left: 3px solid var(--primary);
+  font-size: 13px;
+  margin-top: 12px;
+}
+.aside {
+  position: sticky;
+  top: 24px;
+  min-width: 0;
+}
+.summary {
+  background: var(--soft);
+  border-top: 3px solid var(--primary);
+  padding: 28px;
+}
+.summary h2 {
+  font-size: 28px;
+  margin: 20px 0 24px;
+}
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+  font-size: 13px;
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px 0;
+}
+.total span {
+  font-size: 13px;
+}
+.total strong {
+  color: var(--primary);
+  font-size: 28px;
+}
+.empty {
+  background: var(--soft);
+  border-top: 1px solid var(--border);
+  padding: 48px 24px;
+  text-align: center;
+  margin-top: 24px;
+}
+.empty > svg {
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+.empty h2 {
+  font-size: 30px;
+}
+.empty p {
+  color: var(--muted);
+}
+.empty a {
+  margin-top: 16px;
+}
+.addControl {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.addControl .help {
+  margin: 0;
+}
+@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 24px;
+  }
+  .item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .price {
+    padding-top: 0;
+    text-align: left;
+  }
+}
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .aside {
+    position: static;
+  }
+  .heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-top: 28px;
+  }
+  .masthead > span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .summary {
+    padding: 24px;
+  }
+  .empty {
+    padding: 36px 20px;
+  }
+  .empty h2 {
+    font-size: 26px;
+  }
+}

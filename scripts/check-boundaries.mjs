@@ -4,6 +4,14 @@ import ts from 'typescript';
 
 const root = resolve('src');
 const violations = [];
+// Integrations consume these deliberately approved public client entry points.
+const featureDependencies = {
+  users: ['auth'],
+  catalog: ['auth', 'cart'],
+  classes: ['auth', 'catalog', 'users'],
+  cart: ['auth'],
+  orders: ['auth', 'cart'],
+};
 async function visitDirectory(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = resolve(directory, entry.name);
@@ -38,7 +46,10 @@ async function visitDirectory(directory) {
         feature &&
         targetFeature &&
         feature !== targetFeature &&
-        !(feature === 'users' && to === 'features/auth/client')
+        !(
+          featureDependencies[feature]?.includes(targetFeature) &&
+          to === `features/${targetFeature}/client`
+        )
       )
         reason = 'cross-feature dependency is not approved';
       else if (from.startsWith('app/') && targetFeature && !publicApi)

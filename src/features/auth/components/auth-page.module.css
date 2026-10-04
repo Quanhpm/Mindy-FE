@@ -1,0 +1,142 @@
+.page {
+  min-height: 100svh;
+  width: min(1280px, calc(100% - 64px));
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  min-height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 2px solid var(--green);
+}
+.index {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--muted);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.entry {
+  width: min(1080px, 100%);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: 100px;
+  align-items: start;
+  margin: 60px auto;
+  flex: 1;
+}
+.story {
+  min-width: 0;
+  padding-right: 50px;
+  border-right: 1px solid var(--line);
+}
+.story h2 {
+  font-size: clamp(40px, 4.5vw, 58px);
+  line-height: 1.15;
+  letter-spacing: -2.5px;
+  margin: 28px 0;
+  font-weight: 650;
+}
+.accent {
+  color: var(--green);
+}
+.story p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.number {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 60px;
+  color: var(--green);
+  font-size: 95px;
+  line-height: 1;
+  letter-spacing: -5px;
+}
+.number span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  writing-mode: vertical-rl;
+}
+.form {
+  min-width: 0;
+}
+.form h1 {
+  font-size: 33px;
+  line-height: 1.25;
+  letter-spacing: -1.4px;
+  margin: 18px 0 12px;
+}
+.subtitle {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.footnote {
+  text-align: center;
+  margin-top: 26px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer {
+  padding: 24px 0;
+  border-top: 1px solid var(--green);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.9px;
+}
+@media (max-width: 1150px) {
+  .entry {
+    gap: 48px;
+  }
+  .story {
+    padding-right: 24px;
+  }
+}
+@media (max-width: 850px) {
+  .page {
+    width: min(600px, calc(100% - 40px));
+  }
+  .header {
+    min-height: 86px;
+  }
+  .header .index,
+  .story {
+    display: none;
+  }
+  .entry {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(400px, 100%);
+    margin: 40px auto;
+  }
+  .footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    gap: 12px;
+  }
+  .back {
+    font-size: 12px;
+  }
+  .form h1 {
+    font-size: 30px;
+  }
+}
