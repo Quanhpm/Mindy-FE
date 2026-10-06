@@ -57,6 +57,7 @@ describe('public catalog boundaries', () => {
     const course = {
       id,
       code: 'WEB101',
+      imgUrl: null,
       title: 'Web',
       description: null,
       priceAmount: 2500000,

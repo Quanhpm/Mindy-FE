@@ -1,78 +1,30 @@
-# Quy tắc UI Mindy — Ocean Editorial
+# Quy tắc UI Mindy — Learnthru
 
-Đây là tài liệu bắt buộc đọc trước khi tạo chức năng có giao diện, thêm trang,
-component hoặc sửa UI trong Mindy FE. Giao diện chuẩn là **Ocean Editorial
-(mẫu 07)**, được chọn ngày 02/10/2026. Các chức năng mới phải tiếp nối giao diện này.
-Yêu cầu cụ thể mới của người dùng được ưu tiên; nếu thay đổi quy tắc chung,
-cập nhật tài liệu này trong cùng thay đổi để các lần sau dùng thống nhất.
+Đọc [UI.md](../UI.md) trước khi tạo hoặc sửa UI. Toàn bộ route sản phẩm đã
+chuyển sang Learnthru theo yêu cầu người dùng ngày 05/10/2026. Giữ API,
+accessibility và dữ liệu thật. Yêu cầu mới của người dùng được ưu tiên và phải
+cập nhật tài liệu khi thay đổi quy tắc chung.
 
 ## 1. Nguồn tham khảo và phạm vi
 
-Tham khảo màn hình gần chức năng mới nhất trước khi viết UI:
-
-| Chức năng | Màn hình chuẩn | Source tham khảo |
-| --- | --- | --- |
-| Trang giới thiệu/học tập | `/ui-lab/ocean-editorial/home` | `variants/home-variants.tsx` |
-| Danh sách khóa học/sản phẩm | `/ui-lab/ocean-editorial/courses` | `variants/courses-page.tsx` |
-| Giỏ hàng/tóm tắt đăng ký | `/ui-lab/ocean-editorial/cart` | `variants/cart-page.tsx` |
-| Form đăng nhập/đăng ký | `/ui-lab/ocean-editorial/login`, `/ui-lab/ocean-editorial/register` | `variants/auth-variants.tsx`, `components/preview-form.tsx` |
-| Quản trị/bảng dữ liệu | `/ui-lab/ocean-editorial/admin` | `variants/admin-variants.tsx`, `components/admin-content.tsx` |
-
-Source trong bảng nằm dưới `src/features/ui-exploration/`.
-Ảnh desktop/mobile đã duyệt nằm tại [screenshots](./ui-exploration/screenshots/).
-Xem [hướng dẫn preview](./ui-exploration/README.md) để mở/chụp lại giao diện.
-
-Ocean Editorial đã được áp dụng cho các route sản phẩm auth, quản trị,
-catalog, giỏ hàng, checkout và orders trong Prompts 1–8. UI Lab tiếp tục là nguồn
-tham khảo thiết kế. Với chức năng mới, giữ cùng chuẩn và hoạt động của auth,
-quyền và API hiện có.
-Fixture, giá minh họa, thanh review và hành vi submit giả của UI Lab chỉ phục vụ
-preview; không đưa chúng vào luồng sản phẩm thật.
+Dùng homepage cho landing, PublicShell/catalog cho danh sách và chi tiết,
+AuthPage cho auth, AppShell cho STUDENT, LearnthruAdminShell và shared management
+cho quản trị. UI Lab Ocean Editorial là preview lịch sử, có fixture và stylesheet
+riêng; không import private preview hoặc đưa dữ liệu mẫu vào luồng thật.
 
 ## 2. Định hướng thị giác
 
-- Nền sáng, nhiều khoảng trắng, xanh biển làm màu nhận diện; chữ xanh đậm dễ đọc.
-- Bố cục mang cảm giác tạp chí: tiêu đề lớn, nhãn mục nhỏ, đường kẻ mảnh,
-  các khối nội dung có thứ bậc rõ ràng và số thứ tự khi có ý nghĩa.
-- Dùng bố cục bất đối xứng cho phần giới thiệu và cột phụ; phần thao tác cần gọn,
-  rõ và dễ quét thông tin. Không bắt mọi trang nghiệp vụ có hero lớn.
-- Ưu tiên đường kẻ và khoảng cách để phân nhóm. Không bọc mọi nội dung trong card.
-- Không tự đổi sang dark theme, gradient rực, neon, hiệu ứng kính, bóng đổ nặng
-  hoặc card bo tròn lớn. Các mẫu UI đã loại bỏ không phải nguồn thiết kế.
-- Panel xanh đậm được dùng có mục đích, như mục lục nổi bật hoặc khóa học gợi ý;
-  nội dung còn lại vẫn lấy nền trắng làm chủ đạo.
+Nền workspace xám nhạt, panel trắng, xanh/lavender/hồng, card bo 10–14px,
+nút pill, input mềm, icon nét và chữ dễ đọc. Homepage giữ header ngang, hero,
+section và footer; chỉ admin dùng sidebar/workspace/profile ba cột. Không bắt
+mọi trang dùng hero hoặc dashboard. Tránh neon, hiệu ứng kính và bóng đổ nặng.
 
 ## 3. Màu và tokens
 
-Giá trị chuẩn hiện nằm ở `.root` trong
-`src/features/ui-exploration/styles/exploration.module.css`:
-
-| Vai trò | Token hiện tại | Giá trị |
-| --- | --- | --- |
-| Màu chính, CTA, link | `--preview-primary` | `#164e73` |
-| Hover màu chính | `--preview-hover` | `#123b59` |
-| Nền trang | `--preview-bg` | `#ffffff` |
-| Nền phụ, khối tóm tắt | `--preview-soft` | `#eaf4fb` |
-| Chữ chính | `--preview-text` | `#183246` |
-| Chữ phụ | `--preview-muted` | `#536776` |
-| Đường kẻ, viền input | `--preview-border` | `#d8e5ee` |
-| Bo góc cơ sở | `--preview-radius` | `3px` |
-| Bóng nhẹ khi cần | `--preview-shadow` | `0 12px 40px #07598509` |
-
-Dùng token cho các vai trò trên, không tạo nhiều mã màu gần giống nhau.
-Trên nền xanh đậm, dùng chữ trắng; focus phải đủ nổi bật, có thể dùng
-`--preview-focus: #fff` như panel mục lục hiện tại.
-
-Artwork khóa học có ba phối màu phụ giới hạn:
-
-| Phối màu | Nền | Màu hình/chữ |
-| --- | --- | --- |
-| Blue | `#e5f0f9` | `#164e73` |
-| Sand | `#f4eee2` | `#665532` |
-| Mint | `#e7f1ec` | `#2d6251` |
-
-Màu lỗi hiện có: viền `#b94444`, chữ `#a72d31`, nền `#fffafa`.
-Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hiệu duy nhất.
+Dùng tokens chung tại src/app/globals.css và specification trong UI.md.
+Primary pastel #8295c2 cho trang trí; action #536f9f, hover #435c88 cho
+CTA/link; workspace #ecedf2, ink #4b5668, border #dde3ec. Artwork dùng
+blue/lavender/pink. Trạng thái phải đi kèm chữ/icon; focus phải dễ thấy.
 
 ## 4. Typography và nội dung
 
@@ -82,7 +34,7 @@ Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hi�
   `1.8–1.9`. Nội dung cần đọc liên tục ưu tiên `14–16px`.
 - Tiêu đề hero `40–66px` theo viewport, line-height khoảng `1.1–1.14`,
   weight `650`; có thể nhấn một cụm bằng màu primary, không dùng italic.
-- Tiêu đề section `28–38px`; tiêu đề form/admin khoảng `28–36px`;
+- Tiêu đề section `28–38px`; tiêu đề form/admin khoảng `22–32px`;
   tiêu đề card/khóa học `18–22px`. Không áp cỡ hero cho tiêu đề từng item.
 - Nhãn trang/eyebrow `9–10px`, in hoa, letter-spacing khoảng `1–1.8px`;
   cỡ nhỏ này dành cho nhãn trang trí, không dùng cho hướng dẫn hoặc thao tác chính.
@@ -105,8 +57,8 @@ Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hi�
 - Section lớn thường cách nhau `40–70px`; card/panel dùng padding `20–30px`.
   Thông tin liên quan phải gần nhau hơn khoảng cách giữa các nhóm.
 - Đường chia section dùng viền `1px`; masthead/khối nhấn có thể dùng `2px`
-  màu primary. Card danh sách ưu tiên góc vuông, đường kẻ rõ và bóng rất nhẹ hoặc không bóng.
-- Nút/input dùng góc gần vuông theo token. Logo, avatar, badge và một số control
+  màu primary. Card danh sách bo 10–14px, đường kẻ mềm và bóng nhẹ hoặc không bóng.
+- Nút dạng pill; input dùng góc bo 10px theo token. Logo, avatar, badge và một số control
   trong shell có bo góc riêng; giữ component hiện có thay vì sửa toàn bộ về góc vuông.
 - Catalog: hero hai cột, grid khóa học 3 cột desktop → 2 cột tablet → 1 cột mobile.
 - Cart: danh sách bên trái, summary bên phải; màn hình hẹp xếp thành một cột,
@@ -162,9 +114,8 @@ Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hi�
 
 - Tuân theo [architecture](./architecture.md): route composition ở `app`,
   business UI ở feature, primitive dùng chung ở `shared`.
-- CSS Module là cách triển khai hiện tại. `exploration.module.css` chứa nền tảng
-  preview; `ocean.module.css` chứa Home/Auth/Admin; `commerce.module.css` chứa
-  Courses/Cart, artwork và dialog. Tham khảo chúng trước khi tạo style mới.
+- CSS Module là cách triển khai hiện tại. Tái dùng stylesheet của feature và
+  shared management/UnitWorkspace; shell giữ bố cục riêng trên tokens chung.
 - Token `--preview-*` đang scoped trong UI Lab, không mặc định tồn tại ở route thật.
   Khi đưa thiết kế vào sản phẩm, đặt token ở shell phù hợp; chỉ đưa primitive/style
   vào shared khi có consumer thật. Không import sâu UI Lab từ feature khác.
@@ -179,7 +130,7 @@ Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hi�
 ## 9. Quy trình bắt buộc cho chức năng có UI
 
 1. Đọc tài liệu này cùng architecture, API contracts và progress; mở màn hình
-   Ocean Editorial gần chức năng mới nhất để đối chiếu.
+   Learnthru sản phẩm gần chức năng mới nhất để đối chiếu.
 2. Xác định shell, component/tokens sẽ tái dùng, dữ liệu/API thật và các trạng thái
    cần hỗ trợ. Chỉ dùng fixture nếu nhiệm vụ là preview và ghi rõ phạm vi đó.
 3. Viết UI theo quy tắc trên; hoàn thiện luồng thao tác, bàn phím và responsive.
@@ -191,15 +142,14 @@ Màu trạng thái phải đi kèm chữ/icon; không dùng màu làm dấu hi�
 6. Cập nhật progress và tài liệu liên quan; nếu bổ sung quy tắc/component dùng chung,
    cập nhật tài liệu này. Báo rõ điều đã kiểm tra và phần tích hợp còn thiếu.
 
-Trước khi kết thúc, xác nhận: **đúng Ocean Editorial, đúng token/font, tái dùng shell,
+Trước khi kết thúc, xác nhận: **đúng Learnthru, đúng token/font, tái dùng shell,
 thao tác hoạt động, trạng thái cần thiết đầy đủ, mobile không tràn, bàn phím dùng được,
 và dữ liệu/feedback đúng phạm vi thật hoặc preview.**
 
 ## 10. Product integration từ Prompt 1–4
 
-Identity và management product đã đưa Ocean Editorial vào app/globals.css và
-AppShell. Tên token global cũ --green/--ink/--paper/--line được map đúng palette
-Ocean; --primary/--text/--border và --preview-* là alias cùng giá trị cho consumer
+Toàn bộ product dùng Learnthru tại app/globals.css và các shell riêng.
+Tên token global cũ --green/--ink/--paper/--line được map theo palette Learnthru; --primary/--text/--border và --preview-* là alias cùng giá trị cho consumer
 thật. Không cần copy stylesheet UI Lab hoặc import private preview vào product.
 AuthPage dùng layout auth chung; quản trị dùng shared management.module.css.
 UnitWorkspace có hai consumer course units và class schedule, hỗ trợ hai vùng

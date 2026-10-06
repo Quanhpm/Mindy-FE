@@ -7,13 +7,17 @@ cùng cấp `docs` với backend; cấu trúc `src/app`, `src/features`, `src/sh
 
 ## Bàn giao cho chat mới
 
-[8 prompt tích hợp backend hiện có](./PROMPTS_BACKEND_INTEGRATION.md) là hướng dẫn
-triển khai mới nhất, đối chiếu BE `feat(api)/booking-sprint` / `577af2f` ngày
-2026-10-02. Mỗi prompt tự dẫn tới context chung, có thứ tự và checklist bàn giao.
+[Tiến độ FE hiện tại](../progress.md) và
+[Phase 2.2 FE integration](./PHASE_2_2_FRONTEND_INTEGRATION.md) là nguồn bàn giao
+mới nhất ngày 06/10/2026, đối chiếu BE `Feat/Webhooktest` / `5c9e581`.
+[8 prompt tích hợp baseline](./PROMPTS_BACKEND_INTEGRATION.md) đã được triển khai;
+tài liệu này giữ snapshot BE `feat(api)/booking-sprint` / `577af2f` ngày 02/10/2026.
 Course unit bắt buộc rail trái cuộn độc lập, nội dung bên phải theo ảnh Coursera
 đã lưu trong repo. Áp dụng vào admin units (prompt 3) và public unit viewer (prompt 5).
 Các bảng phase bên dưới giữ snapshot cũ `608ff54`; không dùng để kết luận API
-catalog/class/cart hiện chưa tồn tại. Payment và ACTIVE learning vẫn là backlog BE.
+catalog/class/cart hiện chưa tồn tại. PayOS, private ACTIVE class và đối soát ADMIN
+đã được tích hợp; return/cancel mapping, CASH confirmation/preview, enrollment list
+và progress APIs vẫn còn chờ BE. Chưa đánh dấu toàn Phase 2 hoàn tất.
 
 ## 1. Nguồn và thứ tự ưu tiên
 

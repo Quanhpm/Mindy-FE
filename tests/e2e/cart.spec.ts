@@ -45,6 +45,7 @@ const publicClass = {
 const publicCourse = {
   id: courseId,
   code: 'WEB101',
+  imgUrl: null,
   title: item.courseTitle,
   description: null,
   priceAmount: item.currentPriceAmount,

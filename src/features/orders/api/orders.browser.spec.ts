@@ -55,3 +55,25 @@ describe('own orders API contract', () => {
     );
   });
 });
+
+it('keeps payment in detail, accepts null, and keeps list/checkout DTOs separate', async () => {
+  const order = ordersFixture[0];
+  if (!order) throw new Error('Missing fixture');
+  for (const payment of [
+    null,
+    {
+      paymentId: order.id,
+      orderId: order.id,
+      status: 'CREATING',
+      checkoutUrl: null,
+      qrCode: null,
+      amount: order.totalAmount,
+      expiresAt: order.expiresAt,
+    },
+  ]) {
+    vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, payment });
+    expect(await getOrder(order.id)).toEqual({ ...order, payment });
+  }
+  vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, payment: {} });
+  await expect(getOrder(order.id)).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
+});

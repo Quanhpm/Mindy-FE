@@ -9,12 +9,14 @@ import { errorMessage } from '@/shared/lib/http/api-error';
 import { Brand } from '@/shared/ui/brand';
 import { Icon } from '@/shared/ui/icon';
 import { Avatar } from '@/shared/ui/user-display';
+import { LearnthruAdminShell } from './learnthru-admin-shell';
 
 const managementLinks = [
   { href: '/management/users', label: 'Người dùng', icon: 'users' },
   { href: '/management/course-categories', label: 'Danh mục', icon: 'book' },
   { href: '/management/courses', label: 'Khóa học', icon: 'book' },
   { href: '/management/classes', label: 'Lớp & lịch học', icon: 'clock' },
+  { href: '/management/payments/reconciliation', label: 'Đối soát', icon: 'clock' },
 ] as const;
 const studentLinks = [
   { href: '/courses', label: 'Khóa học', icon: 'book' },
@@ -53,14 +55,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       setBusy(false);
     }
   }
-  const navigation = (
+  const navigation = (onNavigate: () => void = () => drawer.current?.close()) => (
     <>
       {links.map(({ href, label, icon }) => (
         <Link
           key={href}
           href={href}
           aria-current={pathname.startsWith(href) ? 'page' : undefined}
-          onClick={() => drawer.current?.close()}
+          onClick={onNavigate}
         >
           <Icon name={icon} size={18} />
           {label}
@@ -69,7 +71,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Link
         href="/account"
         aria-current={pathname === '/account' ? 'page' : undefined}
-        onClick={() => drawer.current?.close()}
+        onClick={onNavigate}
       >
         <Icon name="user" size={18} />
         Tài khoản của tôi
@@ -80,6 +82,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </button>
     </>
   );
+  if (canManageUsers(user.role)) {
+    return (
+      <LearnthruAdminShell user={user} navigation={navigation} error={error} current={current}>
+        {children}
+      </LearnthruAdminShell>
+    );
+  }
   return (
     <div className="editorial-shell">
       <header className="editorial-header">
@@ -108,7 +117,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
       </header>
       <div className="editorial-navigation">
-        <nav aria-label="Điều hướng chính">{navigation}</nav>
+        <nav aria-label="Điều hướng chính">{navigation()}</nav>
         <span>{canManageUsers(user.role) ? 'OPERATIONS JOURNAL' : 'LEARNING JOURNAL'}</span>
       </div>
       {error && (
@@ -140,7 +149,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Icon name="close" />
           </button>
         </div>
-        <nav aria-label="Điều hướng mobile">{navigation}</nav>
+        <nav aria-label="Điều hướng mobile">{navigation()}</nav>
         {error && (
           <p className="inline-error" role="alert">
             {error}

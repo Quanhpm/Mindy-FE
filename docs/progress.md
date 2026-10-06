@@ -1,5 +1,137 @@
 # Frontend progress
 
+## Trạng thái hiện tại — 06/10/2026
+
+Baseline tích hợp: BE `Feat/Webhooktest` tại `5c9e581`, đã merge vào `dev`.
+Các mục bên dưới là trạng thái hiện hành; nhật ký ngày cũ giữ nguyên để truy vết.
+
+| Nhóm chức năng | Tiến độ FE |
+| --- | --- |
+| Tài khoản và users | Đã tích hợp password, đăng ký/xác thực email, Google onboarding, session và quản trị users; Google/provider email thật còn cần xác minh |
+| Catalog và lớp | Đã tích hợp category/course/units, class/schedule/lifecycle, public browse và syllabus |
+| Ảnh khóa học | Đã tích hợp imgUrl, admin tạo/sửa/xóa và public image fallback |
+| Giỏ hàng và checkout | Đã tích hợp giỏ thật, CASH tách theo mentor, PAYOS một đơn, giữ chỗ, expiry và own orders |
+| PayOS | Đã tích hợp tạo/reuse link, trạng thái, polling và recovery; mở trang PayOS để thanh toán/hiển thị QR |
+| Lớp sau thanh toán | Đã tích hợp private class, units/lịch/phòng/meeting URL và kiểm tra quyền từ BE; chưa có danh sách lớp hoặc progress API |
+| Đối soát ADMIN | Đã tích hợp review events, phân trang và reconcile; kết quả phải đọc lại từ BE |
+| Giao diện | Learnthru đã áp dụng trên các trang sản phẩm; `/learnthru` và UI Lab vẫn là preview |
+| Compiler | Playground và runner riêng đã có; chưa gắn với tiến độ/quyền học của lớp |
+
+**Bằng chứng gần nhất:** lint/boundaries, TypeScript và production build pass;
+134 unit tests và 72 Chromium scenarios pass. Browser tests dùng API mô phỏng.
+BE payment HTTP E2E 3/3 pass; smoke FE → BFF → BE dùng cookie thật, PostgreSQL
+riêng và provider giả đã xác minh signed settlement, PAID/ACTIVE và private access.
+Chưa nghiệm thu PayOS/provider email thật hoặc deploy trong đợt tích hợp này.
+
+**Còn chờ BE:** mapping return/cancel cho `/payment/result`, mentor xác nhận CASH,
+cash pending preview, danh sách enrollment/lớp đã đăng ký và API đọc/cập nhật progress.
+Materials, attendance, assignments, chat, notifications và dashboard là các phase sau.
+Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
+
+[Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-06 — Phase 2.2 FE integration with BE 5c9e581
+
+- Updated contract baseline, exact BFF allowlist and feature dependencies. Order
+  list/checkout retain Order; own order detail now validates nullable Payment.
+- PayOS order detail supports create/reuse with `{}`, new-tab provider checkout,
+  CREATING/PENDING/SUCCEEDED/REQUIRES_REVIEW, expiry and provider error feedback.
+  Reads are serialized; pending polls every 5 seconds while visible, pauses hidden
+  tabs and revalidates on return. Unknown creation requires read recovery before
+  deliberate retry on the same order; no checkout replay or redirect-based settlement.
+- Added `/learning/classes/[classId]` linked from PAID order details. Student-only
+  API reads authorized units/timetable/rooms/private meeting URLs, supports unit
+  URL/history and mobile drawer, and handles pending/foreign/cancelled denial.
+  Principal-keyed private UI aborts requests and discards late responses on session changes.
+- Added nullable course imgUrl to admin/public schemas, create/edit/clear form and
+  public cards/detail. Untouched PATCH omits image; clear sends null; failed/null
+  image falls back to course artwork. No image upload.
+- Added ADMIN `/management/payments/reconciliation`: paginated review events,
+  nullable paymentId, serialized provider reconcile and mandatory list refresh.
+  Review results never infer resolution, refunds or access grants.
+- Preserved existing and concurrently updated Learnthru UI. No backend business,
+  migration, deploy, application DB, real provider payment or external SMTP changes.
+  Return/cancel mapping, cash confirmation/preview, enrollment list and progress
+  endpoints remain deferred.
+- Final quality gate: full lint/boundaries, TypeScript and production build pass;
+  **134 unit tests / 24 files** and **72 Chromium scenarios** pass. Browser tests
+  use mocked APIs, including desktop/mobile/keyboard, lost response/recovery,
+  visibility polling, account change during mutation, image create/edit/clear/fallback
+  and ADMIN/student/mentor permissions.
+- Separate payment evidence: BE **3 HTTP E2E pass**; FE BFF smoke passed with real
+  cookies/guards, signed settlement, PAID/ACTIVE private access, ownership denial
+  and ADMIN reconciliation using BE fixture/fake provider and disposable PostgreSQL
+  16 on port 5544. BE dependencies installed frozen; BE source remains clean.
+  Container `mindy-fe-phase22-audit` was removed after checks. No manual/VPS DB used.
+- [Implementation/evidence and repeatable smoke](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-06 — Learnthru rollout across remaining product pages
+
+- Applied shared pastel tokens, rounded white panels, pill actions, soft fields,
+  readable action colors and consistent table/dialog/error states.
+- Migrated auth, public catalog/course/class/unit, compiler, account, cart,
+  checkout/orders and every admin page. Student learning and payment reconciliation
+  inherit shared styles; their business features remain separate work.
+- Preserved public/student horizontal navigation, auth form layout and homepage
+  landing structure. Only ADMIN uses LearnthruAdminShell across protected routes.
+- UnitWorkspace switches to its accessible rail dialog based on available width
+  as well as viewport, keeping independent scrolling and URL selection.
+- Preserved session, role guards, APIs and business interactions; updated stale
+  image fixtures and a homepage link assertion without changing API logic.
+- Validation: lint/boundaries, TypeScript, production build and 121 unit tests pass.
+  All 53 Chromium E2E tests pass on an isolated production build, including route
+  coverage at 1440/768/390/375px, no overflow/page errors, navigation/focus and
+  compact workspace resizing. Desktop/mobile screenshots visually reviewed.
+  Final spacing/learning-navigation refinements passed all four responsive UI
+  tests and seven checkout tests again; all 16 payment/learning tests also pass.
+  Browser tests use mocked APIs; no live backend or deployment verification.
+
+## 2026-10-05 — Clarified homepage landing layout
+
+- Replaced dashboard columns with a horizontal public header, spacious two-column
+  hero, stacked discovery/journey/practice sections, registration CTA and footer.
+- Retained Learnthru palette, rounded cards, pill buttons, icons, typography family
+  and finite animations, with layout and scale suited to a public landing page.
+- Removed public sidebar/profile rail; preserved routes, mobile native menu and
+  health disclosure in footer. UI.md now distinguishes homepage from admin layout.
+- Validation: changed-file Biome and module boundaries, TypeScript and production
+  build pass; Chromium verified 1440/768/390/375px without overflow, mobile menu,
+  Escape/focus return, section navigation, registration CTA and reduced motion.
+  Desktop/mobile screenshots reviewed; no browser page errors.
+
+## 2026-10-05 — Homepage aligned with current Learnthru admin design
+
+- Migrated `/` from Ocean Editorial to the Learnthru direction documented in UI.md
+  and implemented by `/management/users`: white sidebar, gray workspace, right
+  introductory panel, rounded welcome card, pastel blue/lavender/pink shortcuts.
+- Retained public courses/compiler/register/login routes, registration guide,
+  illustrative JavaScript example and health disclosure. No fixture user profile,
+  progress, statistics or calendar; no API or global theme changes.
+- Added native mobile navigation dialog with Escape and focus return; retained
+  finite entrance/hover animation with reduced-motion support.
+- Validation: changed-file Biome, module boundaries, TypeScript and production
+  build pass. Chromium verified 1440/768/390/375px without horizontal overflow,
+  mobile drawer open/close, Escape/focus return, section anchor, registration CTA,
+  reduced motion and no page errors. Desktop/mobile screenshots visually reviewed.
+
+
+## 2026-10-05 — Homepage Ocean Editorial refresh
+
+- Expanded the public homepage with a learning-notes hero illustration, discovery links,
+  three-step registration guide, JavaScript practice introduction and registration CTA.
+- Added finite entrance animations, progressive CSS scroll reveals and hover details;
+  prefers-reduced-motion disables motion. Content is server-rendered; no new dependency.
+- Kept real catalog/compiler/auth routes and moved the existing health check into a
+  footer disclosure. Decorative learning notes and code output are illustrations,
+  not student progress, testimonials or live execution results.
+- Validation: changed-file Biome and module boundaries pass, TypeScript and production
+  build pass, all 121 unit tests pass. Chromium checked 1440/768/390/375px without
+  horizontal overflow, registration CTA, section anchor, reduced motion and no page errors;
+  desktop/mobile screenshots visually inspected.
+- Full-project lint is blocked by three errors in the separate learnthru dashboard
+  (autoFocus and two array-index keys); those files were not changed for this request.
+
+
 ## 2026-10-04 — Môi trường local để kiểm tra tay
 
 - Theo yêu cầu người dùng, FE `.env.local` trỏ tới
@@ -312,8 +444,9 @@ sessionStorage riêng; product cart không sử dụng dữ liệu đó.
 1. Verify real Google OAuth, an external email provider and staging/production
    configuration. Local FE/BE/database/SMTP smoke passed on 2026-10-04; that does
    not certify those external environments.
-2. PayOS/cash payment confirmation, pending preview, ACTIVE enrollment/content/
-   progress and payment reconciliation when backend APIs exist.
+2. Verify live provider PayOS settlement and external SMTP. PayOS UI/private class/
+   ADMIN reconciliation are implemented against BE 5c9e581; return/cancel mapping,
+   cash confirmation/preview, enrollment list and progress APIs remain deferred.
 3. Later backend milestones: materials, attendance, chat, notifications, assignments,
    whiteboard, code judge and deployment. No placeholder modules without consumers.
 
@@ -343,3 +476,22 @@ sessionStorage riêng; product cart không sử dụng dữ liệu đó.
 - This is an interactive UI Lab preview: fixture prices, no catalog/cart/payment API calls or real enrollment. Existing product routes remain independent.
 - Validation: lint/module boundaries, TypeScript/production build and 23 unit tests passed; all six UI Lab browser tests passed, including 1440/768/390/375px layouts and cart persistence.
 - Updated local preview on port 3001 and captured all six screens on desktop/mobile.
+
+## 2026-10-05 — Learnthru reference dashboard
+
+- Added isolated `/learnthru` route and `features/learnthru` component, following the user-supplied screenshot rather than the product design standard for this preview.
+- Matched the desktop reference frame (1118×698 at x=41, y=101 on a 1200×913 viewport), three-column layout, colors, class cards, lesson table, profile, calendar, and reminders. Local replacement portraits and SVG illustrations stand in for unavailable original artwork.
+- Added local class search, month/day selection, native preview dialogs, sample material download, and responsive layouts. No backend integration.
+- Validation: production build, targeted Biome check, module boundaries, TypeScript, and Chromium desktop/mobile smoke checks; search, month navigation, dialog Escape, and mobile overflow checks passed.
+
+## 2026-10-05 — First Learnthru admin migration
+
+- Created root `UI.md` defining the new Learnthru design and incremental rollout; linked it from AGENTS, UI rules, and architecture.
+- Migrated only `/management/users` to the three-column shell, soft gray workspace, pill controls, role filter shortcut cards, compact table, and real administrator profile. Other product pages retain their current shell.
+- Preserved authentication/ADMIN guards, existing user API, URL filters, pagination, creation/detail links, error/retry, loading and empty states. No fixture data or API contract changes.
+- Validation: production build/TypeScript, targeted Biome, module boundaries, all 9 existing identity browser tests, plus mocked API layout checks at 1440/1200/900/768/390/375px, shortcut filtering, empty state, mobile dialog/Escape, and overflow checks passed.
+
+## 2026-10-05 — Edge-to-edge admin shell
+
+- Removed outer gray canvas, padding, frame radius and shadow from the migrated admin shell; kept inner workspace styling. Updated UI.md to match.
+- Targeted Biome and Chromium checks passed at 1440/768/390px: frame starts at (0,0), fills viewport width and has no horizontal overflow.

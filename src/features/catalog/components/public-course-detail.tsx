@@ -15,6 +15,7 @@ import {
   publicBrowseFiltersSchema,
 } from '../schemas/public-catalog.schema';
 import { CatalogPagination } from './catalog-pagination';
+import { CourseImage } from './course-image';
 import { PublicBrowseFiltersForm } from './public-browse-filters';
 import styles from './public-catalog.module.css';
 import { PublicClassCard } from './public-class-card';
@@ -67,6 +68,7 @@ export function PublicCourseDetail({ id }: { id: string }) {
       <Link className="back-link" href="/courses">
         ← Danh sách khóa học
       </Link>
+      <CourseImage src={course.imgUrl} title={course.title} code={course.code} />
       <header className={styles.detailHeading}>
         <div>
           <p className={styles.eyebrow}>

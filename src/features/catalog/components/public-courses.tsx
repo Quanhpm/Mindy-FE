@@ -17,6 +17,7 @@ import {
   publicBrowseFiltersSchema,
 } from '../schemas/public-catalog.schema';
 import { CatalogPagination } from './catalog-pagination';
+import { CourseImage } from './course-image';
 import { PublicBrowseFiltersForm } from './public-browse-filters';
 import styles from './public-catalog.module.css';
 
@@ -130,10 +131,7 @@ export function PublicCourses() {
               <div className={styles.grid}>
                 {data.items.map((course) => (
                   <article className={styles.card} key={course.id}>
-                    <div className={styles.art} aria-hidden="true">
-                      <span>MINDY / LEARNING SERIES</span>
-                      <strong>{course.code}</strong>
-                    </div>
+                    <CourseImage src={course.imgUrl} title={course.title} code={course.code} />
                     <p className={styles.eyebrow}>{course.category.name}</p>
                     <h3>
                       <Link href={`/courses/${course.id}`}>{course.title}</Link>

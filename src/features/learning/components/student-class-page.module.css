@@ -1,0 +1,31 @@
+.unitList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.unitLink {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  transition: background 160ms ease;
+}
+.unitLink:hover {
+  background: white;
+}
+.unitLink[aria-current="page"] {
+  background: white;
+  border-color: var(--line);
+  color: var(--action);
+  font-weight: 650;
+}
+@media (prefers-reduced-motion: reduce) {
+  .unitLink {
+    transition: none;
+  }
+}

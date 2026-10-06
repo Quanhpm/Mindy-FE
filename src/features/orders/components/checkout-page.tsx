@@ -200,7 +200,7 @@ function CheckoutContent() {
                       />
                       <span>
                         <strong>PayOS</strong>
-                        <small>Một đơn cho toàn bộ giỏ. Chưa có link thanh toán.</small>
+                        <small>Một đơn cho toàn bộ giỏ. Tạo link PayOS ở chi tiết đơn.</small>
                       </span>
                     </label>
                   </fieldset>

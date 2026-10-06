@@ -160,3 +160,51 @@ describe('same-origin JSON adapter', () => {
     expect(await response.json()).toMatchObject({ code: 'API_UNAVAILABLE' });
   });
 });
+
+it('forwards exact payment creation with ownership failures and rejects foreign origin/callback proxying', async () => {
+  configure();
+  const path = `me/orders/${id}/payments/payos`;
+  const upstream = vi.fn().mockResolvedValue(
+    new Response(JSON.stringify({ code: 'ORDER_ACCESS_DENIED', message: 'Denied' }), {
+      status: 403,
+      headers: { 'content-type': 'application/json' },
+    }),
+  );
+  vi.stubGlobal('fetch', upstream);
+  const response = await POST(
+    new Request(`${origin}/api/v1/${path}`, {
+      method: 'POST',
+      headers: {
+        origin,
+        'content-type': 'application/json',
+        cookie: 'access_token=a; refresh_token=r',
+      },
+      body: '{}',
+    }),
+    context(path),
+  );
+  expect(response.status).toBe(403);
+  expect(await response.json()).toMatchObject({ code: 'ORDER_ACCESS_DENIED' });
+  const options = upstream.mock.calls[0]?.[1] as RequestInit;
+  expect((options.headers as Headers).get('cookie')).toBe('access_token=a');
+  expect(upstream.mock.calls[0]?.[1]?.body).toBe('{}');
+  const foreign = await POST(
+    new Request(`${origin}/api/v1/${path}`, {
+      method: 'POST',
+      headers: { origin: 'https://foreign.test' },
+      body: '{}',
+    }),
+    context(path),
+  );
+  expect(foreign.status).toBe(403);
+  const callback = await POST(
+    new Request(`${origin}/api/v1/payment-callbacks/payos`, {
+      method: 'POST',
+      headers: { origin },
+      body: '{}',
+    }),
+    context('payment-callbacks/payos'),
+  );
+  expect(callback.status).toBe(404);
+  expect(upstream).toHaveBeenCalledOnce();
+});

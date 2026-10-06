@@ -12,6 +12,7 @@ const id = '123e4567-e89b-42d3-a456-426614174000';
 const course = {
   id,
   code: 'WEB101',
+  imgUrl: null,
   title: 'Web',
   description: null,
   priceAmount: 2500000,

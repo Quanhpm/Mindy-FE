@@ -72,3 +72,21 @@ describe('unit ordering', () => {
     expect(() => unitOrderPayload([], [])).toThrow();
   });
 });
+
+it('validates image URLs and explicit clearing against backend DTO limits', () => {
+  for (const imgUrl of [
+    null,
+    'https://cdn.example.com/image.jpg',
+    'http://cdn.example.com/image.jpg',
+  ])
+    expect(courseUpdatePayloadSchema.safeParse({ imgUrl }).success).toBe(true);
+  for (const imgUrl of [
+    '',
+    'not-a-url',
+    'ftp://cdn.example.com/image.jpg',
+    'javascript:alert(1)',
+    'https://user:pass@example.com/image.jpg',
+    `https://cdn.example.com/${'a'.repeat(2048)}`,
+  ])
+    expect(courseUpdatePayloadSchema.safeParse({ imgUrl }).success).toBe(false);
+});

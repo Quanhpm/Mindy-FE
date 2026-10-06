@@ -38,6 +38,7 @@ async function mockPublicCatalog(
   const course = {
     id: courseId,
     code: 'WEB101',
+    imgUrl: null,
     title: 'Lập trình Web',
     description: 'Học cách xây dựng giao diện web từ nền tảng.',
     priceAmount: 2500000,

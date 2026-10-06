@@ -5,13 +5,17 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 16px 0;
-  border-top: 2px solid var(--primary);
-  border-bottom: 1px solid var(--border);
-  color: var(--primary);
+  padding: 16px 20px;
+  border-top: 0;
+  border-bottom: 0;
+  color: var(--action);
   font-size: 10px;
   letter-spacing: 1px;
   font-weight: 650;
+
+  background: #eef1f8;
+
+  border-radius: 12px;
 }
 .heading {
   display: flex;
@@ -21,7 +25,7 @@
   padding: 40px 0 24px;
 }
 .heading h1 {
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(28px, 3vw, 36px);
   line-height: 1.15;
 }
 .textLink {
@@ -43,7 +47,7 @@
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 345px;
-  gap: 40px;
+  gap: 28px;
   align-items: start;
   margin: 20px 0 40px;
 }
@@ -51,21 +55,35 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  border-top: 1px solid var(--primary);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 0;
+  border-top: 0;
+  border-bottom: 0;
+  padding: 16px 20px;
   color: var(--muted);
   font-size: 11px;
   letter-spacing: 1px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  margin-bottom: 16px;
 }
 .item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 24px;
-  padding: 28px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 24px;
+  border-bottom: 0;
   min-width: 0;
   overflow-wrap: anywhere;
+
+  background: white;
+
+  border-radius: var(--card-radius);
+
+  margin-bottom: 16px;
+
+  border: 1px solid var(--border);
 }
 .itemInfo {
   min-width: 0;
@@ -80,7 +98,7 @@
   text-underline-offset: 4px;
 }
 .courseLink {
-  color: var(--primary);
+  color: var(--action);
   font-size: 13px;
 }
 .removeButton {
@@ -105,7 +123,7 @@
 }
 .price strong {
   display: block;
-  color: var(--primary);
+  color: var(--action);
   font-size: 21px;
 }
 .price span {
@@ -122,9 +140,11 @@
 .unavailable {
   padding: 12px 16px;
   background: var(--soft);
-  border-left: 3px solid var(--primary);
+  border-left: 0;
   font-size: 13px;
   margin-top: 12px;
+
+  border-radius: 10px;
 }
 .aside {
   position: sticky;
@@ -132,12 +152,18 @@
   min-width: 0;
 }
 .summary {
-  background: var(--soft);
-  border-top: 3px solid var(--primary);
+  background: white;
+  border-top: 0;
   padding: 28px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--card-radius);
+
+  box-shadow: var(--preview-shadow);
 }
 .summary h2 {
-  font-size: 28px;
+  font-size: 24px;
   margin: 20px 0 24px;
 }
 .summaryRow {
@@ -160,22 +186,24 @@
   font-size: 13px;
 }
 .total strong {
-  color: var(--primary);
+  color: var(--action);
   font-size: 28px;
 }
 .empty {
-  background: var(--soft);
-  border-top: 1px solid var(--border);
+  background: white;
+  border-top: 0;
   padding: 48px 24px;
   text-align: center;
   margin-top: 24px;
+
+  border-radius: var(--card-radius);
 }
 .empty > svg {
   color: var(--primary);
   margin-bottom: 24px;
 }
 .empty h2 {
-  font-size: 30px;
+  font-size: 26px;
 }
 .empty p {
   color: var(--muted);

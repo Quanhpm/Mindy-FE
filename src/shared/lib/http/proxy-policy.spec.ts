@@ -113,3 +113,23 @@ describe('API proxy boundary', () => {
     expect(isAllowedOrigin('PUT', null, 'http://localhost:3101')).toBe(false);
   });
 });
+
+it('exposes only new payment/access/reconciliation contracts, never provider callbacks', () => {
+  const id = '123e4567-e89b-42d3-a456-426614174000';
+  for (const [method, path] of [
+    ['POST', `me/orders/${id}/payments/payos`],
+    ['GET', `me/classes/${id}`],
+    ['GET', 'admin/payments/reconciliation'],
+    ['POST', `admin/payments/${id}/reconcile`],
+  ]) {
+    expect(isAllowedEndpoint(method as string, path as string)).toBe(true);
+    expect(isAllowedEndpoint(method as string, `${path}/extra`)).toBe(false);
+    expect(isAllowedEndpoint('DELETE', path as string)).toBe(false);
+    expect(authCookies('access_token=a; refresh_token=r; tracking=t', path as string)).toBe(
+      'access_token=a',
+    );
+  }
+  expect(isAllowedEndpoint('POST', 'payment-callbacks/payos')).toBe(false);
+  expect(isAllowedEndpoint('GET', 'me/classes')).toBe(false);
+  expect(isAllowedEndpoint('GET', 'admin/payments')).toBe(false);
+});

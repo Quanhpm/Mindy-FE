@@ -6,9 +6,10 @@ import {
   checkoutInputSchema,
   checkoutResultSchema,
   type Order,
+  type OrderDetail,
   type OrderPage,
+  orderDetailSchema,
   orderPageSchema,
-  orderSchema,
   type PaymentType,
 } from '../schemas/order.schema';
 
@@ -20,12 +21,13 @@ export async function listOrders(query: string, signal?: AbortSignal): Promise<O
   return result.data;
 }
 
-export async function getOrder(id: string, signal?: AbortSignal): Promise<Order> {
+export async function getOrder(id: string, signal?: AbortSignal): Promise<OrderDetail> {
   z.uuid().parse(id);
-  const result = orderSchema.safeParse(
+  const result = orderDetailSchema.safeParse(
     await authenticatedRequest(`/me/orders/${encodeURIComponent(id)}`, { signal }),
   );
-  if (!result.success) throw new ApiError(502, 'INVALID_RESPONSE', 'Unexpected order response');
+  if (!result.success || result.data.id !== id)
+    throw new ApiError(502, 'INVALID_RESPONSE', 'Unexpected order response');
   return result.data;
 }
 

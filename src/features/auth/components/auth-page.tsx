@@ -15,7 +15,7 @@ export function AuthPage({
     <main id="main-content" className={styles.page}>
       <header className={styles.header}>
         <Brand />
-        <span className={styles.index}>THE MINDY JOURNAL / MEMBERS</span>
+        <span className={styles.index}>KHÔNG GIAN TÀI KHOẢN</span>
         <Link className={styles.back} href="/">
           ← Về trang chủ
         </Link>
@@ -40,7 +40,7 @@ export function AuthPage({
           </span>
         </aside>
         <section className={styles.form}>
-          <p className={styles.index}>YOUR NEXT CHAPTER</p>
+          <p className={styles.index}>BẮT ĐẦU CÙNG MINDY</p>
           <h1>{title}</h1>
           <p className={styles.subtitle}>{subtitle}</p>
           {children}

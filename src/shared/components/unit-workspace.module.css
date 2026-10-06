@@ -6,6 +6,10 @@
   min-height: 0;
   border: 1px solid var(--line);
   background: var(--paper);
+
+  border-radius: var(--card-radius);
+
+  overflow: hidden;
 }
 .rail {
   display: flex;
@@ -13,10 +17,14 @@
   min-width: 0;
   min-height: 0;
   border-right: 1px solid var(--line);
+
+  background: var(--surface);
 }
 .railHeading {
   padding: 20px;
   border-bottom: 1px solid var(--line);
+
+  background: white;
 }
 .railHeading h2 {
   font-size: 18px;
@@ -62,13 +70,15 @@
   border: 1px solid var(--line);
   color: var(--ink);
   background: var(--paper);
+
+  border-radius: 0 16px 16px 0;
 }
 .drawer[open] {
   display: flex;
   flex-direction: column;
 }
 .drawer::backdrop {
-  background: #18324680;
+  background: #30394c66;
 }
 .drawerHeader {
   display: flex;
@@ -96,4 +106,17 @@
   .content {
     padding: 24px 20px;
   }
+}
+
+.workspace[data-compact="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 340px;
+}
+.workspace[data-compact="true"] .mobileTrigger {
+  display: flex;
+  margin: 12px 16px 0;
+}
+.workspace[data-compact="true"] .content {
+  padding: 24px 20px;
 }

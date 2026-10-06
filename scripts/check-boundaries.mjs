@@ -10,7 +10,9 @@ const featureDependencies = {
   catalog: ['auth', 'cart'],
   classes: ['auth', 'catalog', 'users'],
   cart: ['auth'],
-  orders: ['auth', 'cart'],
+  orders: ['auth', 'cart', 'payments'],
+  payments: ['auth'],
+  learning: ['auth'],
 };
 async function visitDirectory(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {

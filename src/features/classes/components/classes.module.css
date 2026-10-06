@@ -42,12 +42,16 @@
   text-decoration: none;
   border-bottom: 1px solid var(--border);
   overflow-wrap: anywhere;
+
+  border-radius: 10px;
 }
 .unitLink[aria-current="page"] {
   background: var(--soft);
-  border-left: 3px solid var(--primary);
-  padding-left: 13px;
+  border-left: 0;
+  padding-left: 16px;
   font-weight: 700;
+
+  color: var(--action);
 }
 .unitLink small {
   color: var(--muted);
@@ -80,16 +84,28 @@
   margin: 20px 0;
   padding: 16px 20px;
   background: var(--soft);
-  border-left: 3px solid var(--primary);
+  border-left: 0;
+
+  border-radius: 12px;
 }
 .summary {
   margin-bottom: 24px;
-  padding: 16px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  padding: 20px;
+  border-top: 0;
+  border-bottom: 0;
+
+  background: white;
+
+  border-radius: 12px;
 }
 .settings {
   margin-top: 16px;
+
+  background: white;
+
+  padding: 12px 20px;
+
+  border-radius: 12px;
 }
 .settings summary {
   min-height: 44px;

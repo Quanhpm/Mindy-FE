@@ -1,0 +1,354 @@
+.page {
+  --ink: #4b5668;
+  --muted: #747d8d;
+  --green: #8295c2;
+  --green-dark: #657cac;
+  --soft: #f2f4f9;
+  --line: #dde3ec;
+  --radius: 10px;
+  min-height: 100svh;
+  padding: 0;
+  color: var(--ink);
+  background: white;
+  font-size: 14px;
+}
+.frame {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 260px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 100svh;
+  overflow: clip;
+  background: #ecedf2;
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 40px 22px 24px;
+}
+.brand :global(.brand) {
+  font-size: 27px;
+  letter-spacing: -1px;
+}
+.brand :global(.brand-mark) {
+  width: 32px;
+  height: 32px;
+  background: #536f9f;
+  border-radius: 10px;
+}
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 62px;
+}
+.navigation a,
+.navigation button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  color: #747d8d;
+  font-size: 13px;
+  text-align: left;
+}
+.navigation [aria-current="page"] {
+  color: #4b608b;
+  background: #eef1f8;
+  font-weight: 650;
+}
+.navigation a:hover,
+.navigation button:hover {
+  background: #f2f4f9;
+}
+.navigation svg {
+  flex-shrink: 0;
+}
+.help {
+  margin-top: auto;
+  padding: 36px 8px 22px;
+  text-align: center;
+}
+.help > span {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 14px;
+  border-radius: 22px;
+  background: #eef1f8;
+  color: #8295c2;
+}
+.help strong {
+  font-size: 13px;
+}
+.help p {
+  font-size: 12px;
+  color: #747d8d;
+  margin: 8px 0 12px;
+  line-height: 1.7;
+}
+.help a {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 11px;
+  color: #536f9f;
+}
+.sidebar > small {
+  font-size: 10px;
+  color: #9098a6;
+  text-align: center;
+}
+.workspace {
+  min-width: 0;
+  padding: 28px;
+  border-radius: 28px 0 0 28px;
+  background: #ecedf2;
+
+  container-type: inline-size;
+
+  container-name: admin-workspace;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 24px;
+  min-height: 44px;
+}
+.topbar > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.workspaceLabel {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: #6b7d9c;
+  padding: 12px 16px;
+  background: #f6f6fa;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.date {
+  font-size: 11px;
+  color: #687384;
+  text-align: right;
+}
+.menuButton {
+  display: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
+  color: #536f9f;
+  min-width: 44px;
+  min-height: 44px;
+}
+.rightPanel {
+  padding: 36px 24px;
+  background: white;
+  border-radius: 28px 0 0 28px;
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+}
+.profile {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profile :global(.avatar-large) {
+  width: 112px;
+  height: 112px;
+  font-size: 32px;
+  background: #dce2f2;
+  color: #6e82b0;
+  border: 8px solid #f2f4f9;
+}
+.profile h2 {
+  font-size: 16px;
+  margin: 14px 0 2px;
+  overflow-wrap: anywhere;
+}
+.profile p {
+  font-size: 12px;
+  color: #747d8d;
+  margin: 0 0 14px;
+}
+.page :global(.button) {
+  border-radius: 30px;
+  font-size: 13px;
+}
+.page :global(.icon-button) {
+  border-radius: 10px;
+}
+.account {
+  margin-top: 34px;
+  padding: 22px 0;
+  border-block: 1px solid #edf0f5;
+}
+.account h2,
+.guide h2 {
+  font-size: 14px;
+  margin: 0 0 18px;
+}
+.accountLabel {
+  display: block;
+  color: #747d8d;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.account p {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin: 0 0 18px;
+}
+.permission {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: #657cac;
+  font-size: 12px;
+}
+.guide {
+  margin-top: 26px;
+}
+.guide > div {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.guide :where(div) > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 36px;
+  background: #eef1f7;
+  border-radius: 10px;
+  color: #7a90b6;
+}
+.guide p {
+  font-size: 12px;
+  color: #747d8d;
+  line-height: 1.7;
+  margin: 0;
+}
+.guide strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5668;
+  margin-bottom: 3px;
+}
+.drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  height: 100svh;
+  max-height: 100svh;
+  width: min(320px, calc(100vw - 24px));
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  color: #4b5668;
+  background: white;
+}
+.drawer::backdrop {
+  background: #30394c66;
+}
+.drawerHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.drawerHeading :global(.brand) {
+  font-size: 26px;
+}
+.drawerHeading button {
+  border: 0;
+  background: #eef1f8;
+  color: #536f9f;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+.drawer .navigation {
+  margin-top: 24px;
+}
+@media (max-width: 1100px) {
+  .frame {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .sidebar {
+    padding-inline: 16px;
+  }
+  .workspace {
+    padding: 24px;
+  }
+  .rightPanel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    padding: 28px;
+    border-radius: 0;
+  }
+  .account,
+  .guide {
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+}
+@media (max-width: 700px) {
+  .frame {
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar {
+    display: none;
+  }
+  .workspace {
+    padding: 20px 16px;
+    border-radius: 22px;
+  }
+  .menuButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .workspaceLabel {
+    padding: 10px;
+  }
+  .date {
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+  }
+  .rightPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 28px 24px;
+    border-radius: 22px 22px 0 0;
+  }
+  .profile :global(.avatar-large) {
+    width: 90px;
+    height: 90px;
+  }
+}

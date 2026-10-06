@@ -162,7 +162,7 @@ async function mockCommerce(
         });
       const order = orders.find((item) => item.id === id);
       return order
-        ? route.fulfill({ json: order })
+        ? route.fulfill({ json: { ...order, payment: null } })
         : route.fulfill({ status: 404, json: { code: 'ORDER_NOT_FOUND', message: 'Not found' } });
     }
     return route.fulfill({ status: 404, json: { code: 'NOT_FOUND', message: 'Not found' } });
