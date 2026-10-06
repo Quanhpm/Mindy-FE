@@ -44,7 +44,7 @@ function CheckoutContent() {
     <div className={styles.page}>
       <header className={styles.heading}>
         <div>
-          <p className={styles.eyebrow}>THE MINDY JOURNAL / ĐĂNG KÝ</p>
+          <p className={styles.eyebrow}>ĐĂNG KÝ LỚP HỌC</p>
           <h1>{result ? 'Đơn đăng ký của bạn.' : 'Bước tiếp theo của bạn.'}</h1>
           <p className="muted">Tạo đơn và giữ chỗ cho các lớp đã chọn.</p>
         </div>

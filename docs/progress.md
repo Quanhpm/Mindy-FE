@@ -2,6 +2,23 @@
 
 ## Trạng thái hiện tại — 06/10/2026
 
+Typography vùng “Có nhiều cách để bắt đầu”: Nunito giống header, tiêu đề card
+30px/800 (27–28px trên màn nhỏ), mô tả và link 16px. Đã xem screenshot desktop/mobile,
+không tràn ngang; Biome/build và 4 E2E homepage/theme pass.
+
+Hero homepage: tạo ảnh trời/mây theo palette pastel đã chốt bằng imagegen,
+phục vụ bản WebP tại public/mindy/hero-clouds.webp. Nền phủ toàn hero, bỏ blob
+phía sau mascot; luminosity blend giữ màu từ config global. Xem ảnh desktop/mobile
+tại docs/ui-redesign/screenshots/hero-clouds-1440.png và hero-clouds-390.png.
+Build/Biome và 6 E2E homepage/theme/journey pass; không thay đổi API/logic.
+
+Cập nhật theo phản hồi UI: header public toàn chiều rộng, bỏ card bọc bo tròn,
+Nunito Variable local đậm 16–17px. Login/đăng ký dùng 100dvh, ẩn intro trên mobile,
+form hai cột ở màn hình thấp. Đã kiểm tra không cuộn trang/form mặc định tại tám
+kích thước từ 320×568 đến 1440×900, gồm 844×390 xoay ngang; lỗi dài vẫn truy cập
+được bằng cuộn cục bộ. Production build/Biome pass, 15 E2E auth/identity/responsive
+pass sau thay đổi cuối; 19 E2E homepage/header/identity/journey pass ở lượt trước.
+
 Baseline tích hợp: BE `Feat/Webhooktest` tại `5c9e581`, đã merge vào `dev`.
 Các mục bên dưới là trạng thái hiện hành; nhật ký ngày cũ giữ nguyên để truy vết.
 
@@ -19,11 +36,16 @@ integration hiện có, phần chờ FE và backlog BE.
 | PayOS | Đã tích hợp tạo/reuse link, trạng thái, polling và recovery; mở trang PayOS để thanh toán/hiển thị QR |
 | Lớp sau thanh toán | Đã tích hợp private class, units/lịch/phòng/meeting URL và kiểm tra quyền từ BE; chưa có danh sách lớp hoặc progress API |
 | Đối soát ADMIN | Đã tích hợp review events, phân trang và reconcile; kết quả phải đọc lại từ BE |
-| Giao diện | Learnthru đã áp dụng trên các trang sản phẩm; `/learnthru` và UI Lab vẫn là preview |
+| Giao diện | UI Mindy mới trên Huy/Feat/UIredesign; theme global, logo/docs palette, Geist, mascot/GSAP; nguồn UI cũ đã gỡ |
 | Compiler | Playground và runner riêng đã có; chưa gắn với tiến độ/quyền học của lớp |
 
-**Bằng chứng gần nhất:** lint/boundaries, TypeScript và production build pass;
-134 unit tests và 72 Chromium scenarios pass. Browser tests dùng API mô phỏng.
+**Bằng chứng UI mới:** TypeScript, production build, module boundaries và Biome
+không formatter pass; 134 unit tests và 71 Chromium scenarios pass. Browser tests
+dùng API mô phỏng, responsive 1440/768/390/375 và keyboard/dialog. Lint mặc định
+vẫn fail 183 lỗi formatter CRLF/LF trong các file không thuộc thay đổi này.
+Các file code/CSS đã sửa đều qua Biome đầy đủ.
+
+Bằng chứng tích hợp BE của đợt trước:
 BE payment HTTP E2E 3/3 pass; smoke FE → BFF → BE dùng cookie thật, PostgreSQL
 riêng và provider giả đã xác minh signed settlement, PAID/ACTIVE và private access.
 Chưa nghiệm thu PayOS/provider email thật hoặc deploy trong đợt tích hợp này.
@@ -36,6 +58,26 @@ Materials, attendance, assignments, chat, notifications và dashboard là các p
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
 
 [Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-06 — Thay toàn bộ UI Mindy, giữ logic
+
+- Thực hiện trên branch có sẵn Huy/Feat/UIredesign. Thay homepage, auth, public
+  catalog, student, admin, forms/tables, cart/orders, learning và compiler styles.
+  Admin đổi thành sidebar + workspace; không còn cột hồ sơ Learnthru.
+- Theme duy nhất tại src/shared/config/theme.ts, palette sky/lavender lấy từ docs.
+  Brand và favicon dùng docs/logo.jpg; mascot mới, Geist Sans local, GSAP có
+  cleanup và reduced-motion. Ảnh/logo raster giữ nguyên màu.
+- Không sửa API/schema/domain/session/permissions, BE hoặc tích hợp bốn API
+  mới đang chờ. Homepage dùng adapter GET /courses có sẵn với loading/retry/empty.
+- Gỡ source/fixture/assets của UI Lab và Learnthru; URL cũ redirect về /. Giữ
+  behavioral tests, thay bài kiểm tra preview cũ bằng redirect và thêm homepage,
+  theme propagation, motion và responsive tests.
+- 134 unit tests / 24 files và 71 E2E pass. TypeScript/build/boundaries pass.
+  Biome trên file sửa và check toàn repo khi tắt formatter pass; default lint
+  còn 183 lỗi CRLF/LF kế thừa. Không normalize các file nghiệp vụ ngoài phạm vi.
+- Đã xem ảnh desktop/mobile cho home/auth/admin. [Ảnh và hướng dẫn](./ui-redesign/README.md).
+  Screenshot lịch sử integration giữ nguyên; ảnh mới nằm trong ui-redesign.
+  Preview localhost:3002 trả 200, không có pageerror. Chưa commit/push/deploy.
 
 ## 2026-10-06 — API audit và logic flow cho UI rewrite
 

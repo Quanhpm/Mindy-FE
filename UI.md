@@ -1,66 +1,40 @@
-# Mindy UI — Learnthru
+# Mindy UI — thiết kế mới
 
-Chuẩn giao diện mới theo yêu cầu ngày 05/10/2026. Nguồn thị giác là ảnh Learnthru người dùng cung cấp và route `/learnthru`; trang áp dụng đầu tiên là `/management/users`. Theo yêu cầu tiếp theo, toàn bộ route sản phẩm đã dùng chung phong cách này: auth, catalog, lớp/học phần, compiler, tài khoản, giỏ hàng, checkout, đơn hàng, học tập và quản trị. UI Lab Ocean Editorial giữ riêng để tham khảo lịch sử.
+Theo yêu cầu ngày 06/10/2026, thay toàn bộ UI Learnthru/Ocean cũ, giữ logic nghiệp vụ. Hướng thị giác mềm, nằm giữa minimal và high-end theo cảm nhận người dùng về Riki Nihongo. Áp dụng gpt-taste cùng hướng dẫn minimalist-ui và high-end-visual-design; ưu tiên yêu cầu người dùng khi các skill mâu thuẫn.
 
-## Bố cục quản trị
+## Thương hiệu và màu toàn dự án
 
-- Giao diện sản phẩm phủ toàn màn hình, không có viền/nền xám, khoảng đệm, bo góc hay bóng đổ ngoài cùng. Giữ nền xám nhạt và bo góc các vùng bên trong.
-- Desktop: sidebar trắng 190–210px, nội dung nền xám nhạt co giãn, cột hồ sơ trắng 250–285px. Khung sản phẩm rộng 100% viewport; không cố định chiều cao khi dữ liệu dài.
-- Sidebar: logo Mindy, navigation có icon và trạng thái active, khối trợ giúp phía dưới.
-- Nội dung: thanh tiêu đề/ngày, welcome card trắng, ba card chức năng dùng xanh/lavender/hồng, bảng danh sách phía dưới.
-- Cột phải: avatar và thông tin tài khoản đang đăng nhập, link hồ sơ, hướng dẫn nghiệp vụ thật. Chỉ dùng lịch/nhắc nhở nếu có dữ liệu tương ứng.
-- Tablet ≤1100px: cột hồ sơ xuống dưới. Mobile ≤700px: menu bằng dialog native, nội dung một cột, card xếp dọc, bảng cuộn ngang trong vùng riêng.
+Nguồn duy nhất cho màu: `src/shared/config/theme.ts`. Đổi `mindyTheme.palette` từ `sky` sang `lavender`, hoặc sửa các giá trị trong palette đang chọn. Root layout đưa config lên html thành CSS variables; tất cả shell, component, trạng thái và focus dùng các biến này. Không hardcode màu trong stylesheet.
 
-## Màu
+- Sky: palette docs/Pallate2.png — #c6e7ff, #d4f6ff, #fbfbfb, #ffddae.
+- Lavender: docs/pallete1.png — #fff2f2, #a9b5df, #7886c7, #2d336b.
+- Ink/action mặc định #2d336b để chữ và CTA có độ tương phản.
+- Các màu trạng thái nằm trong cùng config, đi kèm chữ/icon.
+- Logo nguyên bản docs/logo.jpg, được phục vụ từ public/brand/mindy-logo.jpg. Không thay bằng logo tự vẽ.
+- Minh họa Mindy tại public/mindy/coding-mascot.png, tạo dựa trên nhân vật logo. Raster logo/minh họa/ảnh khóa học giữ màu nguyên bản; config thay màu giao diện.
 
-| Vai trò | Giá trị |
-| --- | --- |
-| Nền ngoài | Không có; shell phủ toàn màn hình |
-| Nền workspace | `#ecedf2` |
-| Panel | `#ffffff` |
-| Chữ chính | `#4b5668` |
-| Chữ phụ | `#747d8d` |
-| Primary | `#8295c2` |
-| Primary hover | `#657cac` |
-| Input mềm | `#f6f6fa` |
-| Viền | `#dde3ec` |
-| Card xanh | `#3d609c` → `#5c7fb5` |
-| Card lavender | `#5c83b8` → `#9b8caf` |
-| Card hồng | `#a38ab0` → `#f48495` |
+## Typography, hình khối và khoảng cách
 
-Tokens nền tảng dùng chung tại `src/app/globals.css`; shell/component giữ override và bố cục riêng. `--action: #536f9f` và hover `#435c88` dành cho CTA/link để rõ chữ, primary pastel dùng trang trí. Chữ phụ trong sản phẩm phải dễ đọc, không sao chép độ nhạt/cỡ chữ quá nhỏ của ảnh.
+Geist Sans local qua package geist cho nội dung; header public dùng Nunito Variable local, chữ đậm viết hoa 16–17px theo mẫu người dùng. Font hỗ trợ tiếng Việt, không tải Google khi build. Hero rộng, tối đa 2–3 dòng; body 14–17px, tiêu đề có tracking âm nhẹ. Màu pastel dùng cho khối minh họa, action tối cho CTA. Card bo 19–32px, nút bo 12–16px; không dùng pill hoặc gradient của UI cũ. Bóng ít, viền nhẹ lấy từ ink. Section landing cách nhau khoảng 65–105px; workspace ưu tiên mật độ dễ thao tác.
 
-## Typography và component
+## Bố cục
 
-- Font: `Avenir Next`, `Segoe UI`, Arial, sans-serif. Nội dung tiếng Việt.
-- Body/bảng 13–15px; metadata 12px; tiêu đề trang 22–26px; section 15–18px.
-- Khoảng cách: 8/12/16/20/24/28/32px; padding workspace 24–28px.
-- Welcome/card/bảng bo 10–14px. Nút primary dạng pill cao tối thiểu 44px; input/select bo 10px.
-- Avatar tròn; dùng chữ viết tắt khi backend chưa có avatar, không gán ảnh fixture cho người thật.
-- Bảng có header nền mềm, hàng trắng, đường chia nhạt, badge vai trò và trạng thái kèm chữ.
-- Tái sử dụng Brand, Icon, Avatar và các primitive phù hợp; không đổi tên thương hiệu thành Learnthru.
+Vùng homepage “Có nhiều cách để bắt đầu” dùng Nunito giống header: tiêu đề card
+30px, weight 800; mô tả và link 16px. Tiêu đề vùng weight 750. Mobile giữ mô tả
+16px và tiêu đề card 28px để dễ đọc.
 
-## Hành vi và dữ liệu
+- Homepage: header trắng toàn chiều rộng, không card bọc bo tròn, dải màu thương hiệu phía dưới; hero phủ nền trời pastel với mây nhẹ tại public/mindy/hero-clouds.webp, mascot không còn khối nền riêng. Nền dùng luminosity blend trên --mindy-primary để đổi palette đồng bộ. Bento 2+1+1, khóa học thật qua API, hành trình, góc code, CTA và footer. GSAP scoped, cleanup khi đổi route, reduced-motion và không pin/che nội dung form.
+- Auth: layout 100dvh, panel pastel có mascot và form độc lập; mobile ẩn panel, ưu tiên form. Màn hình thấp dùng form hai cột để login/đăng ký mặc định vừa viewport, không cuộn trang. Khi validation hoặc bàn phím làm thiếu chiều cao, chỉ vùng form cuộn để mọi trường và lỗi vẫn truy cập được.
+- Public catalog: header trắng toàn chiều rộng cùng homepage, giới thiệu, bộ lọc và card khóa học; không sidebar.
+- Student: header và navigation theo vai trò; giỏ/checkout có summary; đơn hàng, tài khoản, học tập dùng panel đọc rõ.
+- Admin: MindyAdminShell hai cột sidebar + workspace, hồ sơ thật trong topbar; bỏ cột hồ sơ/fixture cũ.
+- UnitWorkspace: rail và nội dung cuộn độc lập, thu rail thành native dialog khi viewport ≤850px hoặc workspace ≤640px.
+- Mobile lề 20px, layout một cột; bảng chỉ cuộn trong vùng riêng. Không ẩn overflow toàn trang để che lỗi bố cục.
 
-Giữ API, session, role guard, URL filters, phân trang, tạo tài khoản và xem chi tiết. Không đưa dữ liệu mẫu, số thống kê tự suy đoán, lịch giả hoặc thao tác giả vào trang sản phẩm. Tổng số lấy từ response đang lọc; nhãn phải nói rõ phạm vi đó. Các card vai trò là lối tắt bộ lọc, không phải số thống kê toàn hệ thống.
+## Logic giữ lại
 
-Có đủ loading, error/retry, empty và dữ liệu dài. Link để điều hướng, button để thay đổi trạng thái. Mọi control có label/focus nhìn thấy; dialog hỗ trợ Escape, focus trap và trả focus. Mobile không tràn trang. Kiểm tra desktop/mobile, quyền truy cập và luồng hiện có trước khi hoàn tất.
+Giữ BFF /api/v1, Zod schema, HttpOnly session, role guard, URL filters/pagination, create/update/reorder, cart, order, checkout, PayOS recovery/polling, learning và reconciliation. Homepage mới chỉ gọi GET /courses bằng adapter có sẵn. Không thêm API giả, số tiến độ, review hoặc thống kê suy đoán. Ví dụ code trên homepage có nhãn “Kết quả minh họa”; compiler chạy thật vẫn dùng logic cũ.
 
-## Homepage — landing page dùng chung phong cách UI
+Các nguồn UI preview cũ đã gỡ. /learnthru, /ui-lab và URL preview cũ chuyển về homepage. Các thử nghiệm nghiệp vụ được giữ; kiểm tra responsive và keyboard được cập nhật cho thiết kế mới.
 
-Route `/` dùng header ngang, hero hai cột, các section khám phá/hướng dẫn/thực
-hành, CTA và footer. Không áp dụng sidebar hoặc cột hồ sơ của dashboard.
-Dùng chung ngôn ngữ Learnthru: palette xanh/lavender/hồng, font, card bo 10–14px,
-nút pill, icon và nền mềm; typography/spacing lớn hơn theo bố cục landing page.
-HomeShell giữ tỷ lệ và style riêng trên nền token chung. Mobile dùng native dialog
-cho menu; motion hữu hạn, hỗ trợ prefers-reduced-motion. Minh họa sách và ví dụ
-code không đại diện cho dữ liệu học tập hay kết quả chạy thật.
-
-## Bố cục các trang sản phẩm khác
-
-Auth dùng panel giới thiệu và form hai cột, mobile ưu tiên form. Public catalog
-dùng header ngang, hero, filter và card khóa học. Tài khoản, giỏ hàng, checkout,
-đơn hàng và học tập dùng header/navigation ngang theo vai trò; summary xuống
-sau danh sách trên mobile. Chỉ admin dùng shell ba cột. UnitWorkspace thu rail
-thành dialog khi viewport ≤850px hoặc nội dung thực tế ≤640px; giữ hai vùng
-cuộn độc lập và selection trên URL.
+Đọc docs/logic-flow.md để làm việc với các flow và khoảng trống tích hợp API đã audit.

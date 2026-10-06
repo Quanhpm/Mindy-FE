@@ -2,232 +2,123 @@
   min-width: 0;
 }
 .welcome {
-  padding: 24px;
-  border-radius: 12px;
-  background: white;
-  margin-bottom: 22px;
-  position: relative;
-  overflow: hidden;
-}
-.welcome::after {
-  content: "";
-  position: absolute;
-  width: 145px;
-  height: 145px;
-  border: 24px solid #edf0f9;
-  border-radius: 36px;
-  transform: rotate(-25deg);
-  right: -40px;
-  bottom: -35px;
-  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
 }
 .eyebrow {
-  color: #8295c2;
   font-size: 10px;
-  letter-spacing: 1.3px;
-  margin: 0 0 8px;
-  font-weight: 650;
-}
-.welcome h1 {
-  font-size: 25px;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
-}
-.welcome :global(.page-description) {
-  font-size: 13px;
-  line-height: 1.7;
-  max-width: 90%;
-}
-.welcome :global(.button) {
-  margin-top: 18px;
-  position: relative;
-  z-index: 1;
+  letter-spacing: 1.2px;
+  color: var(--mindy-muted);
+  margin-bottom: 12px;
 }
 .shortcuts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 15px;
   margin-bottom: 26px;
 }
-.shortcuts button {
-  display: flex;
-  flex-direction: column;
+.shortcuts > button {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 14px;
+  row-gap: 3px;
+  align-items: center;
   text-align: left;
-  color: white;
-  padding: 18px;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  min-height: 164px;
-  box-shadow: 0 7px 12px #44557615;
+  padding: 20px;
+  border: 1px solid var(--mindy-line);
+  border-radius: 19px;
+  background: var(--mindy-white);
+  color: var(--mindy-ink);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 }
-.roleADMIN {
-  background: linear-gradient(105deg, #3d609c, #5c7fb5);
-}
-.roleMENTOR {
-  background: linear-gradient(105deg, #5c83b8, #9b8caf);
-}
-.roleSTUDENT {
-  background: linear-gradient(105deg, #a38ab0, #f48495);
-}
-.shortcuts [aria-pressed="true"] {
-  border-color: white;
-  outline: 2px solid #657cac;
-  outline-offset: 2px;
+.shortcuts > button[aria-pressed="true"] {
+  border-color: var(--mindy-action);
+  background: var(--mindy-soft);
 }
 .shortcutIcon {
+  grid-row: span 2;
   display: grid;
   place-items: center;
-  height: 30px;
-  width: 30px;
-  border-radius: 9px;
-  background: #ffffff22;
-  margin-bottom: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--mindy-soft);
 }
 .shortcuts strong {
-  font-size: 14px;
-  font-weight: 650;
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 550;
 }
-.shortcuts :where(button) > span:not(.shortcutIcon) {
-  font-size: 11px;
-  line-height: 1.6;
+.shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+  font-size: 10px;
+  color: var(--mindy-muted);
 }
 .shortcutAction {
-  display: inline-flex;
+  grid-column: 2;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: auto;
-  padding-top: 12px;
-}
-.root :global(.users-card) {
-  border: 0;
-  background: transparent;
-}
-.root :global(.card-heading) {
-  padding: 0 0 18px;
-}
-.root :global(.card-heading) h2 {
-  font-size: 16px;
-}
-.root :global(.count-badge) {
-  border-radius: 8px;
-  background: #dce3f0;
-  font-size: 11px;
-}
-.root :global(.filters) {
-  padding: 18px;
-  margin-bottom: 14px;
-  background: #f6f6fa;
-  border-radius: 12px;
-  gap: 16px;
-}
-.root :global(.field) {
-  width: min(190px, 100%);
-}
-.root :global(.field) select {
-  background: white;
-  font-size: 12px;
-  padding: 10px 12px;
-  border-color: #e2e6ed;
-}
-.root :global(.filter-note) {
+  gap: 8px;
   font-size: 10px;
+  margin-top: 10px;
 }
-.root :global(.table-scroll) {
-  position: relative;
-  border-radius: 12px;
-  background: white;
+.roleADMIN .shortcutIcon {
+  background: var(--mindy-soft);
 }
-.root table {
-  min-width: 650px;
-  white-space: nowrap;
+.roleMENTOR .shortcutIcon {
+  background: color-mix(in srgb, var(--mindy-secondary) 50%, var(--mindy-white));
 }
-.root th {
-  background: #f8f8fb;
-  border: 0;
-  padding: 14px 12px;
-  font-size: 11px;
-  color: #656e7d;
+.roleSTUDENT .shortcutIcon {
+  background: color-mix(in srgb, var(--mindy-accent) 50%, var(--mindy-white));
 }
-.root td {
-  background: white;
-  border-bottom: 4px solid #ecedf2;
-  padding: 14px 12px;
-  font-size: 12px;
+@media (max-width: 1150px) {
+  .shortcuts > button {
+    padding: 17px;
+    grid-template-columns: 1fr;
+  }
+  .shortcutIcon {
+    grid-row: auto;
+    margin-bottom: 10px;
+  }
+  .shortcutAction {
+    grid-column: 1;
+  }
+  .shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+    min-height: 32px;
+  }
 }
-.root :where(td, th):first-child {
-  padding-left: 18px;
-}
-.root :global(.user-cell) {
-  gap: 10px;
-}
-.root :global(.user-cell) strong {
-  font-size: 12px;
-}
-.root :global(.user-cell) :global(.small) {
-  font-size: 11px;
-}
-.root :global(.avatar) {
-  width: 33px;
-  height: 33px;
-  border-radius: 50%;
-  color: #657cac;
-  background: #eef1f8;
-  font-size: 11px;
-}
-.root :global(.badge) {
-  border-radius: 8px;
-  font-size: 11px;
-}
-.root :global(.status) {
-  font-size: 11px;
-}
-.root :global(.pagination) {
-  border: 0;
-  padding: 18px 0 0;
-  gap: 12px;
-}
-.root :global(.pagination) > span {
-  font-size: 11px;
-}
-.root :global(.empty-state),
-.root :global(.error-panel),
-.root :global(.loading-state) {
-  background: white;
-  border-radius: 12px;
-}
-@media (max-width: 700px) {
+@media (max-width: 600px) {
   .welcome {
-    padding: 22px 18px;
-  }
-  .welcome h1 {
-    font-size: 23px;
-  }
-  .welcome :global(.page-description) {
-    max-width: 100%;
+    align-items: start;
+    flex-direction: column;
+    gap: 17px;
   }
   .shortcuts {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .shortcuts button {
-    min-height: 140px;
-  }
-  .root :global(.card-heading) {
     gap: 8px;
   }
-  .root :global(.filters) {
-    padding: 16px;
+  .shortcuts > button {
+    padding: 14px 10px;
+    border-radius: 15px;
   }
-  .root :global(.field) {
-    width: 100%;
+  .shortcuts strong {
+    font-size: 12px;
   }
-  .root :global(.filter-note) {
-    margin-left: 0;
-    padding: 0;
+  .shortcutIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
   }
-  .root :global(.pagination) {
-    flex-direction: column;
-    align-items: flex-start;
+  .shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+    display: none;
+  }
+  .shortcutAction {
+    font-size: 9px;
+    gap: 3px;
+  }
+  .shortcutAction svg {
+    display: none;
   }
 }

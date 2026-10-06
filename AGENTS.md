@@ -2,7 +2,7 @@
 
 Read `docs/architecture.md`, `docs/api-contracts.md`, and `docs/progress.md` before changing features.
 Before creating or changing any UI, also read and follow [docs/ui-rules.md](docs/ui-rules.md).
-Learnthru is the newly selected design direction; read `UI.md` for its specification and rollout scope. All product routes now use Learnthru shared tokens. Preserve distinct public landing/catalog, auth, student and admin layouts; only admin uses the three-column shell. Ocean Editorial remains an isolated UI Lab reference.
+The user requested a complete UI replacement on 06/10/2026. Read UI.md for the new Mindy design. Global colors live in src/shared/config/theme.ts; use the docs logo and palettes. Keep public/auth/student layouts distinct; admin uses MindyAdminShell with sidebar and workspace. Old preview routes redirect home. Preserve business logic.
 The companion backend is `../Mindy-BE`. Identity/catalog/classes/payments now target `Feat/Webhooktest` at `5c9e581`
 (verify current source before extending integration).
 For the eight-session integration handoff and required course-unit split layout,

@@ -68,10 +68,6 @@ export function PublicCourses() {
   }
   return (
     <div className={styles.root}>
-      <div className={styles.masthead}>
-        <span>THE MINDY JOURNAL / KHÓA HỌC</span>
-        <span>MỘT KỸ NĂNG. NHIỀU KHẢ NĂNG.</span>
-      </div>
       <section className={styles.hero}>
         <div>
           <p className={styles.eyebrow}>CHỌN ĐIỀU BẠN MUỐN HỌC</p>
@@ -86,7 +82,7 @@ export function PublicCourses() {
           </a>
         </div>
         <aside className={styles.summary}>
-          <p>THE MINDY WAY</p>
+          <p>HỌC CÙNG MINDY</p>
           <h2>
             Một lộ trình rõ ràng.
             <br />

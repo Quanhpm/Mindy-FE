@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Icon } from './icon';
 
 export function Brand({ inverse = false }: { inverse?: boolean }) {
   return (
@@ -8,11 +8,9 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
       className={`brand${inverse ? ' brand-inverse' : ''}`}
       aria-label="Mindy — trang chủ"
     >
-      <span className="brand-mark">
-        <Icon name="book" size={24} />
-      </span>
-      <span>
-        mindy<span className="brand-dot">.</span>
+      <Image className="brand-logo" src="/brand/mindy-logo.jpg" width={56} height={56} alt="" />
+      <span className="brand-name">
+        Mindy<span className="brand-caption">Coding</span>
       </span>
     </Link>
   );

@@ -71,7 +71,7 @@ export function CoursesManagement() {
     <div className={s.page}>
       <div className={s.heading}>
         <div>
-          <p className={s.eyebrow}>MINDY / COURSE JOURNAL</p>
+          <p className={s.eyebrow}>KHÓA HỌC TẠI MINDY</p>
           <h1>Khóa học</h1>
           <p>Xây dựng chương trình học và quản lý trạng thái xuất bản.</p>
         </div>

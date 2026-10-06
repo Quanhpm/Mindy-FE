@@ -1,202 +1,293 @@
+'use client';
+
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
 import Link from 'next/link';
+import { type ReactNode, useRef } from 'react';
 import { Icon } from '@/shared/ui/icon';
 import s from './home-content.module.css';
 
-const shortcuts = [
-  {
-    title: 'Khám phá khóa học',
-    subtitle: 'Tìm điều bạn muốn học',
-    icon: 'book',
-    href: '/courses',
-    tone: 'blue',
-    label: 'Xem khóa học',
-  },
-  {
-    title: 'Thực hành code',
-    subtitle: 'Biến ý tưởng thành kết quả',
-    icon: 'chevron',
-    href: '/compiler',
-    tone: 'lavender',
-    label: 'Thử ngay',
-  },
-  {
-    title: 'Bắt đầu hành trình',
-    subtitle: 'Tạo không gian của riêng bạn',
-    icon: 'users',
-    href: '/register',
-    tone: 'pink',
-    label: 'Tạo tài khoản',
-  },
-] as const;
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 const steps = [
   {
-    title: 'Khám phá điều bạn thích',
-    text: 'Đọc đề cương, xem nội dung và chọn khóa học phù hợp với mục tiêu của bạn.',
+    title: 'Tìm điều bạn muốn học',
+    text: 'Khám phá đề cương và chọn khóa học phù hợp với mục tiêu của bạn.',
     icon: 'book',
   },
   {
-    title: 'Chọn lớp phù hợp',
-    text: 'Tìm hiểu mentor, thời gian và hình thức học trước khi đăng ký.',
+    title: 'Chọn lớp, gặp mentor',
+    text: 'Xem lịch, hình thức học và người đồng hành trước khi đăng ký.',
     icon: 'clock',
   },
   {
-    title: 'Sẵn sàng cho chương mới',
-    text: 'Tạo tài khoản, thêm lớp vào giỏ và theo dõi đơn đăng ký của bạn.',
-    icon: 'user',
+    title: 'Bắt đầu và thực hành',
+    text: 'Theo dõi đơn đăng ký, vào lớp và tiếp tục hành trình của bạn.',
+    icon: 'check',
   },
 ] as const;
 
-function BooksArt() {
-  return (
-    <svg className={s.books} viewBox="0 0 260 220" aria-hidden="true">
-      <ellipse cx="136" cy="199" rx="100" ry="12" fill="#dde3ec" />
-      <path d="m26 125 80-40 140 70-82 49Z" fill="#8295c2" />
-      <path d="m26 125 0 21 138 71 0-21Z" fill="#536f9f" />
-      <path d="m164 196 82-41v21l-82 41Z" fill="#dce2f2" />
-      <path d="m39 96 76-42 130 63-81 47Z" fill="#a496bf" />
-      <path d="m39 96 0 19 125 66 0-17Z" fill="#8277a4" />
-      <path d="m164 164 81-47v18l-81 46Z" fill="#eee9f5" />
-      <path d="m40 59 82-46 118 64-76 47Z" fill="#ffcbcf" />
-      <path d="m40 59 0 21 124 66 0-22Z" fill="#ed839f" />
-      <path d="m164 124 76-47v21l-76 48Z" fill="#fff1f3" />
-      <path d="m70 55 48-27 84 46-46 27Z" fill="none" stroke="#e398a9" strokeWidth="2" />
-      <path
-        d="m180 32 4-10m10 17 9-3M24 81l-9-3"
-        stroke="#8295c2"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
+export function HomeContent({ courses }: { courses: ReactNode }) {
+  const scope = useRef<HTMLDivElement>(null);
+  useGSAP(
+    () => {
+      const media = gsap.matchMedia();
+      media.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.from('[data-hero-reveal]', {
+          y: 22,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.1,
+          ease: 'power3.out',
+        });
+        for (const element of gsap.utils.toArray<HTMLElement>('[data-reveal]', scope.current)) {
+          gsap.from(element, {
+            y: 24,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: element, start: 'top 94%', once: true },
+          });
+        }
+      });
+      media.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          '[data-mascot]',
+          { scale: 0.96 },
+          {
+            scale: 1.04,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '[data-hero]',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1,
+            },
+          },
+        );
+        gsap.fromTo(
+          '[data-word]',
+          { opacity: 0.8 },
+          {
+            opacity: 1,
+            stagger: 0.12,
+            ease: 'none',
+            scrollTrigger: { trigger: '#hanh-trinh', start: 'top 85%', end: 'top 35%', scrub: 1 },
+          },
+        );
+      });
+      return () => media.revert();
+    },
+    { scope },
   );
-}
-
-export function HomeContent() {
   return (
-    <div className={s.content}>
-      <section className={s.welcome} aria-labelledby="home-title">
-        <div>
-          <p className={s.eyebrow}>CHÀO MỪNG ĐẾN VỚI MINDY</p>
-          <h1 id="home-title">
-            Một nơi để học.
+    <div ref={scope} className={s.content}>
+      <section className={s.hero} data-hero>
+        <div className={s.heroInner}>
+          <div className={s.heroCopy}>
+            <p className={s.intro} data-hero-reveal>
+              <span /> Khởi đầu ở Min - bùng nổ ở Max.
+            </p>
+            <h1 data-hero-reveal>
+              Học code.
+              <br />
+              Mở thế giới của bạn.
+            </h1>
+            <p className={s.description} data-hero-reveal>
+              Từ dòng code đầu tiên đến điều bạn muốn tạo ra. Khám phá, thực hành và từng bước tiến
+              bộ cùng Mindy.
+            </p>
+            <div className={s.heroActions} data-hero-reveal>
+              <Link href="/courses" className={s.primary}>
+                Khám phá khóa học{' '}
+                <span>
+                  <Icon name="arrow" />
+                </span>
+              </Link>
+              <Link href="/compiler" className={s.textLink}>
+                Thử viết code <Icon name="chevron" size={16} />
+              </Link>
+            </div>
+            <p className={s.heroNote} data-hero-reveal>
+              <Icon name="book" size={18} /> Học có lộ trình. Thực hành có không gian.
+            </p>
+          </div>
+          <div className={s.visual} data-hero-reveal>
+            <Image
+              data-mascot
+              className={s.mascot}
+              src="/mindy/coding-mascot.png"
+              alt="Bạn ếch Mindy đang khám phá lập trình trên laptop"
+              width={1280}
+              height={1280}
+              sizes="(max-width: 800px) 90vw, 48vw"
+              preload
+            />
+            <span className={s.visualCaption}>Cứ thử. Bạn sẽ làm được.</span>
+          </div>
+        </div>
+      </section>
+      <section className={`${s.section} ${s.startSection}`}>
+        <div className={s.sectionHeading} data-reveal>
+          <h2>
+            Có nhiều cách
             <br />
-            <span>Một hành trình để lớn.</span>
-          </h1>
+            để bắt đầu.
+          </h2>
           <p>
-            Mỗi điều mới bắt đầu bằng một chút tò mò. Khám phá điều bạn yêu thích và viết tiếp hành
-            trình của mình cùng Mindy.
+            Một khóa học mới, một ý tưởng nhỏ.
+            <br />
+            Chọn điều khiến bạn tò mò hôm nay.
           </p>
-          <Link className="button button-primary" href="/courses">
-            Khám phá khóa học <Icon name="arrow" size={17} />
+        </div>
+        <div className={s.bento}>
+          <Link href="/courses" className={s.mainCard} data-reveal>
+            <span className={s.cardIcon}>
+              <Icon name="book" size={24} />
+            </span>
+            <h3>
+              Tìm khóa học
+              <br />
+              hợp với bạn.
+            </h3>
+            <p>
+              Lộ trình, lịch học và mentor.
+              <br />
+              Mọi điều cần biết trước khi bắt đầu.
+            </p>
+            <span className={s.cardLink}>
+              Xem khóa học <Icon name="arrow" size={19} />
+            </span>
+            <span className={s.codeGlyph} aria-hidden="true">
+              &lt;/&gt;
+            </span>
+          </Link>
+          <Link href="/compiler" className={s.practiceCard} data-reveal>
+            <span className={s.cardIcon}>
+              <Icon name="chevron" size={24} />
+            </span>
+            <h3>
+              Học bằng
+              <br />
+              cách thử.
+            </h3>
+            <p>Viết JavaScript ngay trong trình duyệt của bạn.</p>
+            <span className={s.cardLink}>
+              Thử ngay <Icon name="arrow" size={19} />
+            </span>
+          </Link>
+          <Link href="/register" className={s.accountCard} data-reveal>
+            <span className={s.cardIcon}>
+              <Icon name="user" size={24} />
+            </span>
+            <h3>
+              Khởi đầu
+              <br />
+              của riêng bạn.
+            </h3>
+            <p>Một tài khoản để kết nối hành trình học tập.</p>
+            <span className={s.cardLink}>
+              Tạo tài khoản <Icon name="arrow" size={19} />
+            </span>
           </Link>
         </div>
-        <div className={s.welcomeArt}>
-          <BooksArt />
-          <span>LEARN. CONNECT. GROW.</span>
-        </div>
       </section>
-      <section aria-labelledby="explore-title">
-        <div className={s.sectionHeading}>
-          <h2 id="explore-title">Hôm nay, bạn muốn khám phá gì?</h2>
-          <span>Một khởi đầu mới đang chờ bạn</span>
+      <section className={s.section}>
+        <div className={s.sectionHeading} data-reveal>
+          <h2>
+            Điểm bắt đầu cho
+            <br />ý tưởng tiếp theo.
+          </h2>
+          <Link href="/courses" className={s.textLink}>
+            Tất cả khóa học <Icon name="arrow" size={18} />
+          </Link>
         </div>
-        <div className={s.shortcuts}>
-          {shortcuts.map((item) => (
-            <Link key={item.href} href={item.href} className={`${s.shortcut} ${s[item.tone]}`}>
-              <span className={s.shortcutIcon}>
-                <Icon name={item.icon} size={24} />
-              </span>
-              <p>{item.subtitle}</p>
-              <h3>{item.title}</h3>
-              <span className={s.shortcutLink}>
-                {item.label}
-                <Icon name="arrow" size={18} />
-              </span>
-              <span className={s.cardCircle} aria-hidden="true" />
-            </Link>
-          ))}
-        </div>
+        {courses}
       </section>
-      <section className={s.journey} id="hanh-trinh" aria-labelledby="journey-title">
-        <div className={s.sectionHeading}>
-          <div>
-            <p className={s.eyebrow}>TỪNG BƯỚC CÙNG MINDY</p>
-            <h2 id="journey-title">Hành trình của bạn bắt đầu từ đây</h2>
-          </div>
-          <span className={s.smallBadge}>3 bước đơn giản</span>
+      <section id="hanh-trinh" className={s.journey}>
+        <div data-reveal>
+          <p className={s.kicker}>HÀNH TRÌNH CÙNG MINDY</p>
+          <h2>
+            <span data-word>Một bước nhỏ.</span>
+            <br />
+            <span data-word>Một điều mới.</span>
+            <br />
+            <span data-word>Mỗi ngày.</span>
+          </h2>
+          <p className={s.description}>
+            Bạn không cần biết tất cả để bắt đầu. Chỉ cần một điểm xuất phát và sự tò mò.
+          </p>
         </div>
         <ol className={s.steps}>
           {steps.map((step, index) => (
-            <li key={step.title}>
-              <span className={s.stepIcon}>
-                <Icon name={step.icon} size={20} />
-              </span>
+            <li key={step.title} data-reveal>
+              <span className={s.stepNumber}>0{index + 1}</span>
               <div>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
               </div>
-              <span className={s.stepNumber}>0{index + 1}</span>
+              <Icon name={step.icon} size={22} />
             </li>
           ))}
         </ol>
       </section>
-      <section className={s.practice} aria-labelledby="practice-title">
-        <div className={s.practiceIntro}>
-          <span className={s.practiceIcon} aria-hidden="true">
-            {'{ }'}
-          </span>
-          <div>
-            <p className={s.eyebrow}>HỌC QUA TỪNG LẦN THỬ</p>
-            <h2 id="practice-title">Một ý tưởng nhỏ. Một dòng code đầu tiên.</h2>
-            <p>Thử JavaScript ngay trên trình duyệt, không cần cài đặt.</p>
-          </div>
+      <section className={s.practice} data-reveal>
+        <div>
+          <p className={s.kicker}>KHÔNG GIAN THỰC HÀNH</p>
+          <h2>
+            Thử ngay.
+            <br />
+            Hiểu thêm một chút.
+          </h2>
+          <p>
+            Đôi khi, cách tốt nhất để hiểu một điều là tự tay làm thử. Mở trình soạn thảo và viết
+            dòng code của bạn.
+          </p>
+          <Link href="/compiler" className={s.primary}>
+            Mở không gian code{' '}
+            <span>
+              <Icon name="arrow" />
+            </span>
+          </Link>
         </div>
         <div className={s.codeWindow}>
-          <div className={s.windowBar}>
-            <span>
-              <i />
-              <i />
-              <i />
-            </span>
-            <span>hello-mindy.js</span>
-            <span>JavaScript</span>
+          <div className={s.codeBar}>
+            <span />
+            <span />
+            <span />
+            <p>hello-mindy.js</p>
           </div>
           <pre>
             <code>
-              <span className={s.comment}>{'// Bắt đầu với một lời chào.'}</span>
-              {'\n'}
-              <span className={s.keyword}>const</span>
-              {' message = '}
-              <span className={s.string}>&apos;Xin chào, Mindy!&apos;</span>
-              {';\nconsole.log(message);'}
+              <span className={s.codeComment}>{'// Mọi hành trình đều có dòng đầu tiên.'}</span>
+              {'\n\n'}
+              <span className={s.codeKeyword}>const</span>
+              {' hello = "Xin chào, Mindy!";\n\nconsole.log(hello);'}
             </code>
           </pre>
-          <div className={s.output}>
-            <span>Kết quả minh họa</span>
-            <code>Xin chào, Mindy!</code>
-            <Icon name="check" size={16} />
+          <div className={s.codeOutput}>
+            <small>Kết quả minh họa</small>
+            <p>Xin chào, Mindy!</p>
+            <Icon name="check" size={17} />
           </div>
         </div>
-        <Link className={s.practiceLink} href="/compiler">
-          Mở góc thực hành
-          <Icon name="arrow" size={17} />
-        </Link>
       </section>
-      <section className={s.closing} aria-labelledby="closing-title">
+      <section className={s.closing} data-reveal>
         <div>
-          <span className={s.eyebrow}>CHƯƠNG TIẾP THEO CỦA BẠN</span>
-          <h2 id="closing-title">
-            Một bước nhỏ hôm nay.
+          <p className={s.kicker}>HẸN GẶP BẠN Ở DÒNG CODE ĐẦU TIÊN</p>
+          <h2>
+            Sẵn sàng học
             <br />
-            Một chân trời mới ngày mai.
+            một điều mới?
           </h2>
         </div>
-        <Link className="button button-primary" href="/register">
-          Bắt đầu cùng Mindy
-          <Icon name="arrow" size={17} />
+        <Link href="/register" className={s.primary}>
+          Bắt đầu cùng Mindy{' '}
+          <span>
+            <Icon name="arrow" />
+          </span>
         </Link>
-        <span className={s.closingDecoration} aria-hidden="true">
-          ✳
-        </span>
       </section>
     </div>
   );

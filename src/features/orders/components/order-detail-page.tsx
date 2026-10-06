@@ -88,7 +88,7 @@ function OrderDetailContent({ id }: { id: string }) {
     <div className={styles.page}>
       <header className={styles.heading}>
         <div>
-          <p className={styles.eyebrow}>THE MINDY JOURNAL / ĐƠN ĐĂNG KÝ</p>
+          <p className={styles.eyebrow}>ĐƠN ĐĂNG KÝ</p>
           <h1>Chi tiết đơn của bạn.</h1>
         </div>
         <Link className={styles.textLink} href="/orders">

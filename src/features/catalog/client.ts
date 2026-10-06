@@ -3,6 +3,7 @@ export { CategoriesManagement } from './components/categories-management';
 export { CourseCreateForm } from './components/course-create-form';
 export { CourseDetailManagement } from './components/course-detail-management';
 export { CoursesManagement } from './components/courses-management';
+export { FeaturedCourses } from './components/featured-courses';
 export { PublicClassDetail } from './components/public-class-detail';
 export { PublicCourseDetail } from './components/public-course-detail';
 export { PublicCourseUnit } from './components/public-course-unit';

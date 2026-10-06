@@ -1,4 +1,4 @@
-> Cập nhật UI 05/10/2026: chuẩn Learnthru được định nghĩa tại [UI.md](../UI.md). Toàn bộ route sản phẩm dùng chung tokens Learnthru; admin dùng shell ba cột, public/auth/student giữ bố cục phù hợp từng luồng.
+> Cập nhật UI 06/10/2026: giao diện Mindy mới theo UI.md, bỏ UI Learnthru/Ocean cũ. Theme toàn dự án tại shared/config/theme.ts; giữ API và logic nghiệp vụ.
 
 # Frontend architecture
 
@@ -29,11 +29,13 @@ src/
     cart/               student cart and public class AddToCartButton
     orders/             checkout, own orders and unknown-result recovery
     compiler/           local JavaScript playground and separate runner adapter
-    ui-exploration/     archived Ocean Editorial preview, fixtures and local interactions
+    home/               landing content and scoped GSAP motion
+    payments/           PayOS API and reconciliation
+    learning/           private class viewer
   shared/
     api/contracts/      schema API dùng chung giữa auth và users
     components/         feedback, management primitives and UnitWorkspace
-    config/             typed server env
+    config/             typed server env and global Mindy theme
     lib/                HTTP và date formatting
     ui/                 icon, brand, avatar, role/status display
 tests/e2e/              user journeys với API mô phỏng
@@ -53,17 +55,14 @@ consumer auth/users và class picker. Shared management styles và UnitWorkspace
 có consumer catalog/classes.
 Component của một feature dùng ở nhiều route vẫn ở trong feature.
 
-UI Lab giữ mẫu Ocean Editorial (mẫu 07) trước đây, gồm Home/Courses/Cart/Login/Register/Admin. Product hiện dùng Learnthru theo UI.md.
-`/ui-lab` chuyển tới `/ui-lab/ocean-editorial/home`; các mẫu khác đã xóa và trả 404.
-Preview có CSS Module/tokens riêng, không bootstrap session hoặc gọi API nghiệp vụ;
-các route sản phẩm giữ feature hiện hành. Courses/Cart dùng fixture tại feature, provider chỉ giữ ID hợp lệ trong sessionStorage; không gọi API hoặc thực hiện thanh toán.
-[Hướng dẫn giao diện đã chọn](./ui-exploration/README.md).
-
-Product dùng Learnthru tokens tại app/globals.css: primary #8295c2, action
-#536f9f, ink #4b5668, border #dde3ec, input radius 10px, card radius 14px và
-Avenir Next font stack. LearnthruAdminShell phục vụ mọi route ADMIN với sidebar,
-workspace và profile thật. PublicShell và shell STUDENT giữ header/nav ngang;
-AuthPage giữ form/intro hai cột. Mobile dùng native dialog; preview giữ scope riêng.
+Thiết kế Mindy mới dùng Geist local cho nội dung, Nunito Variable local cho header public và theme typed tại shared/config/theme.ts.
+Root layout phát CSS variables; globals.css tạo màu dẫn xuất; CSS Modules chỉ dùng
+token. Logo và palette lấy từ docs, mascot phục vụ từ public/mindy.
+MindyAdminShell dùng sidebar + workspace, hồ sơ trong topbar. PublicShell và
+AppShell cho student giữ header/navigation; AuthPage dùng intro + form trong 100dvh, mobile ẩn intro, màn hình thấp dùng form hai cột. Form cuộn cục bộ khi lỗi hoặc bàn phím làm thiếu chiều cao, không tràn trang.
+HomeContent có GSAP scoped/reduced-motion, FeaturedCourses dùng GET /courses
+qua adapter catalog; app ghép hai feature bằng ReactNode, không thêm dependency
+chéo. UI preview cũ đã gỡ, các URL lịch sử redirect về /.
 
 Course management units và class units/sessions dùng shared UnitWorkspace:
 rail 300px và content minmax(0,1fr), mỗi vùng scroll riêng, chiều cao theo viewport
@@ -81,7 +80,7 @@ chứa secrets phải đánh dấu `server-only`. Không export chung server và
 
 ## Rendering và session
 
-- Landing render ở server; form và dashboard tương tác ở client.
+- Route landing compose ở server; HomeContent motion và FeaturedCourses tương tác ở client.
 - Các trang được bảo vệ chỉ lấy dữ liệu cá nhân sau khi bootstrap session hoàn tất.
 - Backend kiểm tra authentication, role và ownership trên mỗi endpoint. AuthBoundary
   chỉ điều khiển UX, không phải ranh giới bảo mật duy nhất.
@@ -89,7 +88,7 @@ chứa secrets phải đánh dấu `server-only`. Không export chung server và
 - Product cart/checkout/orders chỉ đọc sau session STUDENT hợp lệ; component dữ
   liệu private được key theo userId và hủy request khi unmount. Không giữ cart/order
   trong sessionStorage hoặc provider cache. Payload-free cart-change event yêu cầu
-  từng consumer đọc lại giỏ của phiên hiện hành. UI Lab giữ preview cart riêng.
+  từng consumer đọc lại giỏ của phiên hiện hành.
 - Browser giữ cookie HttpOnly do NestJS phát hành qua adapter cùng origin.
 - Access cookie `Path=/`; refresh cookie `Path=/api/v1/auth/refresh`.
 - Bootstrap gọi `/auth/me`; nếu 401 thì khôi phục phiên rồi đọc tiếp.

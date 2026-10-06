@@ -9,7 +9,7 @@ import { errorMessage } from '@/shared/lib/http/api-error';
 import { Brand } from '@/shared/ui/brand';
 import { Icon } from '@/shared/ui/icon';
 import { Avatar } from '@/shared/ui/user-display';
-import { LearnthruAdminShell } from './learnthru-admin-shell';
+import { MindyAdminShell } from './mindy-admin-shell';
 
 const managementLinks = [
   { href: '/management/users', label: 'Người dùng', icon: 'users' },
@@ -84,9 +84,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
   if (canManageUsers(user.role)) {
     return (
-      <LearnthruAdminShell user={user} navigation={navigation} error={error} current={current}>
+      <MindyAdminShell user={user} navigation={navigation} error={error} current={current}>
         {children}
-      </LearnthruAdminShell>
+      </MindyAdminShell>
     );
   }
   return (
@@ -105,9 +105,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
           <Brand />
         </div>
-        <span className="editorial-workspace">
-          KHÔNG GIAN MINDY / {current.toLocaleUpperCase('vi')}
-        </span>
+        <span className="editorial-workspace">Không gian học tập / {current}</span>
         <Link href="/account" className="topbar-user">
           <div>
             <strong>{user.displayName}</strong>
@@ -118,7 +116,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
       <div className="editorial-navigation">
         <nav aria-label="Điều hướng chính">{navigation()}</nav>
-        <span>{canManageUsers(user.role) ? 'OPERATIONS JOURNAL' : 'LEARNING JOURNAL'}</span>
       </div>
       {error && (
         <p className="inline-error editorial-shell-error" role="alert">

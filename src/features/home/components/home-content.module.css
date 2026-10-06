@@ -1,750 +1,557 @@
 .content {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  font-weight: 650;
-  color: #6b7d9c;
-  margin: 0 0 12px;
-}
-.welcome {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 210px;
-  gap: 20px;
-  align-items: center;
-  padding: 32px;
-  background: white;
-  border-radius: 14px;
-  animation: entrance 550ms both;
-}
-.welcome h1 {
-  font-size: clamp(24px, 2.25vw, 34px);
-  line-height: 1.3;
-  letter-spacing: -0.8px;
-  margin: 0 0 16px;
-}
-.welcome :where(h1) span {
-  color: #6e82b0;
-}
-.welcome :where(div) > p:not(:first-child) {
-  max-width: 440px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.8;
-  margin-bottom: 22px;
-}
-.welcomeArt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.books {
   width: 100%;
-  max-width: 340px;
-  animation: bookEntrance 750ms 120ms both;
-  transition: transform 200ms;
 }
-.welcome:hover .books {
-  transform: translateY(-5px);
+.content > :not(.hero),
+.heroInner {
+  width: min(1280px, calc(100% - 80px));
+  margin-left: auto;
+  margin-right: auto;
 }
-.welcomeArt span {
-  color: #8295c2;
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  margin-top: 8px;
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--mindy-primary);
+  margin-bottom: 75px;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/mindy/hero-clouds.webp") center / cover no-repeat;
+  mix-blend-mode: luminosity;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.heroInner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  min-height: 670px;
+  padding: 52px 0 90px;
+  gap: 20px;
+}
+.heroCopy {
+  position: relative;
+  z-index: 1;
+}
+.intro {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--mindy-muted);
+  margin: 0 0 28px;
+}
+.intro > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mindy-action);
+}
+.hero h1 {
+  font-size: clamp(44px, 4.55vw, 68px);
+  font-weight: 570;
+  letter-spacing: -3.5px;
+  line-height: 1.13;
+  margin: 0 0 26px;
+  max-width: 660px;
+}
+.description {
+  font-size: 17px;
+  color: var(--mindy-muted);
+  line-height: 1.8;
+  max-width: 450px;
+}
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  background: var(--mindy-action);
+  color: var(--mindy-white);
+  padding: 8px 8px 8px 22px;
+  border-radius: 16px;
+  min-height: 54px;
+  font-size: 14px;
+  font-weight: 550;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.primary > span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--mindy-white) 14%, transparent);
+}
+.primary:hover {
+  background: var(--mindy-action-hover);
+  transform: translateY(-2px);
+}
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 550;
+}
+.textLink:hover {
+  color: var(--mindy-secondary-dark);
+}
+.heroNote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--mindy-muted);
+  margin-top: 32px;
+}
+.visual {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+.mascot {
+  position: relative;
+  width: 114%;
+  max-width: 660px;
+  height: auto;
+  object-fit: contain;
+}
+.visualCaption {
+  position: absolute;
+  bottom: 5%;
+  left: 15%;
+  background: var(--mindy-white);
+  border-radius: 14px;
+  padding: 13px 19px;
+  font-size: 12px;
+  transform: rotate(-4deg);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--mindy-ink) 6%, transparent);
+}
+.section {
+  padding: 0 0 105px;
 }
 .sectionHeading {
   display: flex;
+  align-items: end;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 30px;
+  margin-bottom: 34px;
 }
-.sectionHeading h2 {
-  font-size: 17px;
-  letter-spacing: 0;
+.content h2 {
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 540;
+  line-height: 1.18;
+  letter-spacing: -1.8px;
   margin: 0;
-  line-height: 1.5;
 }
-.sectionHeading > span {
-  font-size: 11px;
-  color: var(--muted);
+.sectionHeading > p {
+  font-size: 14px;
+  color: var(--mindy-muted);
+  line-height: 1.8;
+  margin: 0 0 4px;
 }
-.shortcuts {
+.startSection {
+  font-family: var(--mindy-navigation-font);
+}
+.bento {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-auto-flow: dense;
   gap: 18px;
 }
-.shortcut {
+.bento > a {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
   position: relative;
-  padding: 22px;
-  border-radius: 12px;
-  color: white;
-  overflow: hidden;
-  min-height: 210px;
-  transition:
-    transform 180ms,
-    box-shadow 180ms;
-  animation: entrance 600ms 150ms both;
+  min-width: 0;
+  min-height: 334px;
+  padding: 30px;
+  border-radius: 26px;
+  transition: transform 0.25s;
 }
-.shortcut:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px #6b7d9c20;
+.bento > a:hover {
+  transform: translateY(-5px);
 }
-.blue {
-  background: linear-gradient(125deg, #3d609c, #5c7fb5);
+.mainCard {
+  background: var(--mindy-primary);
 }
-.lavender {
-  background: linear-gradient(125deg, #5c83b8, #9b8caf);
-  animation-delay: 230ms;
+.practiceCard {
+  background: color-mix(in srgb, var(--mindy-secondary) 55%, var(--mindy-white));
 }
-.pink {
-  background: linear-gradient(125deg, #a38ab0, #f48495);
-  animation-delay: 310ms;
+.accountCard {
+  background: var(--mindy-accent);
 }
-.shortcutIcon {
+.cardIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: #ffffff24;
-  margin-bottom: 22px;
+  background: color-mix(in srgb, var(--mindy-white) 60%, transparent);
+  margin-bottom: 24px;
 }
-.shortcut p {
-  font-size: 11px;
-  margin: 0 0 6px;
-}
-.shortcut h3 {
-  font-size: 17px;
-  line-height: 1.5;
-  margin: 0 0 22px;
-  font-weight: 600;
-}
-.shortcutLink {
+.bento h3 {
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
+  font-weight: 800;
+  margin: 0 0 14px;
   position: relative;
   z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
 }
-.cardCircle {
+.bento p {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.75;
+  max-width: 230px;
+  margin: 0 0 22px;
+  position: relative;
+  z-index: 1;
+  color: var(--mindy-muted);
+}
+.cardLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  margin-top: auto;
+  font-size: 16px;
+  font-weight: 800;
+  z-index: 1;
+}
+.codeGlyph {
   position: absolute;
-  width: 120px;
-  height: 120px;
-  border: 20px solid #ffffff0d;
-  border-radius: 50%;
-  right: -50px;
-  bottom: 25px;
+  right: 22px;
+  top: 95px;
+  font-size: 100px;
+  letter-spacing: -16px;
+  opacity: 0.17;
+  font-weight: 400;
+  transform: rotate(-13deg);
 }
 .journey {
-  background: white;
-  border-radius: 14px;
-  padding: 26px;
-  scroll-margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  padding: 12px 0 105px;
+  scroll-margin-top: 120px;
 }
-.journey .eyebrow {
-  margin-bottom: 6px;
-}
-.sectionHeading .smallBadge {
-  background: #f2f4f9;
-  border-radius: 20px;
-  padding: 6px 10px;
-  color: #657cac;
+.kicker {
   font-size: 10px;
-  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  margin: 0 0 24px;
+}
+.journey .description {
+  margin-top: 25px;
+  max-width: 370px;
+  font-size: 15px;
 }
 .steps {
+  list-style: none;
   padding: 0;
   margin: 0;
-  list-style: none;
 }
 .steps li {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 0;
-  border-top: 1px solid #edf0f5;
+  gap: 22px;
+  align-items: start;
+  border-bottom: 1px solid var(--mindy-line);
+  padding: 25px 0;
 }
-.stepIcon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 46px;
-  height: 46px;
-  background: #edf1f8;
-  color: #6e82b0;
-  border-radius: 14px;
-}
-.steps li:nth-child(2) .stepIcon {
-  background: #f0edf6;
-  color: #9280a4;
-}
-.steps li:nth-child(3) .stepIcon {
-  background: #f9edf1;
-  color: #bd7e98;
-}
-.steps :where(li) > div {
-  flex: 1;
-  min-width: 0;
-}
-.steps h3 {
-  font-size: 14px;
-  margin: 0 0 5px;
-  letter-spacing: 0;
-}
-.steps p {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
-  margin: 0;
+.steps li:first-child {
+  padding-top: 8px;
 }
 .stepNumber {
-  color: #a3afc4;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--mindy-muted);
+  margin-top: 5px;
+}
+.steps :where(li) > svg {
+  flex-shrink: 0;
+  margin: 4px 0 0 auto;
+}
+.steps h3 {
+  font-weight: 550;
+  font-size: 19px;
+  margin: 0 0 10px;
+  letter-spacing: -0.3px;
+}
+.steps p {
+  color: var(--mindy-muted);
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0;
+  max-width: 360px;
 }
 .practice {
-  background: white;
-  border-radius: 14px;
-  padding: 26px;
-}
-.practiceIntro {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 22px;
-}
-.practiceIcon {
   display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  background: #efedf6;
-  color: #9280a4;
-  font-family: ui-monospace, monospace;
-  font-size: 24px;
-  border-radius: 16px;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding: 54px;
+  border-radius: 32px;
+  background: var(--mindy-soft);
+  margin-bottom: 100px;
 }
-.practiceIntro .eyebrow {
-  margin-bottom: 6px;
-}
-.practiceIntro h2 {
-  font-size: 17px;
-  letter-spacing: 0;
-  margin: 0 0 6px;
-}
-.practiceIntro :where(div) > p:last-child {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0;
+.practice > div > p:not(.kicker) {
+  color: var(--mindy-muted);
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 370px;
+  margin: 22px 0 28px;
 }
 .codeWindow {
-  background: #f6f6fa;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
+  background: var(--mindy-white);
+  border: 1px solid var(--mindy-line);
+  border-radius: 20px;
+  min-width: 0;
+  transform: rotate(2deg);
+  box-shadow: 0 16px 30px color-mix(in srgb, var(--mindy-ink) 5%, transparent);
 }
-.windowBar {
+.codeBar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 10px;
+  gap: 6px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--mindy-line);
 }
-.windowBar > span:first-child {
-  display: flex;
-  gap: 5px;
-}
-.windowBar i {
-  width: 6px;
-  height: 6px;
-  background: #b8c2d7;
+.codeBar > span {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  background: var(--mindy-line);
 }
-.windowBar i:nth-child(2) {
-  background: #d2c4da;
-}
-.windowBar i:last-child {
-  background: #edb3c2;
+.codeBar > p {
+  font-size: 10px;
+  color: var(--mindy-muted);
+  margin: 0 0 0 auto;
 }
 .codeWindow pre {
-  font-size: 12px;
-  line-height: 2;
-  padding: 18px;
+  font-size: clamp(10px, 1vw, 13px);
+  line-height: 1.9;
+  padding: 26px 22px;
   margin: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  color: #4b608b;
 }
-.comment {
-  color: #747d8d;
+.codeComment {
+  color: var(--mindy-muted);
 }
-.keyword {
-  color: #9676a5;
+.codeKeyword {
+  color: var(--mindy-secondary-dark);
+  font-weight: 600;
 }
-.string {
-  color: #427b66;
+.codeOutput {
+  position: relative;
+  margin: 0 16px 16px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--mindy-success-soft);
+  font-size: 13px;
 }
-.output {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 14px 18px;
-  background: white;
-  border-top: 1px solid var(--border);
-}
-.output > span {
-  color: var(--muted);
+.codeOutput small {
+  color: var(--mindy-muted);
   font-size: 10px;
 }
-.output code {
-  font-size: 12px;
-  color: #4b608b;
+.codeOutput p {
+  margin: 8px 0 0;
 }
-.output svg {
-  margin-left: auto;
-  color: #427b66;
-}
-.practiceLink {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  min-height: 44px;
-  margin-top: 10px;
-  color: #536f9f;
-  font-size: 12px;
+.codeOutput svg {
+  position: absolute;
+  right: 18px;
+  bottom: 17px;
+  color: var(--mindy-success);
 }
 .closing {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  position: relative;
-  gap: 24px;
-  background: #e2e6f2;
-  padding: 28px;
-  border-radius: 14px;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 55px 64px;
+  margin-bottom: 80px;
+  border-radius: 32px;
+  background: color-mix(in srgb, var(--mindy-accent) 55%, var(--mindy-white));
 }
-.closing > div,
-.closing > a {
-  position: relative;
-  z-index: 1;
-}
-.closing h2 {
-  font-size: 22px;
-  line-height: 1.5;
-  margin: 10px 0 0;
-  letter-spacing: -0.4px;
-}
-.closingDecoration {
-  position: absolute;
-  right: 30px;
-  bottom: -35px;
-  font-size: 150px;
-  color: #cfd7ea;
-  line-height: 1;
-}
-.content a svg {
-  transition: transform 180ms;
-}
-.content a:hover svg {
-  transform: translateX(3px);
-}
-@keyframes entrance {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+@media (min-width: 1500px) {
+  .hero h1 {
+    font-size: 72px;
   }
 }
-@keyframes bookEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(12px) rotate(-5deg);
+@media (max-width: 1050px) {
+  .bento {
+    grid-template-columns: 1.3fr 1fr 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(0);
-  }
-}
-@media (max-width: 1280px) {
-  .welcome {
-    grid-template-columns: minmax(0, 1fr) 145px;
-    padding: 26px;
-  }
-  .shortcuts {
-    gap: 12px;
-  }
-  .shortcut {
-    padding: 18px 14px;
-  }
-  .shortcut h3 {
-    font-size: 15px;
-  }
-  .shortcut p {
-    font-size: 10px;
-  }
-  .sectionHeading > span:not(.smallBadge) {
-    display: none;
-  }
-  .closing {
-    flex-wrap: wrap;
-  }
-  .closing h2 {
-    font-size: 20px;
-  }
-}
-@media (max-width: 700px) {
-  .content {
-    gap: 22px;
-  }
-  .welcome {
+  .bento > a {
     padding: 24px;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
   }
-  .welcome h1 {
-    font-size: 28px;
+  .bento h3 {
+    font-size: 27px;
   }
-  .welcomeArt {
-    margin-top: 4px;
+  .codeGlyph {
+    font-size: 65px;
+    right: 25px;
   }
-  .books {
-    max-width: 180px;
+  .journey {
+    gap: 45px;
   }
-  .welcomeArt span {
-    margin-top: 0;
-  }
-  .shortcuts {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
-  }
-  .shortcut {
-    padding: 22px;
-    min-height: 180px;
-  }
-  .shortcut h3 {
-    font-size: 19px;
-  }
-  .shortcut p {
-    font-size: 12px;
-  }
-  .shortcutIcon {
-    margin-bottom: 14px;
-  }
-  .sectionHeading {
-    align-items: flex-start;
-  }
-  .sectionHeading h2 {
-    font-size: 16px;
-  }
-  .journey,
   .practice {
-    padding: 22px 18px;
+    padding: 38px;
+    gap: 28px;
   }
-  .journey .sectionHeading {
-    flex-direction: column;
+}
+@media (max-width: 800px) {
+  .content > :not(.hero),
+  .heroInner {
+    width: calc(100% - 40px);
   }
-  .steps li {
-    align-items: flex-start;
-    gap: 12px;
+  .hero {
+    margin-bottom: 55px;
   }
-  .stepIcon {
-    width: 38px;
-    height: 40px;
+  .heroInner {
+    grid-template-columns: 1fr;
+    padding: 45px 0 65px;
+    gap: 5px;
   }
-  .stepNumber {
-    font-size: 18px;
+  .hero h1 {
+    font-size: clamp(43px, 7.5vw, 60px);
+    letter-spacing: -2px;
   }
-  .practiceIntro {
-    align-items: flex-start;
-    gap: 12px;
+  .heroCopy {
+    max-width: 590px;
   }
-  .practiceIcon {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
+  .visual {
+    width: 100%;
+    max-width: 490px;
+    margin: 15px auto 0;
   }
-  .practiceIntro h2 {
-    font-size: 16px;
+  .mascot {
+    width: 100%;
   }
-  .codeWindow pre {
-    font-size: 11px;
-    padding: 16px 12px;
+  .heroNote {
+    margin-top: 22px;
   }
-  .windowBar {
-    padding: 12px;
-  }
-  .output {
-    padding: 12px;
-    gap: 8px;
-  }
-  .closing {
-    padding: 24px;
+  .heroActions {
     gap: 20px;
   }
-  .closing h2 {
-    font-size: 21px;
+  .section {
+    padding-bottom: 65px;
   }
-  .closingDecoration {
-    font-size: 120px;
+  .sectionHeading {
+    align-items: start;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .content h2 {
+    letter-spacing: -1px;
+  }
+  .bento {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bento > a {
+    min-height: 290px;
+  }
+  .mainCard {
+    grid-column: span 2;
+  }
+  .mainCard h3 {
+    font-size: 30px;
+  }
+  .codeGlyph {
+    font-size: 110px;
+    right: 55px;
+    top: 85px;
+  }
+  .journey {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding-bottom: 65px;
+  }
+  .journey .description {
+    max-width: 480px;
+  }
+  .practice {
+    grid-template-columns: 1fr;
+    padding: 28px;
+    gap: 35px;
+    margin-bottom: 65px;
+  }
+  .codeWindow {
+    transform: none;
+  }
+  .codeWindow pre {
+    font-size: 12px;
+  }
+  .closing {
+    padding: 32px;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 55px;
+  }
+  .kicker {
+    font-size: 9px;
+    letter-spacing: 1px;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .content *,
-  .content *::before,
-  .content *::after {
-    animation: none;
-    transition: none;
+@media (max-width: 420px) {
+  .bento {
+    grid-template-columns: 1fr;
+  }
+  .mainCard {
+    grid-column: auto;
+  }
+  .bento > a {
+    min-height: 270px;
+  }
+  .codeGlyph {
+    font-size: 80px;
+    right: 35px;
+  }
+  .bento h3 {
+    font-size: 28px;
+  }
+  .heroActions {
+    gap: 18px;
+  }
+  .heroNote {
+    font-size: 10px;
+  }
+  .intro {
+    font-size: 11px;
+  }
+  .description {
+    font-size: 15px;
+  }
+  .practice {
+    padding: 24px;
+  }
+  .steps li {
+    gap: 14px;
   }
 }
 
-/* Public landing layout uses Learnthru components at a more spacious scale. */
-.content {
-  gap: 60px;
+.startSection h2 {
+  font-weight: 750;
+  letter-spacing: -1px;
 }
-.welcome {
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 48px;
-  padding: 56px;
-  background: white;
-  min-height: 480px;
-}
-.welcome h1 {
-  font-size: clamp(36px, 4.2vw, 58px);
-  line-height: 1.14;
-  letter-spacing: -1.6px;
-  margin-bottom: 24px;
-}
-.welcome :where(div) > p:not(:first-child) {
+.startSection .sectionHeading > p {
   font-size: 16px;
-  line-height: 1.9;
-  max-width: 520px;
-  margin-bottom: 28px;
-}
-.welcomeArt {
-  position: relative;
-  background: #f2f4f9;
-  border-radius: 50%;
-  aspect-ratio: 1;
-  justify-content: center;
-  padding: 20px;
-}
-.welcomeArt span {
-  font-size: 9px;
-  letter-spacing: 1.4px;
-}
-.sectionHeading {
-  margin-bottom: 24px;
-}
-.sectionHeading h2 {
-  font-size: 28px;
-  letter-spacing: -0.5px;
-}
-.sectionHeading > span {
-  font-size: 12px;
-}
-.shortcuts {
-  gap: 24px;
-}
-.shortcut {
-  padding: 30px;
-  min-height: 245px;
-}
-.shortcut h3 {
-  font-size: 22px;
-  margin-bottom: 28px;
-}
-.shortcut p {
-  font-size: 13px;
-}
-.shortcutLink {
-  font-size: 13px;
-}
-.shortcutIcon {
-  width: 52px;
-  height: 52px;
-  margin-bottom: 24px;
-}
-.journey {
-  padding: 36px;
-}
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-}
-.steps li {
-  flex-wrap: wrap;
-  position: relative;
-  padding: 24px 0 4px;
-  gap: 18px;
-}
-.steps :where(li) > div {
-  flex: 0 0 100%;
-}
-.steps h3 {
-  font-size: 17px;
-  margin-bottom: 10px;
-}
-.steps p {
-  font-size: 13px;
-}
-.stepNumber {
-  position: absolute;
-  right: 0;
-  top: 27px;
-  font-size: 28px;
-}
-.practice {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
-  gap: 24px 48px;
-  padding: 36px;
-  align-items: center;
-}
-.practiceIntro {
-  align-items: flex-start;
-  margin: 0;
-}
-.practiceIntro h2 {
-  font-size: 28px;
-  line-height: 1.3;
-  letter-spacing: -0.5px;
-  margin-bottom: 16px;
-}
-.practiceIntro :where(div) > p:last-child {
-  font-size: 14px;
-  line-height: 1.8;
-}
-.codeWindow {
-  grid-column: 2;
-  grid-row: 1 / 3;
-}
-.codeWindow pre {
-  padding: 24px;
-  font-size: 13px;
-}
-.practiceLink {
-  grid-column: 1;
-  justify-content: flex-start;
-  margin: 0;
-}
-.closing {
-  padding: 40px;
-}
-.closing h2 {
-  font-size: 30px;
-  line-height: 1.35;
-}
-@media (max-width: 1000px) {
-  .welcome {
-    padding: 36px;
-    gap: 28px;
-    min-height: 400px;
-  }
-  .welcome h1 {
-    font-size: 42px;
-  }
-  .shortcut {
-    padding: 24px 20px;
-  }
-  .shortcut h3 {
-    font-size: 19px;
-  }
-  .practice {
-    gap: 24px;
-  }
-  .practiceIntro {
-    flex-direction: column;
-  }
-  .practiceIntro h2 {
-    font-size: 24px;
-  }
-}
-@media (max-width: 700px) {
-  .content {
-    gap: 36px;
-  }
-  .welcome {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 28px 24px;
-    gap: 28px;
-    min-height: 0;
-  }
-  .welcome h1 {
-    font-size: 36px;
-    letter-spacing: -1px;
-  }
-  .welcome :where(div) > p:not(:first-child) {
-    font-size: 14px;
-  }
-  .welcomeArt {
-    width: min(260px, 100%);
-    margin: 0 auto;
-  }
-  .books {
-    max-width: 240px;
-  }
-  .sectionHeading h2 {
-    font-size: 24px;
-  }
-  .shortcuts {
-    gap: 16px;
-  }
-  .shortcut {
-    padding: 26px;
-    min-height: 220px;
-  }
-  .shortcut h3 {
-    font-size: 22px;
-  }
-  .journey {
-    padding: 26px 22px;
-  }
-  .steps {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-  }
-  .steps li {
-    padding-top: 20px;
-  }
-  .stepNumber {
-    top: 23px;
-  }
-  .practice {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 26px 22px;
-    gap: 24px;
-  }
-  .practiceIntro h2 {
-    font-size: 24px;
-  }
-  .codeWindow pre {
-    font-size: 11px;
-    padding: 18px 12px;
-  }
-  .closing {
-    padding: 28px 24px;
-  }
-  .closing h2 {
-    font-size: 26px;
-  }
+  font-weight: 500;
 }

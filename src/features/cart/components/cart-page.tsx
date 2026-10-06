@@ -105,10 +105,6 @@ function StudentCart() {
   const unavailable = cart?.items.some((item) => !item.isPurchasable) ?? false;
   return (
     <section className={styles.page}>
-      <div className={styles.masthead}>
-        <span>THE MINDY JOURNAL / GIỎ HÀNG</span>
-        <span>MỘT KHỞI ĐẦU MỚI</span>
-      </div>
       <div className={styles.heading}>
         <div>
           <p className="eyebrow">HÀNH TRÌNH BẠN ĐÃ CHỌN</p>

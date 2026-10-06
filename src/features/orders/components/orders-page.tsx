@@ -60,7 +60,7 @@ function OrdersContent() {
     <div className={styles.page}>
       <header className={styles.heading}>
         <div>
-          <p className={styles.eyebrow}>THE MINDY JOURNAL / ĐƠN CỦA TÔI</p>
+          <p className={styles.eyebrow}>ĐƠN CỦA TÔI</p>
           <h1>Những bước đã chọn.</h1>
           <p className="muted">Các đơn đăng ký thuộc tài khoản của bạn.</p>
         </div>
