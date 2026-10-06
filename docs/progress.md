@@ -5,6 +5,11 @@
 Baseline tích hợp: BE `Feat/Webhooktest` tại `5c9e581`, đã merge vào `dev`.
 Các mục bên dưới là trạng thái hiện hành; nhật ký ngày cũ giữ nguyên để truy vết.
 
+Audit source ngày 06/10/2026: BE checkout hiện tại đã lên `01fc1eb`;
+FE `460b8d6` chưa nối bốn endpoint mới cho result mapping và CASH.
+Xem [API audit và logic flow bàn giao UI mới](./logic-flow.md) để phân biệt
+integration hiện có, phần chờ FE và backlog BE.
+
 | Nhóm chức năng | Tiến độ FE |
 | --- | --- |
 | Tài khoản và users | Đã tích hợp password, đăng ký/xác thực email, Google onboarding, session và quản trị users; Google/provider email thật còn cần xác minh |
@@ -23,12 +28,28 @@ BE payment HTTP E2E 3/3 pass; smoke FE → BFF → BE dùng cookie thật, Postg
 riêng và provider giả đã xác minh signed settlement, PAID/ACTIVE và private access.
 Chưa nghiệm thu PayOS/provider email thật hoặc deploy trong đợt tích hợp này.
 
-**Còn chờ BE:** mapping return/cancel cho `/payment/result`, mentor xác nhận CASH,
-cash pending preview, danh sách enrollment/lớp đã đăng ký và API đọc/cập nhật progress.
+**Còn chờ FE, BE đã có:** mapping return/cancel cho `/payment/result`, mentor
+cash-order list/confirmation và cash pending preview. Cần đồng bộ
+`providerOrderCode`, safe return paths cho learning/reconciliation và copy CASH.
+**Còn chờ BE:** danh sách enrollment/lớp đã đăng ký và API đọc/cập nhật progress.
 Materials, attendance, assignments, chat, notifications và dashboard là các phase sau.
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
 
 [Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-06 — API audit và logic flow cho UI rewrite
+
+- Đối chiếu FE `feat/ui-exploration-blue-white` / `460b8d6` với BE
+  `Feat/Webhooktest` / `01fc1eb`: 55 endpoint BE, 49 endpoint được FE adapter
+  hỗ trợ; 4 endpoint UI mới chưa gắn, 2 endpoint hạ tầng không proxy.
+- Thêm [docs/logic-flow.md](./logic-flow.md): route/API/role matrix, auth,
+  discovery/cart/checkout/payment/learning/admin flows, contract drift và checklist
+  bàn giao branch UI mới. Chưa thay đổi runtime/UI, tạo branch hoặc sửa BE.
+- Kiểm chứng: 134 unit tests / 24 files pass, TypeScript và module boundaries pass.
+  Lint mặc định fail 242 lỗi formatter CRLF/LF của checkout hiện tại; Biome check
+  khi tắt formatter pass. Không normalize source hoặc sửa package-lock untracked.
+- Chưa chạy lại production build, browser E2E hoặc live Google/PayOS/SMTP trong
+  audit này. Bằng chứng provider/fixture của các đợt trước vẫn là lịch sử riêng.
 
 ## 2026-10-06 — Phase 2.2 FE integration with BE 5c9e581
 

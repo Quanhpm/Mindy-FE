@@ -1,5 +1,13 @@
 # API contract — NestJS Feat/Webhooktest / 5c9e581
 
+> Snapshot integration FE tại `5c9e581`. Audit 06/10/2026 xác minh BE hiện tại
+> là `01fc1eb`: đã có `GET /me/orders/payment-result`, `GET /mentor/cash-orders`,
+> `POST /mentor/cash-orders/:orderId/confirm`, `GET /me/classes/:classId/preview`
+> và `Payment.providerOrderCode: number|null`; FE chưa tích hợp các phần mới này.
+> Các ghi chú “chờ BE” về result mapping/CASH phía dưới thuộc snapshot cũ.
+> Contract mới và logic bàn giao: [logic-flow.md](./logic-flow.md),
+> [BE Phase 2 contract](../../Mindy-BE/docs/PHASE_2_FE_CONTRACT.md).
+
 Đối chiếu controller/DTO/guard/service checkout `../Mindy-BE` ngày 2026-10-05,
 HEAD `5c9e581`; nhánh dev đã merge bản này.
 Tất cả path bên dưới được thêm prefix `/api/v1`. Schemas FE kiểm tra runtime;
@@ -228,7 +236,7 @@ và phần chưa xác minh tại [full audit](./implement_phase/FULL_AUDIT_2026_
 Checkout tạo PENDING/PENDING_PAYMENT; PayOS settlement và ACTIVE class access đã có.
 Progress APIs, cash confirmation và preview vẫn chưa có. Không đánh dấu toàn Phase2 complete. Không sửa nghiệp vụ/migration
 BE hoặc chạy destructive integration suite trên application DB. Xem
-[bảng API backend](../../Mindy-BE/docs/FRONTEND_API_PAGE_MAP.md).
+[contract Phase 2 backend](../../Mindy-BE/docs/PHASE_2_FE_CONTRACT.md).
 
 ## Payment, student private class và reconciliation — Phase 2.2
 
