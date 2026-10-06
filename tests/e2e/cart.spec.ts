@@ -279,6 +279,7 @@ test('account switch clears private cart and logout leaves no previous cart in U
   });
   await expect(page.getByRole('region', { name: 'Giỏ hàng trống', exact: true })).toBeVisible();
   await expect(page.getByRole('article', { name: 'Lớp Web tối', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await expect(page.getByRole('article', { name: 'Lớp Web tối', exact: true })).toHaveCount(0);

@@ -30,13 +30,13 @@
   align-items: center;
   min-height: 44px;
   padding: 10px 20px;
-  font-size: 13px;
+  font-size: 15px;
   border-radius: 11px;
 }
 .tabs a[aria-current="page"] {
   background: var(--soft);
   color: var(--action);
-  font-weight: 550;
+  font-weight: 700;
 }
 .units {
   list-style: none;
@@ -53,14 +53,14 @@
   color: var(--ink);
   overflow-wrap: anywhere;
   border-radius: 13px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .unit a:hover {
   background: var(--soft);
 }
 .unit a[aria-current="true"] {
   background: var(--soft);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--action);
 }
 .unit a small {
@@ -87,7 +87,7 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   line-height: 1.85;
-  font-size: 14px;
+  font-size: 16px;
 }
 .metadata {
   display: flex;
@@ -95,7 +95,7 @@
   gap: 12px 26px;
   margin: 16px 0 28px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 @media (max-width: 600px) {
   .grid {

@@ -85,6 +85,7 @@ test('login, filter, create, suspend and logout through the UI', async ({ page }
   await expect(
     page.getByRole('button', { name: 'Kích hoạt tài khoản', exact: true }),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
 });
@@ -99,7 +100,10 @@ test('student cannot open management, and mobile navigation works', async ({ pag
   await expect(page.getByRole('heading', { name: 'Tài khoản của tôi' })).toBeVisible();
   await page.goto('/management/users');
   await expect(page.getByRole('heading', { name: 'Bạn chưa có quyền truy cập' })).toBeVisible();
-  await page.getByRole('button', { name: 'Mở menu' }).click();
+  await page.getByRole('button', { name: 'Mở menu', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Menu Mindy' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await expect(page.getByRole('button', { name: 'Đăng xuất', exact: true })).toBeVisible();
 });
 

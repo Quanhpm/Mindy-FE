@@ -1,4 +1,5 @@
 export { listActiveAdminCourses, listAdminCourses } from './api/catalog.browser';
+export { CashClassPreview } from './components/cash-class-preview';
 export { CategoriesManagement } from './components/categories-management';
 export { CourseCreateForm } from './components/course-create-form';
 export { CourseDetailManagement } from './components/course-detail-management';

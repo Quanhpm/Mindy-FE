@@ -4,6 +4,7 @@ export const paymentStatuses = ['CREATING', 'PENDING', 'SUCCEEDED', 'REQUIRES_RE
 export const paymentSchema = z.object({
   paymentId: z.uuid(),
   orderId: z.uuid(),
+  providerOrderCode: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable(),
   status: z.enum(paymentStatuses),
   checkoutUrl: z
     .url()

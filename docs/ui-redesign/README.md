@@ -9,15 +9,27 @@ Quy tắc chi tiết ở [UI.md](../../UI.md), logic và API ở [logic-flow.md]
 Mở [theme.ts](../../src/shared/config/theme.ts), đổi `mindyTheme.palette`:
 
 ```ts
-palette: 'lavender' as 'sky' | 'lavender',
+palette: 'coastal' as 'sky' | 'lavender' | 'coastal',
 ```
 
-Hoặc sửa màu trong `palettes.sky` / `palettes.lavender` và `semantic`.
+Mặc định hiện tại là palette 3 (`docs/pallete3.png`). Hoặc sửa màu trong
+`palettes.sky` / `palettes.lavender` / `palettes.coastal` và `semantic`.
 Root layout phát biến CSS; mọi shell, button, panel, form, badge và focus kế thừa.
 Màu logo/mascot raster và ảnh khóa học giữ nguyên. Logo dùng nguyên bản docs/logo.jpg;
 palette lấy từ docs/Pallate2.png và docs/pallete1.png. Font Geist Sans cho nội dung,
 Nunito Variable đậm cho header public được đóng gói local. Header toàn chiều rộng,
 không có card bọc bo tròn.
+
+Các trang bên trong dùng Nunito, sidebar trái theo role và dropdown profile.
+API bổ sung theo [Swagger live](https://api.quanh123.id.vn/docs#/): result mapping,
+mentor CASH list/confirm, student CASH preview. QR từ payload BE được render
+thành SVG ngay trong trang bằng react-qr-code, không dùng dịch vụ QR bên ngoài.
+
+Ảnh kiểm tra dùng fixture: [Dropdown](./screenshots/profile-dropdown-desktop.png),
+[Thu tiền mặt](./screenshots/mentor-cash-desktop.png),
+[Xem trước lớp](./screenshots/cash-preview-desktop.png),
+[QR desktop](./screenshots/payment-qr-desktop.png),
+[QR mobile](./screenshots/payment-qr-mobile.png).
 
 ## Xem giao diện
 

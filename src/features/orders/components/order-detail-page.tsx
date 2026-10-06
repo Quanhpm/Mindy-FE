@@ -132,9 +132,7 @@ function OrderDetailContent({ id }: { id: string }) {
                   )}
                   <p>Tạo đơn chưa hoàn tất thanh toán và chưa cấp quyền học.</p>
                   {order.paymentType === 'CASH' && (
-                    <p>
-                      Đơn tiền mặt đang chờ thu tiền. Hệ thống chưa có thao tác xác nhận tiền mặt.
-                    </p>
+                    <p>Đơn tiền mặt đang chờ mentor được giao thu tiền xác nhận đã nhận đủ tiền.</p>
                   )}
                   <p className="small">
                     Đồng hồ chỉ tham khảo. Hệ thống quyết định trạng thái và thời điểm giải phóng
@@ -150,6 +148,21 @@ function OrderDetailContent({ id }: { id: string }) {
                   fresh={!error}
                   onRefresh={refresh}
                 />
+              )}
+              {order.paymentType === 'CASH' && payable && !error && (
+                <section className={styles.notice} aria-label="Xem trước lớp giữ chỗ">
+                  <h2>Xem lịch trước khi bắt đầu</h2>
+                  <p>Trong thời gian giữ chỗ, bạn có thể xem học phần, lịch và phòng học.</p>
+                  <ul>
+                    {order.details.map((detail) => (
+                      <li key={detail.id}>
+                        <Link href={`/learning/classes/${detail.classId}/preview`}>
+                          Xem trước lớp {detail.className}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               )}
               {order.status === 'PAID' && (
                 <section className={styles.notice} aria-label="Vào lớp học">

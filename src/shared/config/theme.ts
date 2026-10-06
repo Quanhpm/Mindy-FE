@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 
 /** Edit this config to recolor every route. Swatches are sampled from docs. */
 export const mindyTheme = {
-  palette: 'sky' as 'sky' | 'lavender',
+  palette: 'coastal' as 'sky' | 'lavender' | 'coastal',
   palettes: {
     sky: {
       canvas: '#fbfbfb',
@@ -19,6 +19,14 @@ export const mindyTheme = {
       accent: '#ffddae',
       ink: '#2d336b',
       action: '#2d336b',
+    },
+    coastal: {
+      canvas: '#f7f8f0',
+      primary: '#9cd5ff',
+      secondary: '#7aaace',
+      accent: '#7aaace',
+      ink: '#355872',
+      action: '#355872',
     },
   },
   semantic: {

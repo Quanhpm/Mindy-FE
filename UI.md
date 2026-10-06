@@ -4,10 +4,11 @@ Theo yêu cầu ngày 06/10/2026, thay toàn bộ UI Learnthru/Ocean cũ, giữ 
 
 ## Thương hiệu và màu toàn dự án
 
-Nguồn duy nhất cho màu: `src/shared/config/theme.ts`. Đổi `mindyTheme.palette` từ `sky` sang `lavender`, hoặc sửa các giá trị trong palette đang chọn. Root layout đưa config lên html thành CSS variables; tất cả shell, component, trạng thái và focus dùng các biến này. Không hardcode màu trong stylesheet.
+Nguồn duy nhất cho màu: `src/shared/config/theme.ts`. Mặc định `coastal` (palette 3); có thể chọn `sky` hoặc `lavender`, hoặc sửa palette đang chọn. Root layout đưa config lên html thành CSS variables; tất cả shell, component, trạng thái và focus dùng các biến này. Không hardcode màu trong stylesheet.
 
 - Sky: palette docs/Pallate2.png — #c6e7ff, #d4f6ff, #fbfbfb, #ffddae.
 - Lavender: docs/pallete1.png — #fff2f2, #a9b5df, #7886c7, #2d336b.
+- Coastal (đang dùng): docs/pallete3.png — #355872, #7aaace, #9cd5ff, #f7f8f0.
 - Ink/action mặc định #2d336b để chữ và CTA có độ tương phản.
 - Các màu trạng thái nằm trong cùng config, đi kèm chữ/icon.
 - Logo nguyên bản docs/logo.jpg, được phục vụ từ public/brand/mindy-logo.jpg. Không thay bằng logo tự vẽ.
@@ -26,8 +27,8 @@ Vùng homepage “Có nhiều cách để bắt đầu” dùng Nunito giống h
 - Homepage: header trắng toàn chiều rộng, không card bọc bo tròn, dải màu thương hiệu phía dưới; hero phủ nền trời pastel với mây nhẹ tại public/mindy/hero-clouds.webp, mascot không còn khối nền riêng. Nền dùng luminosity blend trên --mindy-primary để đổi palette đồng bộ. Bento 2+1+1, khóa học thật qua API, hành trình, góc code, CTA và footer. GSAP scoped, cleanup khi đổi route, reduced-motion và không pin/che nội dung form.
 - Auth: layout 100dvh, panel pastel có mascot và form độc lập; mobile ẩn panel, ưu tiên form. Màn hình thấp dùng form hai cột để login/đăng ký mặc định vừa viewport, không cuộn trang. Khi validation hoặc bàn phím làm thiếu chiều cao, chỉ vùng form cuộn để mọi trường và lỗi vẫn truy cập được.
 - Public catalog: header trắng toàn chiều rộng cùng homepage, giới thiệu, bộ lọc và card khóa học; không sidebar.
-- Student: header và navigation theo vai trò; giỏ/checkout có summary; đơn hàng, tài khoản, học tập dùng panel đọc rõ.
-- Admin: MindyAdminShell hai cột sidebar + workspace, hồ sơ thật trong topbar; bỏ cột hồ sơ/fixture cũ.
+- Student và Mentor: sidebar theo vai trò bên trái, profile dropdown ở topbar; Nunito 15–16px, tiêu đề đậm, giảm card lồng nhau. Giỏ/checkout có summary, đơn hàng có QR thanh toán ngay trong trang; mentor có danh sách thu tiền mặt, student có xem trước lớp đang giữ chỗ.
+- Admin: MindyAdminShell hai cột sidebar + workspace, profile dropdown trong topbar; bảng/form tăng cỡ chữ, giữ thao tác, bộ lọc và URL selection. Mobile dùng sidebar drawer.
 - UnitWorkspace: rail và nội dung cuộn độc lập, thu rail thành native dialog khi viewport ≤850px hoặc workspace ≤640px.
 - Mobile lề 20px, layout một cột; bảng chỉ cuộn trong vùng riêng. Không ẩn overflow toàn trang để che lỗi bố cục.
 

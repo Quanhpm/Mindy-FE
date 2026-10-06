@@ -15,6 +15,13 @@ const rules: readonly [string, RegExp][] = [
   ['POST', /^me\/cart\/(items|checkout)$/],
   ['DELETE', /^me\/cart\/items\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/i],
   ['GET', /^me\/orders$/],
+  ['GET', /^me\/orders\/payment-result$/],
+  ['GET', /^mentor\/cash-orders$/],
+  [
+    'POST',
+    /^mentor\/cash-orders\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}\/confirm$/i,
+  ],
+  ['GET', /^me\/classes\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}\/preview$/i],
   [
     'POST',
     /^me\/orders\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}\/payments\/payos$/i,

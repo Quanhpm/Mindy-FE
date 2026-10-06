@@ -1,5 +1,31 @@
 # Mindy FE — API audit và logic flow cho lần làm lại UI
 
+## Cập nhật hiện hành — 06/10/2026
+
+Chuẩn API hiện tại là [Swagger live](https://api.quanh123.id.vn/docs#/) và
+[snapshot JSON](./swagger-live-2026-10-06.json). Đã nối toàn bộ **53 endpoint nghiệp vụ**
+trong 55 endpoint Swagger, gồm hai Google adapters riêng. Readiness và webhook PayOS
+thuộc hạ tầng/provider và không đưa qua FE.
+
+| Route mới | Quyền | API và logic |
+| --- | --- | --- |
+| /payment/result?orderCode=... | STUDENT owner | GET /me/orders/payment-result; validate mã PayOS decimal/safe integer, chỉ gửi orderCode, kiểm tra payment/order matching rồi mở /orders/:id. Không tin cancel/status trên URL. |
+| /mentor/cash-orders?page=... | MENTOR | GET /mentor/cash-orders; danh sách theo mentor snapshot. POST /mentor/cash-orders/:id/confirm chỉ gửi receivedAmount bằng tổng đơn, sau khi người dùng nhập số tiền thực nhận. Không replay khi mất response; đọc danh sách rồi mới cho thử lại. |
+| /learning/classes/:classId/preview?unitId=... | STUDENT CASH pending | GET /me/classes/:id/preview; học phần, lịch, phòng; schema strip meeting URLs. Hold hết hạn/bị hủy thì BE từ chối; PAID mở route learning đầy đủ từ đơn. |
+
+Payment schema giữ providerOrderCode number|null theo Swagger. PaymentPanel encode
+chuỗi qrCode bằng react-qr-code ngay trong Mindy, giữ quiet zone và màu tương phản.
+QR chỉ hiển thị khi pending/còn hạn/dữ liệu đọc hợp lệ, ẩn khi mất freshness hoặc
+đã thanh toán; QR null vẫn dùng checkoutUrl. Không tạo QR từ checkoutUrl thay payload.
+Safe return paths hỗ trợ result, mentor, preview, learning và reconciliation,
+được dùng chung cho password và Google login.
+
+UI hiện hành: palette 3 từ docs/pallete3.png, Nunito trên các trang bên trong,
+sidebar theo role bên trái, dropdown profile ở topbar; mobile sidebar native dialog.
+Danh sách enrollment/progress vẫn chờ BE, không suy ra từ orders.
+
+## Audit ban đầu trước khi triển khai (lịch sử)
+
 Ngày kiểm tra: **06/10/2026**. Tài liệu mô tả source tại checkout hiện tại, dùng để bàn giao sang branch UI mới.
 
 | Repo | Branch kiểm tra | HEAD |

@@ -183,6 +183,7 @@ test('public class → login return → cart → checkout → own order, then cl
     { path: '/me/cart/items', body: { classId: classItem.id } },
     { path: '/me/cart/checkout', body: { paymentType: 'CASH' } },
   ]);
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel('Email', { exact: true }).fill('second@example.com');

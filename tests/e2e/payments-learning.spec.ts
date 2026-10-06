@@ -20,6 +20,7 @@ const student = {
 const payment: Payment = {
   paymentId,
   orderId,
+  providerOrderCode: 123456,
   status: 'PENDING',
   checkoutUrl: 'https://pay.payos.vn/web/fixture',
   qrCode: null,
@@ -387,6 +388,7 @@ test('account switch discards authorized private content; logout removes private
   await page.evaluate(() => window.dispatchEvent(new Event('focus')));
   await expect(page.getByText(/Bạn chưa có quyền truy cập lớp này/)).toBeVisible();
   await expect(page.getByRole('link', { name: 'Mở phòng học buổi 1' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).first().click();
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole('link', { name: /Mở phòng học/ })).toHaveCount(0);

@@ -9,6 +9,7 @@ const id = '123e4567-e89b-42d3-a456-426614174000';
 const payment = {
   paymentId: id,
   orderId: id,
+  providerOrderCode: 123456,
   status: 'PENDING',
   amount: 5000,
   expiresAt: '2026-11-01T00:00:00Z',

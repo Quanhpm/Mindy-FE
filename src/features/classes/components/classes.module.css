@@ -16,13 +16,13 @@
 }
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 .meta {
   display: flex;
   gap: 12px 24px;
   flex-wrap: wrap;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin: 0 0 24px;
 }
@@ -41,7 +41,7 @@
   color: var(--text);
   overflow-wrap: anywhere;
   border-radius: 13px;
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 5px;
 }
 .unitLink:hover {
@@ -49,7 +49,7 @@
 }
 .unitLink[aria-current="page"] {
   background: var(--soft);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--action);
 }
 .unitLink small {
@@ -71,7 +71,7 @@
 }
 .session p {
   margin: 6px 0;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
 }
 .confirm {
@@ -85,7 +85,7 @@
   padding: 20px 24px;
   background: var(--soft);
   border-radius: 17px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .summary {
   margin-bottom: 24px;
@@ -104,10 +104,10 @@
 .settings summary {
   min-height: 44px;
   padding: 10px 0;
-  font-weight: 550;
+  font-weight: 700;
   color: var(--action);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15px;
 }
 .settingsContent {
   padding: 20px 0;

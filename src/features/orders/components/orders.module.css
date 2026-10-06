@@ -14,14 +14,14 @@
   font-size: clamp(30px, 3.2vw, 43px);
 }
 .heading p:last-child {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
 }
 .eyebrow {
   color: var(--muted);
   font-size: 10px;
   letter-spacing: 1.2px;
-  font-weight: 550;
+  font-weight: 700;
   margin-bottom: 12px;
 }
 .textLink {
@@ -30,7 +30,7 @@
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  font-size: 12px;
+  font-size: 14px;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -45,7 +45,7 @@
   font-size: 22px;
 }
 .notice p {
-  font-size: 13px;
+  font-size: 15px;
 }
 .checkoutLayout {
   display: grid;
@@ -85,7 +85,7 @@
 }
 .amount {
   color: var(--action);
-  font-weight: 550;
+  font-weight: 700;
   white-space: nowrap;
 }
 .summary {
@@ -104,13 +104,13 @@
   padding: 20px 0;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--line);
-  font-size: 12px;
+  font-size: 14px;
 }
 .total strong {
   color: var(--action);
   font-size: 32px;
   letter-spacing: -1px;
-  font-weight: 550;
+  font-weight: 700;
 }
 .payment {
   border: 0;
@@ -119,8 +119,8 @@
   min-width: 0;
 }
 .payment legend {
-  font-weight: 550;
-  font-size: 13px;
+  font-weight: 700;
+  font-size: 15px;
   margin-bottom: 14px;
 }
 .payment label {
@@ -134,7 +134,7 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   margin-bottom: 10px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .payment label:has(input:checked) {
   border-color: var(--action);
@@ -149,7 +149,7 @@
 .payment small {
   display: block;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.7;
   margin-top: 4px;
 }
@@ -185,7 +185,7 @@
   padding: 6px 11px;
   background: var(--soft);
   color: var(--action);
-  font-size: 11px;
+  font-size: 13px;
   flex-shrink: 0;
   border-radius: 9px;
 }
@@ -205,14 +205,14 @@
   margin: 0 0 24px;
 }
 .meta dt {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-bottom: 6px;
 }
 .meta dd {
   margin: 0;
   overflow-wrap: anywhere;
-  font-size: 13px;
+  font-size: 15px;
 }
 .snapshots {
   list-style: none;
@@ -234,11 +234,11 @@
 .snapshots p {
   margin: 6px 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 .mentorId {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
 .actions {
@@ -295,7 +295,7 @@
   border-top: 1px solid var(--line);
   padding-top: 20px;
   margin-top: 24px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .pagination .actions {

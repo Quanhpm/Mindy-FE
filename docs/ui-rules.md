@@ -3,7 +3,7 @@
 Đọc [UI.md](../UI.md) trước khi tạo/sửa UI. Thiết kế ngày 06/10/2026 thay toàn bộ UI cũ theo yêu cầu người dùng; logic nghiệp vụ giữ nguyên.
 
 1. Màu chỉ khai báo tại src/shared/config/theme.ts. CSS dùng --mindy-* hoặc alias semantic từ globals.css; không thêm mã màu riêng trong module. Asset logo/mascot và ảnh do backend cung cấp giữ nguyên màu.
-2. Dùng Brand với logo trong docs; nội dung Geist Sans, header public Nunito Variable đậm 16–17px và không card bọc bo tròn. Font local, icon nét thống nhất, tiếng Việt rõ ràng. Avatar dùng chữ tên người thật nếu API chưa có ảnh. Không fixture trong sản phẩm.
+2. Dùng Brand với logo trong docs; header public và các trang bên trong dùng Nunito Variable local (15–16px nội dung, tiêu đề đậm), auth/hero giữ typography riêng. Header public không card bọc bo tròn. Avatar dùng chữ tên người thật nếu API chưa có ảnh. Không fixture trong sản phẩm.
 3. Tái dùng đúng shell: HomeShell, PublicShell, AuthPage, AppShell cho student và MindyAdminShell cho admin. Không ép trang công cụ/quản trị thành landing có hero.
 4. Landing thoáng, hero tối đa 2–3 dòng, bento kín. Workspace dùng panel, bảng và form gọn; card 19–32px, nút 12–16px. Một CTA chính mỗi vùng.
 5. Link điều hướng, button đổi trạng thái. Label và focus rõ; vùng bấm ít nhất 44px. Form giữ lỗi validation, trạng thái đang xử lý và chống gửi lặp.

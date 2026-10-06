@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import QRCode from 'react-qr-code';
 import { ErrorPanel } from '@/shared/components/feedback';
 import { formatDate } from '@/shared/lib/date';
 import { createPayosPayment, paymentErrorMessage } from '../api/payments.browser';
 import { type Payment, paymentStatusLabels } from '../schemas/payment.schema';
+import s from './payment-panel.module.css';
 
 export function PaymentPanel({
   orderId,
@@ -75,8 +77,18 @@ export function PaymentPanel({
   }
   const link =
     fresh && payable && payment?.status === 'PENDING' && !uncertain ? payment.checkoutUrl : null;
+  const qr =
+    fresh &&
+    payable &&
+    !uncertain &&
+    payment?.status === 'PENDING' &&
+    Date.parse(payment.expiresAt) > Date.now() &&
+    payment.qrCode?.trim() &&
+    new TextEncoder().encode(payment.qrCode).length <= 2953
+      ? payment.qrCode
+      : null;
   return (
-    <section className="empty-state" aria-label="Thanh toán PayOS">
+    <section className={s.panel} aria-label="Thanh toán PayOS">
       <h2>Thanh toán PayOS</h2>
       {payment ? (
         <>
@@ -103,21 +115,46 @@ export function PaymentPanel({
           Chưa đọc được kết quả mới nhất. Kiểm tra trạng thái trước khi thử tạo link lại.
         </p>
       )}
+      {qr && (
+        <figure className={s.qr}>
+          <div className={s.qrFrame}>
+            <QRCode
+              value={qr}
+              size={240}
+              level="L"
+              bgColor="var(--mindy-white)"
+              fgColor="var(--mindy-ink)"
+              title="QR thanh toán PayOS"
+              role="img"
+            />
+          </div>
+          <figcaption>
+            Quét mã bằng ứng dụng ngân hàng để thanh toán đúng số tiền của đơn.
+          </figcaption>
+        </figure>
+      )}
       {link && (
         <a className="button button-primary" href={link} target="_blank" rel="noopener noreferrer">
           Mở PayOS để thanh toán
         </a>
       )}
-      {payable && !link && (!payment || ['CREATING', 'PENDING'].includes(payment.status)) && (
-        <button
-          type="button"
-          className="button button-primary"
-          disabled={busy || uncertain || !fresh}
-          onClick={() => void create()}
-        >
-          {busy ? 'Đang xử lý thanh toán…' : payment ? 'Tiếp tục tạo link PayOS' : 'Tạo link PayOS'}
-        </button>
-      )}
+      {payable &&
+        !link &&
+        !qr &&
+        (!payment || ['CREATING', 'PENDING'].includes(payment.status)) && (
+          <button
+            type="button"
+            className="button button-primary"
+            disabled={busy || uncertain || !fresh}
+            onClick={() => void create()}
+          >
+            {busy
+              ? 'Đang xử lý thanh toán…'
+              : payment
+                ? 'Tiếp tục tạo link PayOS'
+                : 'Tạo link PayOS'}
+          </button>
+        )}
       {uncertain && (
         <button
           type="button"
@@ -130,7 +167,9 @@ export function PaymentPanel({
       )}
       {link && (
         <p className="small">
-          QR hiển thị trên trang PayOS. Giữ trang đơn này mở để theo dõi trạng thái từ hệ thống.
+          {qr
+            ? 'Giữ trang này mở để theo dõi kết quả thanh toán.'
+            : 'QR chưa có trong dữ liệu hiện tại. Bạn có thể thanh toán trên trang PayOS.'}
         </p>
       )}
     </section>

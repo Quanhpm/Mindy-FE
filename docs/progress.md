@@ -2,6 +2,18 @@
 
 ## Trạng thái hiện tại — 06/10/2026
 
+Đã đồng bộ theo Swagger live https://api.quanh123.id.vn/docs#/ (snapshot JSON
+trong docs): đủ 53 endpoint nghiệp vụ/55 tổng; hai endpoint còn lại là readiness
+và provider webhook. Thêm PayOS result mapping, mentor CASH list/confirmation và
+CASH pending preview. Payment.providerOrderCode giữ đúng DTO; QR payload encode
+ngay trong FE bằng react-qr-code, có checkoutUrl fallback nếu nullable QR.
+
+UI bên trong: sidebar trái theo role, dropdown profile (tài khoản/trang chủ/logout),
+Nunito lớn hơn, bảng/form thoáng, native sidebar drawer trên mobile. Palette mặc
+định là coastal từ docs/pallete3.png (#355872, #7aaace, #9cd5ff, #f7f8f0).
+138 unit tests và 17 E2E sau đổi palette 3 pass; build/type-check/boundaries pass. E2E có cả role/ownership,
+QR stale/paid, redirect không tự xác nhận tiền, CASH unknown-result recovery.
+
 Typography vùng “Có nhiều cách để bắt đầu”: Nunito giống header, tiêu đề card
 30px/800 (27–28px trên màn nhỏ), mô tả và link 16px. Đã xem screenshot desktop/mobile,
 không tràn ngang; Biome/build và 4 E2E homepage/theme pass.
@@ -23,7 +35,7 @@ Baseline tích hợp: BE `Feat/Webhooktest` tại `5c9e581`, đã merge vào `de
 Các mục bên dưới là trạng thái hiện hành; nhật ký ngày cũ giữ nguyên để truy vết.
 
 Audit source ngày 06/10/2026: BE checkout hiện tại đã lên `01fc1eb`;
-FE `460b8d6` chưa nối bốn endpoint mới cho result mapping và CASH.
+FE `460b8d6` lúc audit chưa nối bốn endpoint mới; bản làm việc hiện tại đã nối đủ theo Swagger live.
 Xem [API audit và logic flow bàn giao UI mới](./logic-flow.md) để phân biệt
 integration hiện có, phần chờ FE và backlog BE.
 
@@ -33,10 +45,12 @@ integration hiện có, phần chờ FE và backlog BE.
 | Catalog và lớp | Đã tích hợp category/course/units, class/schedule/lifecycle, public browse và syllabus |
 | Ảnh khóa học | Đã tích hợp imgUrl, admin tạo/sửa/xóa và public image fallback |
 | Giỏ hàng và checkout | Đã tích hợp giỏ thật, CASH tách theo mentor, PAYOS một đơn, giữ chỗ, expiry và own orders |
-| PayOS | Đã tích hợp tạo/reuse link, trạng thái, polling và recovery; mở trang PayOS để thanh toán/hiển thị QR |
+| PayOS | Đã tích hợp tạo/reuse link, result mapping, polling/recovery, QR trong trang từ payload; checkoutUrl fallback |
+| Thu tiền mặt MENTOR | Danh sách đơn được giao, xác nhận toàn bộ số tiền, recovery khi mất response |
+| CASH preview STUDENT | Xem học phần/lịch/phòng khi hold còn hiệu lực; không meeting URL |
 | Lớp sau thanh toán | Đã tích hợp private class, units/lịch/phòng/meeting URL và kiểm tra quyền từ BE; chưa có danh sách lớp hoặc progress API |
 | Đối soát ADMIN | Đã tích hợp review events, phân trang và reconcile; kết quả phải đọc lại từ BE |
-| Giao diện | UI Mindy mới trên Huy/Feat/UIredesign; theme global, logo/docs palette, Geist, mascot/GSAP; nguồn UI cũ đã gỡ |
+| Giao diện | Palette 3 global, sidebar theo role, profile dropdown, Nunito cho trang bên trong; mascot/GSAP trên landing |
 | Compiler | Playground và runner riêng đã có; chưa gắn với tiến độ/quyền học của lớp |
 
 **Bằng chứng UI mới:** TypeScript, production build, module boundaries và Biome
@@ -50,9 +64,9 @@ BE payment HTTP E2E 3/3 pass; smoke FE → BFF → BE dùng cookie thật, Postg
 riêng và provider giả đã xác minh signed settlement, PAID/ACTIVE và private access.
 Chưa nghiệm thu PayOS/provider email thật hoặc deploy trong đợt tích hợp này.
 
-**Còn chờ FE, BE đã có:** mapping return/cancel cho `/payment/result`, mentor
-cash-order list/confirmation và cash pending preview. Cần đồng bộ
-`providerOrderCode`, safe return paths cho learning/reconciliation và copy CASH.
+**Đã hoàn tất phần chờ FE:** mapping return/cancel cho `/payment/result`, mentor
+cash-order list/confirmation, CASH preview, providerOrderCode, safe return paths
+và copy CASH. Chi tiết current contract ở đầu logic-flow.md và api-contracts.md.
 **Còn chờ BE:** danh sách enrollment/lớp đã đăng ký và API đọc/cập nhật progress.
 Materials, attendance, assignments, chat, notifications và dashboard là các phase sau.
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.

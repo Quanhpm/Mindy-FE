@@ -20,12 +20,20 @@ describe('navigation policy', () => {
       '/checkout',
       '/orders?status=PENDING',
       `/orders/${id}`,
+      '/payment/result?orderCode=123456&cancel=true',
+      '/mentor/cash-orders?page=2',
+      `/learning/classes/${id}?unitId=${id}`,
+      `/learning/classes/${id}/preview`,
+      '/management/payments/reconciliation?page=2',
     ])
       expect(safeReturnTo(path, '/account')).toBe(path);
     for (const path of [
       '/api/v1/me/cart',
       '/cart/extra',
       '/orders/not-a-uuid',
+      '/mentor/cash-orders/any/confirm',
+      '/payment/result/extra',
+      `/learning/classes/${id}/preview/extra`,
       `/courses/${id}/units/${id}/complete`,
       '/management/users/arbitrary',
       '/cart/../../api/v1/auth/google',

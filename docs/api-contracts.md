@@ -1,4 +1,18 @@
-# API contract — NestJS Feat/Webhooktest / 5c9e581
+# API contract — Swagger live / 06-10-2026
+
+Nguồn hiện hành: https://api.quanh123.id.vn/docs#/ và snapshot
+[swagger-live-2026-10-06.json](./swagger-live-2026-10-06.json).
+Đã nối 4 endpoint còn thiếu: GET /me/orders/payment-result (chỉ query orderCode),
+GET /mentor/cash-orders (page/pageSize), POST /mentor/cash-orders/:orderId/confirm
+(chỉ receivedAmount), GET /me/classes/:classId/preview (public-shaped ClassDetail).
+Payment.providerOrderCode là number|null bắt buộc; qrCode là payload string|null,
+được encode nguyên văn thành QR trên FE, không phải URL ảnh. QR null dùng checkoutUrl.
+Mentor chỉ xác nhận số nguyên VND đúng toàn bộ tổng đơn; lỗi/mất response yêu cầu
+đọc danh sách trước deliberate retry. Return/cancel/status từ URL PayOS không
+xác nhận PAID; result mapping đọc quyền owner rồi mở internal order.
+Không proxy readiness và webhook provider. Danh sách lớp/progress vẫn chờ BE.
+
+## Snapshot tích hợp cũ (giữ để truy vết)
 
 > Snapshot integration FE tại `5c9e581`. Audit 06/10/2026 xác minh BE hiện tại
 > là `01fc1eb`: đã có `GET /me/orders/payment-result`, `GET /mentor/cash-orders`,

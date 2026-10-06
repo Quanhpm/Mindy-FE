@@ -1,0 +1,134 @@
+.page {
+  min-width: 0;
+  max-width: 1160px;
+  margin: auto;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.heading p {
+  color: var(--mindy-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.heading h1 {
+  font-size: clamp(30px, 3.5vw, 46px);
+  font-weight: 800;
+  max-width: 750px;
+}
+.heading span {
+  color: var(--mindy-muted);
+  font-size: 16px;
+}
+.list {
+  background: var(--mindy-white);
+  border: 1px solid var(--mindy-line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.order {
+  padding: 28px;
+  border-bottom: 1px solid var(--mindy-line);
+}
+.order:last-child {
+  border-bottom: 0;
+}
+.orderHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: start;
+}
+.orderHeading h2 {
+  font-size: 23px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+.orderHeading > strong {
+  font-size: 24px;
+  white-space: nowrap;
+}
+.status {
+  background: var(--mindy-soft);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.order ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+.order li {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+}
+.order li div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.order li span {
+  color: var(--mindy-muted);
+}
+.order li > span {
+  white-space: nowrap;
+}
+.notice,
+.empty {
+  padding: 24px;
+  background: var(--mindy-soft);
+  border-radius: 16px;
+}
+.confirm {
+  padding: 24px;
+  background: var(--mindy-soft);
+  border-radius: 16px;
+  max-width: 600px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.confirm .actions {
+  margin-top: 18px;
+}
+.closed {
+  color: var(--mindy-muted);
+  font-size: 15px;
+}
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 24px;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .heading,
+  .orderHeading,
+  .pagination {
+    flex-direction: column;
+  }
+  .order {
+    padding: 20px;
+  }
+  .order li {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .confirm {
+    padding: 18px;
+  }
+}

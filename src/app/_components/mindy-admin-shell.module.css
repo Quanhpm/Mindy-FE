@@ -1,4 +1,6 @@
 .page {
+  font-family: var(--mindy-navigation-font);
+  font-size: 16px;
   min-height: 100dvh;
   background: var(--mindy-workspace);
   display: grid;
@@ -24,7 +26,7 @@
   letter-spacing: 1.25px;
   color: var(--mindy-muted);
   margin: 44px 12px 14px;
-  font-weight: 550;
+  font-weight: 700;
 }
 .navigation {
   display: flex;
@@ -39,7 +41,7 @@
   min-height: 47px;
   width: 100%;
   padding: 12px 14px;
-  font-size: 12px;
+  font-size: 16px;
   border: 0;
   border-radius: 13px;
   background: transparent;
@@ -50,7 +52,7 @@
 .navigation [aria-current="page"] {
   background: var(--mindy-soft);
   color: var(--mindy-action);
-  font-weight: 600;
+  font-weight: 700;
 }
 .navigation a:hover,
 .navigation button:hover {
@@ -76,7 +78,7 @@
   letter-spacing: -0.6px;
 }
 .tip p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.8;
   color: var(--mindy-muted);
 }
@@ -84,8 +86,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
-  font-weight: 550;
+  font-size: 13px;
+  font-weight: 700;
   margin-top: 18px;
 }
 .sidebar > small {
@@ -97,6 +99,9 @@
   min-width: 0;
 }
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
   height: 86px;
   display: flex;
   align-items: center;
@@ -110,16 +115,22 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 11px;
+  font-size: 13px;
 }
 .breadcrumb > span {
   color: var(--mindy-muted);
 }
 .breadcrumb > strong {
-  font-weight: 550;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 14px;
 }
 .user {
+  border: 0;
+  background: transparent;
+  color: var(--mindy-ink);
+  padding: 4px;
+  min-height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -130,11 +141,11 @@
   text-align: right;
 }
 .user strong {
-  font-weight: 550;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 16px;
 }
 .user span {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--mindy-muted);
 }
 .workspace {
@@ -145,6 +156,102 @@
 }
 .menu {
   display: none;
+}
+.profile {
+  position: relative;
+}
+.profileDropdown {
+  animation: reveal-profile 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: min(280px, calc(100vw - 40px));
+  padding: 10px;
+  background: var(--mindy-white);
+  border: 1px solid var(--mindy-line);
+  border-radius: 16px;
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--mindy-ink) 10%, transparent);
+}
+.profileDropdown > p {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 16px;
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--mindy-line);
+  overflow-wrap: anywhere;
+}
+.profileDropdown > p span {
+  color: var(--mindy-muted);
+  font-size: 14px;
+}
+.profileDropdown > a,
+.profileDropdown > button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mindy-ink);
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+}
+.profileDropdown > a:hover,
+.profileDropdown > button:hover {
+  background: var(--mindy-soft);
+}
+.workspace :is(h1, h2, h3) {
+  font-weight: 800;
+}
+.workspace :global(.page-description),
+.workspace :global(.details-grid dt),
+.workspace :global(.table th) {
+  font-size: 15px;
+}
+.workspace :global(.card) {
+  border-radius: 18px;
+}
+.workspace :global(.field label),
+.workspace :global(.table td) {
+  font-size: 15px;
+}
+.workspace :global(.table) {
+  font-size: 15px;
+}
+.workspace :global(.button) {
+  font-size: 15px;
+}
+@keyframes reveal-profile {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profileDropdown {
+    animation: none;
+  }
+}
+.workspace :global(.profile-card) {
+  border: 0;
+  border-left: 4px solid var(--mindy-primary);
+}
+.workspace :global(.security-card) {
+  background: var(--mindy-soft);
+  border: 0;
+}
+.workspace :global(.preview-session) {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--mindy-line);
 }
 .drawer {
   position: fixed;
