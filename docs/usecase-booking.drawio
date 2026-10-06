@@ -1,0 +1,142 @@
+<mxfile host="Electron">
+  <diagram name="Booking use case" id="0">
+    <mxGraphModel dx="1820" dy="1112" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1520" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="b" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;verticalAlign=top;align=left;spacingLeft=8;fontStyle=1;" value="Booking" vertex="1">
+          <mxGeometry height="1000" width="1200" x="190" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Student" vertex="1">
+          <mxGeometry height="60" width="30" x="40" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Mentor" vertex="1">
+          <mxGeometry height="60" width="30" x="40" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Manager/Admin" vertex="1">
+          <mxGeometry height="60" width="30" x="1450" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="PayOS (Payment Gateway)" vertex="1">
+          <mxGeometry height="60" width="30" x="1450" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Email Service" vertex="1">
+          <mxGeometry height="60" width="30" x="1450" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Get course recommendation" vertex="1">
+          <mxGeometry height="56" width="190" x="290" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Fill learning-needs form" vertex="1">
+          <mxGeometry height="56" width="190" x="660" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Match needs to courses (AI / similarity)" vertex="1">
+          <mxGeometry height="56" width="190" x="820" y="144" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Browse course list" vertex="1">
+          <mxGeometry height="56" width="190" x="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="View course detail" vertex="1">
+          <mxGeometry height="56" width="190" x="560" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Register class (choose online / offline)" vertex="1">
+          <mxGeometry height="56" width="190" x="280" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Add to cart" vertex="1">
+          <mxGeometry height="56" width="190" x="280" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="View / edit cart" vertex="1">
+          <mxGeometry height="56" width="190" x="280" y="492" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Checkout &amp; process order (full payment)" vertex="1">
+          <mxGeometry height="56" width="190" x="240" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Make payment" vertex="1">
+          <mxGeometry height="56" width="190" x="560" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Pay by cash" vertex="1">
+          <mxGeometry height="56" width="190" x="560" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Pay via PayOS" vertex="1">
+          <mxGeometry height="56" width="190" x="880" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Send order confirmation email" vertex="1">
+          <mxGeometry height="56" width="190" x="1100" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Confirm cash payment (update order status)" vertex="1">
+          <mxGeometry height="56" width="190" x="500" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=14;fontSize=10;align=left;spacingLeft=4;" value="Order status = Cash pending. Student is still auto-added to the class with limited access (titles + timetable) and joins class group chat / mentor DM." vertex="1">
+          <mxGeometry height="88" width="250" x="820" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Add student to class / course unit" vertex="1">
+          <mxGeometry height="56" width="190" x="1100" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="Support transactions" vertex="1">
+          <mxGeometry height="56" width="190" x="1100" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="c25" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" value="View transaction log" vertex="1">
+          <mxGeometry height="56" width="190" x="1100" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="c26" edge="1" parent="1" source="c3" style="endArrow=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="c8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c27" edge="1" parent="1" source="c3" style="endArrow=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="c11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c28" edge="1" parent="1" source="c3" style="endArrow=none;html=1;" target="c13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c29" edge="1" parent="1" source="c3" style="endArrow=none;html=1;" target="c14" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c30" edge="1" parent="1" source="c3" style="endArrow=none;html=1;" target="c15" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" edge="1" parent="1" source="c3" style="endArrow=none;html=1;" target="c16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c32" edge="1" parent="1" source="c4" style="endArrow=none;html=1;" target="c21" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c33" edge="1" parent="1" source="c5" style="endArrow=none;html=1;" target="c23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c34" edge="1" parent="1" source="c5" style="endArrow=none;html=1;" target="c24" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c35" edge="1" parent="1" source="c6" style="endArrow=none;html=1;" target="c19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c36" edge="1" parent="1" source="c7" style="endArrow=none;html=1;" target="c20" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c37" edge="1" parent="1" source="c8" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c9" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c38" edge="1" parent="1" source="c8" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c10" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c39" edge="1" parent="1" source="c12" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c11" value="«extend»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c40" edge="1" parent="1" source="c16" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c17" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" edge="1" parent="1" source="c18" style="endArrow=block;endFill=0;endSize=12;html=1;" target="c17" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" edge="1" parent="1" source="c19" style="endArrow=block;endFill=0;endSize=12;html=1;" target="c17" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c43" edge="1" parent="1" source="c19" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c20" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c44" edge="1" parent="1" source="c24" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=10;" target="c25" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c45" edge="1" parent="1" source="c22" style="dashed=1;endArrow=none;html=1;" target="c18" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
