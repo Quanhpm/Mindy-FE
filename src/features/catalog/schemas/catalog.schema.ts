@@ -20,6 +20,21 @@ const price = z
   .max(1_000_000_000_000, 'Giá vượt giới hạn cho phép.');
 const title = z.string().trim().min(1, 'Vui lòng nhập tên.').max(250, 'Tối đa 250 ký tự.');
 
+export const courseImageUrlSchema = z
+  .url()
+  .max(2048)
+  .refine((value) => {
+    if (!URL.canParse(value)) return false;
+    const url = new URL(value);
+    return (
+      ['http:', 'https:'].includes(url.protocol) &&
+      !url.username &&
+      !url.password &&
+      Boolean(url.hostname) &&
+      url.hostname.includes('.')
+    );
+  }, 'Nhập URL HTTP/HTTPS hợp lệ, không chứa tài khoản.');
+
 export const categorySchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
@@ -56,6 +71,7 @@ export const courseManagementSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   priceAmount: price,
+  imgUrl: courseImageUrlSchema.nullable(),
   category: z.object({ id: z.string().uuid(), name: z.string(), slug: z.string() }),
   isActive: z.boolean(),
   createdAt: z.iso.datetime({ offset: true }),
@@ -68,7 +84,13 @@ export const courseDetailSchema = courseManagementSchema.extend({
 export type CourseDetail = z.infer<typeof courseDetailSchema>;
 export const coursePageSchema = z.object({ items: z.array(courseManagementSchema), ...pageFields });
 export type CoursePage = z.infer<typeof coursePageSchema>;
-const courseFields = { categoryId: uuidV4, title, description, priceAmount: price };
+const courseFields = {
+  categoryId: uuidV4,
+  title,
+  description,
+  priceAmount: price,
+  imgUrl: z.union([z.literal(''), courseImageUrlSchema, z.null()]).optional(),
+};
 export const courseCreateSchema = z.strictObject({
   ...courseFields,
   code: z
@@ -86,6 +108,7 @@ export const courseUpdatePayloadSchema = z.strictObject({
   title: title.optional(),
   description: description.nullable().optional(),
   priceAmount: price.optional(),
+  imgUrl: courseImageUrlSchema.nullable().optional(),
 });
 export const unitInputSchema = z.strictObject({
   title,

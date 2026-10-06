@@ -30,7 +30,8 @@ export function CourseFieldsForm({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, dirtyFields },
   } = useForm<CourseCreateInput>({
     resolver: zodResolver(courseCreateSchema),
     defaultValues: {
@@ -38,14 +39,17 @@ export function CourseFieldsForm({
       code: course?.code ?? '',
       title: course?.title ?? '',
       description: course?.description ?? '',
+      imgUrl: course?.imgUrl ?? '',
       priceAmount: course?.priceAmount ?? 0,
     },
   });
   async function submit(input: CourseCreateInput) {
     setError(undefined);
     try {
-      const { code: _code, ...fields } = input;
+      const { code: _code, imgUrl, ...rest } = input;
+      const fields = { ...rest, ...(dirtyFields.imgUrl ? { imgUrl } : {}) };
       const saved = course ? await updateCourse(course.id, fields) : await createCourse(input);
+      reset({ ...input, imgUrl: saved.imgUrl ?? '' });
       onSaved(saved);
     } catch (cause) {
       setError(catalogErrorMessage(cause));
@@ -136,6 +140,21 @@ export function CourseFieldsForm({
         />
         <div id="course-description-error">
           <FormError message={errors.description?.message} />
+        </div>
+      </div>
+      <div className={s.field}>
+        <label htmlFor="course-image">URL ảnh khóa học</label>
+        <input
+          id="course-image"
+          type="url"
+          maxLength={2048}
+          aria-invalid={Boolean(errors.imgUrl)}
+          aria-describedby="course-image-error"
+          {...register('imgUrl')}
+        />
+        <span>HTTP/HTTPS, tối đa 2048 ký tự. Xóa nội dung để bỏ ảnh hiện tại.</span>
+        <div id="course-image-error">
+          <FormError message={errors.imgUrl?.message} />
         </div>
       </div>
       {error && <ErrorPanel message={error} />}

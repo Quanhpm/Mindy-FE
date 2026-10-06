@@ -4,6 +4,7 @@ const id = (n: number) => `10000000-0000-4000-8000-${String(n).padStart(12, '0')
 const course = {
   id: id(1),
   code: 'JS-101',
+  imgUrl: null,
   title: 'JavaScript tại Mindy',
   description: 'Học nền tảng JavaScript.',
   priceAmount: 1800000,
@@ -148,7 +149,7 @@ test('public class → login return → cart → checkout → own order, then cl
       });
     if (path === `/me/orders/${receipt.id}`)
       return identity.id === user.id
-        ? route.fulfill({ json: receipt })
+        ? route.fulfill({ json: { ...receipt, payment: null } })
         : route.fulfill({
             status: 403,
             json: { code: 'ORDER_ACCESS_DENIED', message: 'Forbidden' },
@@ -182,6 +183,7 @@ test('public class → login return → cart → checkout → own order, then cl
     { path: '/me/cart/items', body: { classId: classItem.id } },
     { path: '/me/cart/checkout', body: { paymentType: 'CASH' } },
   ]);
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel('Email', { exact: true }).fill('second@example.com');
@@ -206,7 +208,9 @@ test('home and public menu fit 1440/768/390/375 with keyboard focus return', asy
   for (const width of [1440, 768, 390, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
-    await expect(page.getByRole('link', { name: 'Khám phá khóa học' })).toBeVisible();
+    await expect(
+      page.getByRole('main').getByRole('link', { name: 'Khám phá khóa học', exact: true }),
+    ).toBeVisible();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);

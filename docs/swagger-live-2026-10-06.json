@@ -1,0 +1,5573 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "HealthController_live_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "ok",
+                    "timestamp": "2026-09-29T00:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check whether the process is alive",
+        "tags": ["health"]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "ok",
+                    "timestamp": "2026-09-29T00:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A required dependency is unavailable"
+          }
+        },
+        "summary": "Check whether required dependencies are ready",
+        "tags": ["health"]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationAcceptedDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Register a student account with email and password",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/email/resend": {
+      "post": {
+        "operationId": "AuthController_resendVerification_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationAcceptedDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Resend an email verification link",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/email/verify": {
+      "post": {
+        "operationId": "AuthController_verifyEmail_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedUserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify an email address and start a session",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/google": {
+      "get": {
+        "operationId": "AuthController_google_v1",
+        "parameters": [
+          {
+            "name": "returnTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "/",
+              "example": "/dashboard",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirects to Google"
+          }
+        },
+        "summary": "Start Google sign-in or registration",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/google/callback": {
+      "get": {
+        "operationId": "AuthController_googleCallback_v1",
+        "parameters": [
+          {
+            "name": "code",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "error",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirects to the frontend after Google authentication"
+          }
+        },
+        "summary": "Google OAuth callback",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/registration-context": {
+      "get": {
+        "operationId": "AuthController_registrationContext_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationContextDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "registration_intent": []
+          }
+        ],
+        "summary": "Get prefilled profile data for Google registration",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/google/complete-registration": {
+      "post": {
+        "operationId": "AuthController_completeGoogleRegistration_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteGoogleRegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedUserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "registration_intent": []
+          }
+        ],
+        "summary": "Complete the profile for a new Google account",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "summary": "Login with email and password",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        },
+        "security": [
+          {
+            "refresh_token": []
+          }
+        ],
+        "summary": "Rotate the current refresh token",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout_v1",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Logout the current session",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/logout-all": {
+      "post": {
+        "operationId": "AuthController_logoutAll_v1",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Logout every session for the current user",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_me_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Get the current user",
+        "tags": ["auth"]
+      }
+    },
+    "/api/v1/admin/users": {
+      "post": {
+        "operationId": "UsersController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Create a managed user account",
+        "tags": ["admin-users"]
+      },
+      "get": {
+        "operationId": "UsersController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ADMIN", "MENTOR", "STUDENT"]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING_VERIFICATION", "ACTIVE", "SUSPENDED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List users",
+        "tags": ["admin-users"]
+      }
+    },
+    "/api/v1/admin/users/{userId}": {
+      "get": {
+        "operationId": "UsersController_get_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Get a user",
+        "tags": ["admin-users"]
+      }
+    },
+    "/api/v1/admin/users/{userId}/status": {
+      "patch": {
+        "operationId": "UsersController_updateStatus_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Suspend or reactivate a user",
+        "tags": ["admin-users"]
+      }
+    },
+    "/api/v1/course-categories": {
+      "get": {
+        "operationId": "CourseCategoriesController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseCategoryPageDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List active course categories",
+        "tags": ["catalog"]
+      }
+    },
+    "/api/v1/admin/course-categories": {
+      "post": {
+        "operationId": "AdminCatalogController_createCategory_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseCategoryDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Create a course category",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/courses": {
+      "get": {
+        "operationId": "AdminCatalogController_listCourses_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List courses for management, including inactive ones",
+        "tags": ["admin-catalog"]
+      },
+      "post": {
+        "operationId": "AdminCatalogController_createCourse_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Create an inactive course",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/courses/{courseId}": {
+      "get": {
+        "operationId": "AdminCatalogController_getCourse_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Get a course with its units for management",
+        "tags": ["admin-catalog"]
+      },
+      "patch": {
+        "operationId": "AdminCatalogController_updateCourse_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCourseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Update course fields; a new price applies to future checkouts only",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/courses/{courseId}/units": {
+      "post": {
+        "operationId": "AdminCatalogController_addUnit_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCourseUnitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseUnitDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Append a unit to a course",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/courses/{courseId}/units/order": {
+      "put": {
+        "operationId": "AdminCatalogController_reorderUnits_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderCourseUnitsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Reorder the units of a course; existing classes are not changed",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/courses/{courseId}/activate": {
+      "post": {
+        "operationId": "AdminCatalogController_activateCourse_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Activate a course that has an active category and at least one unit",
+        "tags": ["admin-catalog"]
+      }
+    },
+    "/api/v1/admin/classes": {
+      "get": {
+        "operationId": "AdminClassesController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "courseId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "mentorId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+            }
+          },
+          {
+            "name": "deliveryMode",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ONLINE", "OFFLINE"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List classes for management in every status",
+        "tags": ["admin-classes"]
+      },
+      "post": {
+        "operationId": "AdminClassesController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Create a DRAFT class from an active course and copy its units",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}": {
+      "get": {
+        "operationId": "AdminClassesController_get_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Get a class with its units and sessions for management",
+        "tags": ["admin-classes"]
+      },
+      "patch": {
+        "operationId": "AdminClassesController_update_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClassDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Update a class; dates, capacity and delivery mode are editable only in DRAFT",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}/sessions": {
+      "post": {
+        "operationId": "AdminClassesController_scheduleSession_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleClassSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Schedule a session for one unit of the class",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}/open": {
+      "post": {
+        "operationId": "AdminClassesController_open_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Open a DRAFT class for registration",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}/start": {
+      "post": {
+        "operationId": "AdminClassesController_start_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Start an OPEN class; registration closes",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}/complete": {
+      "post": {
+        "operationId": "AdminClassesController_complete_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Complete an IN_PROGRESS class",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/admin/classes/{classId}/cancel": {
+      "post": {
+        "operationId": "AdminClassesController_cancel_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassManagementDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Cancel a class that is not completed yet",
+        "tags": ["admin-classes"]
+      }
+    },
+    "/api/v1/me/classes/{classId}": {
+      "get": {
+        "operationId": "StudentClassesController_get_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentClassDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "tags": ["student classes"]
+      }
+    },
+    "/api/v1/courses": {
+      "get": {
+        "operationId": "CourseBrowseController_listCourses_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "deliveryMode",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ONLINE", "OFFLINE"]
+            }
+          },
+          {
+            "name": "startsFrom",
+            "required": false,
+            "in": "query",
+            "description": "Classes starting on or after this date",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "startsTo",
+            "required": false,
+            "in": "query",
+            "description": "Classes starting on or before this date",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoursePageDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List active courses, optionally only those with matching open classes",
+        "tags": ["catalog"]
+      }
+    },
+    "/api/v1/courses/{courseId}": {
+      "get": {
+        "operationId": "CourseBrowseController_getCourse_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCourseDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get an active course with its unit summary and open classes",
+        "tags": ["catalog"]
+      }
+    },
+    "/api/v1/courses/{courseId}/classes": {
+      "get": {
+        "operationId": "CourseBrowseController_listCourseClasses_v1",
+        "parameters": [
+          {
+            "name": "courseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "deliveryMode",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ONLINE", "OFFLINE"]
+            }
+          },
+          {
+            "name": "startsFrom",
+            "required": false,
+            "in": "query",
+            "description": "Classes starting on or after this date",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "startsTo",
+            "required": false,
+            "in": "query",
+            "description": "Classes starting on or before this date",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the open classes of an active course",
+        "tags": ["catalog"]
+      }
+    },
+    "/api/v1/classes/{classId}": {
+      "get": {
+        "operationId": "CourseBrowseController_getClass_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get an open class with its units and timetable",
+        "tags": ["catalog"]
+      }
+    },
+    "/api/v1/me/cart": {
+      "get": {
+        "operationId": "CartController_get_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Get my cart with current prices",
+        "tags": ["cart"]
+      }
+    },
+    "/api/v1/me/cart/items": {
+      "post": {
+        "operationId": "CartController_addItem_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCartItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Add an open class to my cart",
+        "tags": ["cart"]
+      }
+    },
+    "/api/v1/me/cart/items/{classId}": {
+      "delete": {
+        "operationId": "CartController_removeItem_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Remove a class from my cart",
+        "tags": ["cart"]
+      }
+    },
+    "/api/v1/me/cart/checkout": {
+      "post": {
+        "description": "PayOS creates one order for the cart; cash creates one order per mentor. All orders are created in one transaction, or none is. Payment is a separate step.",
+        "operationId": "CartController_checkout_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResultDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Check out the whole cart into pending order(s) and hold the seats",
+        "tags": ["cart"]
+      }
+    },
+    "/api/v1/me/orders": {
+      "get": {
+        "operationId": "OrdersController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "PAID", "EXPIRED", "CANCELLED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List my orders, newest first",
+        "tags": ["orders"]
+      }
+    },
+    "/api/v1/me/orders/payment-result": {
+      "get": {
+        "operationId": "PaymentsController_result_v1",
+        "parameters": [
+          {
+            "name": "orderCode",
+            "required": true,
+            "in": "query",
+            "description": "payOS redirect orderCode as a decimal string",
+            "schema": {
+              "pattern": "^[1-9][0-9]{0,15}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Resolve payOS redirect orderCode to my order; redirect never confirms payment",
+        "tags": ["payments"]
+      }
+    },
+    "/api/v1/me/orders/{orderId}": {
+      "get": {
+        "operationId": "PaymentsController_get_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "tags": ["payments"]
+      }
+    },
+    "/api/v1/me/orders/{orderId}/payments/payos": {
+      "post": {
+        "operationId": "PaymentsController_create_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyPaymentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Create or reuse a payOS payment link; CREATING means retry later",
+        "tags": ["payments"]
+      }
+    },
+    "/api/v1/payment-callbacks/payos": {
+      "post": {
+        "operationId": "PaymentCallbacksController_webhook_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["code", "desc", "success", "data", "signature"],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "desc": {
+                    "type": "string"
+                  },
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "signature": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookAckDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["payment callbacks"]
+      }
+    },
+    "/api/v1/admin/payments/reconciliation": {
+      "get": {
+        "operationId": "PaymentReconciliationController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "tags": ["payment reconciliation"]
+      }
+    },
+    "/api/v1/admin/payments/{paymentId}/reconcile": {
+      "post": {
+        "operationId": "PaymentReconciliationController_reconcile_v1",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyPaymentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationResultDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "tags": ["payment reconciliation"]
+      }
+    },
+    "/api/v1/mentor/cash-orders": {
+      "get": {
+        "operationId": "CashPaymentsController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "tags": ["cash payments"]
+      }
+    },
+    "/api/v1/mentor/cash-orders/{orderId}/confirm": {
+      "post": {
+        "operationId": "CashPaymentsController_confirm_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmCashDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Assigned cash mentor confirms full amount; retries are idempotent",
+        "tags": ["cash payments"]
+      }
+    },
+    "/api/v1/me/classes/{classId}/preview": {
+      "get": {
+        "operationId": "CashPreviewController_preview_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "Pending CASH owner sees titles/timetable/room only",
+        "tags": ["student classes"]
+      }
+    }
+  },
+  "info": {
+    "title": "Mindy Center API",
+    "description": "API for course operations, enrollment, ordering and payments.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access_token": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token",
+        "description": "HttpOnly access cookie set after password login, email verification, or Google authentication"
+      },
+      "refresh_token": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refresh_token",
+        "description": "HttpOnly refresh cookie sent only to /api/v1/auth/refresh"
+      },
+      "registration_intent": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "registration_intent",
+        "description": "Short-lived HttpOnly cookie used only to complete Google registration"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "student@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "maxLength": 128
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Nguyen Van A",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "phone": {
+            "type": "string",
+            "example": "0901234567",
+            "minLength": 7,
+            "maxLength": 32
+          }
+        },
+        "required": ["email", "password", "displayName"]
+      },
+      "RegistrationAcceptedDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "object",
+            "example": "If the address can be registered, a verification email has been sent."
+          }
+        },
+        "required": ["message"]
+      },
+      "ResendVerificationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "student@example.com"
+          }
+        },
+        "required": ["email"]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 512
+          },
+          "deviceName": {
+            "type": "string",
+            "example": "Chrome on Windows",
+            "maxLength": 150
+          }
+        },
+        "required": ["token"]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["ADMIN", "MENTOR", "STUDENT"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING_VERIFICATION", "ACTIVE", "SUSPENDED"]
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "phone",
+          "displayName",
+          "role",
+          "status",
+          "lastLoginAt",
+          "createdAt"
+        ]
+      },
+      "AuthenticatedUserDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "accessTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["user", "accessTokenExpiresAt"]
+      },
+      "RegistrationContextDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "readOnly": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "readOnly": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["email", "displayName", "avatarUrl", "expiresAt"]
+      },
+      "CompleteGoogleRegistrationDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "example": "Nguyen Van A",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "phone": {
+            "type": "string",
+            "example": "0901234567",
+            "minLength": 7,
+            "maxLength": 32
+          },
+          "deviceName": {
+            "type": "string",
+            "example": "Chrome on Windows",
+            "maxLength": 150
+          }
+        },
+        "required": ["displayName"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "deviceName": {
+            "type": "string",
+            "example": "Swagger UI"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "student@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0901234567",
+            "minLength": 7,
+            "maxLength": 32
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 12,
+            "maxLength": 128
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Test Student",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "role": {
+            "type": "string",
+            "enum": ["ADMIN", "MENTOR", "STUDENT"],
+            "example": "STUDENT"
+          }
+        },
+        "required": ["email", "password", "displayName", "role"]
+      },
+      "UserPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "UpdateUserStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["PENDING_VERIFICATION", "ACTIVE", "SUSPENDED"],
+            "example": "SUSPENDED"
+          }
+        },
+        "required": ["status"]
+      },
+      "CourseCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": ["id", "name", "slug", "description", "isActive"]
+      },
+      "CourseCategoryPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseCategoryDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 409
+          },
+          "code": {
+            "type": "string",
+            "example": "CLASS_FULL"
+          },
+          "message": {
+            "type": "string",
+            "example": "The class has no seats left"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "requestId": {
+            "type": "string"
+          }
+        },
+        "required": ["statusCode", "code", "message"]
+      },
+      "CreateCourseCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Lập trình Web",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "slug": {
+            "type": "string",
+            "example": "lap-trinh-web",
+            "maxLength": 180,
+            "description": "Lower-case URL slug. Generated from the name when omitted."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": ["name"]
+      },
+      "CourseCategoryRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "slug"]
+      },
+      "CourseManagementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048
+          },
+          "priceAmount": {
+            "type": "number",
+            "example": 2500000,
+            "description": "Integer VND amount"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CourseCategoryRefDto"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "description",
+          "imgUrl",
+          "priceAmount",
+          "category",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CourseManagementPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseManagementDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "CourseUnitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "unitNumber": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "requiredScorePercent": {
+            "type": "number",
+            "example": 80
+          }
+        },
+        "required": ["id", "unitNumber", "title", "description", "requiredScorePercent"]
+      },
+      "CourseManagementDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048
+          },
+          "priceAmount": {
+            "type": "number",
+            "example": 2500000,
+            "description": "Integer VND amount"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CourseCategoryRefDto"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseUnitDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "description",
+          "imgUrl",
+          "priceAmount",
+          "category",
+          "isActive",
+          "createdAt",
+          "updatedAt",
+          "units"
+        ]
+      },
+      "CreateCourseDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "title": {
+            "type": "string",
+            "example": "Web Development Fundamentals",
+            "maxLength": 250
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048,
+            "example": "https://cdn.example.com/courses/web101.jpg"
+          },
+          "priceAmount": {
+            "type": "number",
+            "example": 2500000,
+            "minimum": 0,
+            "maximum": 1000000000000,
+            "description": "Integer VND amount"
+          }
+        },
+        "required": ["categoryId", "code", "title", "priceAmount"]
+      },
+      "UpdateCourseDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 250
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000,
+            "description": "Send null to clear the description"
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048,
+            "description": "Send null to clear the course image; omit to keep the current image"
+          },
+          "priceAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000000000,
+            "description": "Integer VND amount; applies to future checkouts only"
+          }
+        }
+      },
+      "AddCourseUnitDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "HTML & CSS basics",
+            "maxLength": 250
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "requiredScorePercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 80
+          }
+        },
+        "required": ["title"]
+      },
+      "ReorderCourseUnitsDto": {
+        "type": "object",
+        "properties": {
+          "unitIds": {
+            "description": "Every unit of the course exactly once, in the new order",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": ["unitIds"]
+      },
+      "ClassMentorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["id", "displayName"]
+      },
+      "ClassManagementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor",
+          "status",
+          "meetingUrl",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ClassManagementPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassManagementDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "ClassSessionManagementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sessionNumber": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "roomName": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": ["SCHEDULED", "COMPLETED", "CANCELLED"]
+          },
+          "classUnitId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "sessionNumber",
+          "title",
+          "startsAt",
+          "endsAt",
+          "roomName",
+          "status",
+          "classUnitId",
+          "meetingUrl"
+        ]
+      },
+      "ClassUnitManagementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseUnitId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["LOCKED", "OPEN", "COMPLETED"]
+          },
+          "unlockAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassSessionManagementDto"
+            }
+          }
+        },
+        "required": ["id", "courseUnitId", "position", "title", "status", "unlockAt", "sessions"]
+      },
+      "ClassManagementDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassUnitManagementDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor",
+          "status",
+          "meetingUrl",
+          "createdAt",
+          "updatedAt",
+          "units"
+        ]
+      },
+      "CreateClassDto": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mentorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "An active user with the MENTOR role"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "name": {
+            "type": "string",
+            "example": "Web 101 — evening class",
+            "maxLength": 250
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-11-02"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-12-25"
+          },
+          "maxStudents": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000,
+            "example": 20
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"],
+            "example": "ONLINE"
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "courseId",
+          "mentorId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "maxStudents",
+          "deliveryMode"
+        ]
+      },
+      "UpdateClassDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 250
+          },
+          "mentorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "maxStudents": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048,
+            "description": "Send null to clear the meeting URL"
+          }
+        }
+      },
+      "ScheduleClassSessionDto": {
+        "type": "object",
+        "properties": {
+          "classUnitId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A unit of this class"
+          },
+          "title": {
+            "type": "string",
+            "example": "Buổi 1 — Giới thiệu",
+            "maxLength": 250
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-02T19:00:00+07:00"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-02T21:00:00+07:00"
+          },
+          "roomName": {
+            "type": "string",
+            "example": "Room A1",
+            "maxLength": 150
+          },
+          "meetingUrl": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048
+          }
+        },
+        "required": ["classUnitId", "title", "startsAt", "endsAt"]
+      },
+      "StudentSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sessionNumber": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "roomName": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": ["SCHEDULED", "COMPLETED", "CANCELLED"]
+          },
+          "meetingUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "id",
+          "sessionNumber",
+          "title",
+          "startsAt",
+          "endsAt",
+          "roomName",
+          "status",
+          "meetingUrl"
+        ]
+      },
+      "StudentUnitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentSessionDto"
+            }
+          }
+        },
+        "required": ["id", "position", "title", "sessions"]
+      },
+      "StudentClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentUnitDto"
+            }
+          },
+          "meetingUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor",
+          "units",
+          "meetingUrl"
+        ]
+      },
+      "CourseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048
+          },
+          "priceAmount": {
+            "type": "number",
+            "example": 2500000,
+            "description": "Integer VND amount"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CourseCategoryRefDto"
+          }
+        },
+        "required": ["id", "code", "title", "description", "imgUrl", "priceAmount", "category"]
+      },
+      "CoursePageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "ClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor"
+        ]
+      },
+      "PublicCourseDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "maxLength": 2048
+          },
+          "priceAmount": {
+            "type": "number",
+            "example": 2500000,
+            "description": "Integer VND amount"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CourseCategoryRefDto"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseUnitDto"
+            }
+          },
+          "openClasses": {
+            "description": "Earliest open classes; page through GET /courses/{courseId}/classes for more",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "description",
+          "imgUrl",
+          "priceAmount",
+          "category",
+          "units",
+          "openClasses"
+        ]
+      },
+      "ClassPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "ClassSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sessionNumber": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "roomName": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": ["SCHEDULED", "COMPLETED", "CANCELLED"]
+          }
+        },
+        "required": ["id", "sessionNumber", "title", "startsAt", "endsAt", "roomName", "status"]
+      },
+      "ClassUnitDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "number",
+            "example": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassSessionDto"
+            }
+          }
+        },
+        "required": ["id", "position", "title", "sessions"]
+      },
+      "ClassDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassUnitDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor",
+          "units"
+        ]
+      },
+      "CartItemDto": {
+        "type": "object",
+        "properties": {
+          "classId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "classCode": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseTitle": {
+            "type": "string"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "priceSnapshot": {
+            "type": "number",
+            "description": "VND price shown when the class was added"
+          },
+          "currentPriceAmount": {
+            "type": "number",
+            "description": "Current VND price; this is what checkout charges"
+          },
+          "isPurchasable": {
+            "type": "boolean",
+            "description": "False when the class can no longer be purchased"
+          },
+          "addedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "classId",
+          "classCode",
+          "className",
+          "courseId",
+          "courseTitle",
+          "deliveryMode",
+          "startDate",
+          "endDate",
+          "priceSnapshot",
+          "currentPriceAmount",
+          "isPurchasable",
+          "addedAt"
+        ]
+      },
+      "CartDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItemDto"
+            }
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Sum of current prices in VND; display only"
+          }
+        },
+        "required": ["items", "totalAmount"]
+      },
+      "AddCartItemDto": {
+        "type": "object",
+        "properties": {
+          "classId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "An OPEN class"
+          }
+        },
+        "required": ["classId"]
+      },
+      "CheckoutDto": {
+        "type": "object",
+        "properties": {
+          "paymentType": {
+            "type": "string",
+            "enum": ["PAYOS", "CASH"],
+            "example": "CASH"
+          }
+        },
+        "required": ["paymentType"]
+      },
+      "OrderDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "classId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseTitle": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "priceAmount": {
+            "type": "number",
+            "description": "VND price captured at checkout"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          },
+          "totalAmount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "classId",
+          "courseTitle",
+          "className",
+          "priceAmount",
+          "quantity",
+          "totalAmount"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderCode": {
+            "type": "string",
+            "example": "MD7K3QX9PA2B4C"
+          },
+          "paymentType": {
+            "type": "string",
+            "enum": ["PAYOS", "CASH"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "PAID", "EXPIRED", "CANCELLED"]
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Integer VND total calculated by the server"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Seat hold deadline"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "mentorId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Mentor who collects the cash; null for PayOS orders"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderCode",
+          "paymentType",
+          "status",
+          "totalAmount",
+          "expiresAt",
+          "paidAt",
+          "mentorId",
+          "createdAt",
+          "details"
+        ]
+      },
+      "CheckoutResultDto": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDto"
+            }
+          }
+        },
+        "required": ["orders"]
+      },
+      "OrderPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "providerOrderCode": {
+            "type": "number",
+            "nullable": true,
+            "description": "Numeric payOS orderCode; null for CASH"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["CREATING", "PENDING", "SUCCEEDED", "REQUIRES_REVIEW"]
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "qrCode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Null while creating or after recovery via provider lookup; use checkoutUrl"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "paymentId",
+          "orderId",
+          "providerOrderCode",
+          "status",
+          "checkoutUrl",
+          "qrCode",
+          "expiresAt",
+          "amount"
+        ]
+      },
+      "OrderPaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderCode": {
+            "type": "string",
+            "example": "MD7K3QX9PA2B4C"
+          },
+          "paymentType": {
+            "type": "string",
+            "enum": ["PAYOS", "CASH"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "PAID", "EXPIRED", "CANCELLED"]
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Integer VND total calculated by the server"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Seat hold deadline"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "mentorId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Mentor who collects the cash; null for PayOS orders"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailDto"
+            }
+          },
+          "payment": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "orderCode",
+          "paymentType",
+          "status",
+          "totalAmount",
+          "expiresAt",
+          "paidAt",
+          "mentorId",
+          "createdAt",
+          "details",
+          "payment"
+        ]
+      },
+      "EmptyPaymentRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "WebhookAckDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "object",
+            "example": "00"
+          },
+          "desc": {
+            "type": "object",
+            "example": "success"
+          }
+        },
+        "required": ["code", "desc"]
+      },
+      "ReconciliationEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "providerOrderCode": {
+            "type": "number"
+          },
+          "referenceCode": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string"
+          },
+          "actorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "paymentId",
+          "providerOrderCode",
+          "referenceCode",
+          "amount",
+          "currency",
+          "reason",
+          "source",
+          "actorId",
+          "createdAt"
+        ]
+      },
+      "ReconciliationPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReconciliationEventDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "required": ["items", "total", "page", "pageSize"]
+      },
+      "ReconciliationResultDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": ["status"]
+      },
+      "ConfirmCashDto": {
+        "type": "object",
+        "properties": {
+          "receivedAmount": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Full amount collected in VND; must equal order total"
+          }
+        },
+        "required": ["receivedAmount"]
+      }
+    }
+  }
+}

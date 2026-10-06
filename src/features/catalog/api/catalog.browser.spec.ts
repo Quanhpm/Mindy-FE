@@ -21,6 +21,7 @@ const category = { id, name: 'Web', slug: 'web', description: null, isActive: tr
 const course = {
   id,
   code: 'WEB101',
+  imgUrl: null,
   title: 'Web',
   description: null,
   priceAmount: 2500000,
@@ -151,4 +152,20 @@ describe('catalog adapter contracts', () => {
     await expect(reorderCourseUnits(id, [id], [id])).rejects.toBe(failure);
     expect(authenticatedRequest).toHaveBeenCalledOnce();
   });
+});
+
+it('preserves omitted image, clears blank/null image, and sends changed image only', async () => {
+  vi.mocked(authenticatedRequest).mockResolvedValue(course);
+  const fields = { categoryId: id, title: 'Web', description: '', priceAmount: 2500000 };
+  for (const imgUrl of [undefined, '', null, 'https://cdn.example.com/course.jpg']) {
+    await updateCourse(id, { ...fields, ...(imgUrl === undefined ? {} : { imgUrl }) });
+    const call = vi.mocked(authenticatedRequest).mock.calls.at(-1);
+    const body = JSON.parse(String(call?.[1]?.body));
+    if (imgUrl === undefined) expect(body).not.toHaveProperty('imgUrl');
+    else expect(body.imgUrl).toBe(imgUrl || null);
+  }
+  await createCourse({ ...fields, code: 'WEB101', imgUrl: 'http://cdn.example.com/course.jpg' });
+  expect(
+    JSON.parse(String(vi.mocked(authenticatedRequest).mock.calls.at(-1)?.[1]?.body)).imgUrl,
+  ).toBe('http://cdn.example.com/course.jpg');
 });

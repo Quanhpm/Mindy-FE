@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { courseUnitSchema } from './catalog.schema';
+import { courseImageUrlSchema, courseUnitSchema } from './catalog.schema';
 
 const uuid = z.uuid();
 const dateOnly = z.iso.date({ error: 'Ngày cần hợp lệ theo định dạng YYYY-MM-DD.' });
@@ -13,6 +13,7 @@ const pageFields = {
 export const publicCourseSchema = z.object({
   id: uuid,
   code: z.string(),
+  imgUrl: courseImageUrlSchema.nullable(),
   title: z.string(),
   description: z.string().nullable(),
   priceAmount: z.number().int().min(0).max(1_000_000_000_000),

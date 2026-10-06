@@ -11,6 +11,7 @@ import { Icon } from '@/shared/ui/icon';
 import { Avatar, RoleBadge, StatusBadge } from '@/shared/ui/user-display';
 import { listUsers } from '../api/users.browser';
 import { type UserPage, userFiltersSchema } from '../schemas/user.schema';
+import styles from './users-list.module.css';
 
 export function UsersList() {
   const params = useSearchParams();
@@ -55,10 +56,10 @@ export function UsersList() {
   }
 
   return (
-    <>
-      <div className="page-heading">
+    <div className={styles.root}>
+      <div className={styles.welcome}>
         <div>
-          <p className="eyebrow">QUẢN TRỊ TRUNG TÂM</p>
+          <p className={styles.eyebrow}>MINDY COMMUNITY</p>
           <h1>Người dùng</h1>
           <p className="page-description">Quản lý tài khoản và kết nối mọi người tại Mindy.</p>
         </div>
@@ -67,16 +68,36 @@ export function UsersList() {
           Thêm người dùng
         </Link>
       </div>
-      <div className="info-strip">
-        <span className="info-icon">
-          <Icon name="users" size={25} />
-        </span>
-        <div>
-          <strong>Mỗi tài khoản, một hành trình học tập.</strong>
-          <p>Phân quyền phù hợp để học viên và đội ngũ bắt đầu cùng nhau.</p>
-        </div>
-        <span className="strip-label">MINDY COMMUNITY</span>
-      </div>
+      <section className={styles.shortcuts} aria-label="Lọc nhanh theo vai trò">
+        {roles.map((role) => (
+          <button
+            type="button"
+            key={role}
+            className={styles[`role${role}`]}
+            aria-pressed={filters.role === role}
+            onClick={() => change('role', filters.role === role ? '' : role)}
+          >
+            <span className={styles.shortcutIcon}>
+              <Icon
+                name={role === 'ADMIN' ? 'shield' : role === 'MENTOR' ? 'book' : 'users'}
+                size={21}
+              />
+            </span>
+            <strong>{roleLabels[role]}</strong>
+            <span>
+              {role === 'ADMIN'
+                ? 'Vận hành & quản lý trung tâm'
+                : role === 'MENTOR'
+                  ? 'Đồng hành cùng lớp học'
+                  : 'Cộng đồng học tập Mindy'}
+            </span>
+            <span className={styles.shortcutAction}>
+              {filters.role === role ? 'Đang chọn · Bỏ lọc' : 'Xem danh sách'}{' '}
+              <Icon name="chevron" size={14} />
+            </span>
+          </button>
+        ))}
+      </section>
       <section className="card users-card" aria-labelledby="users-title">
         <div className="card-heading">
           <div className="inline-heading">
@@ -214,6 +235,6 @@ export function UsersList() {
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }

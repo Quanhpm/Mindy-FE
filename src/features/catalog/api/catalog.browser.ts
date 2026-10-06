@@ -89,12 +89,16 @@ export async function getAdminCourse(id: string, signal?: AbortSignal): Promise<
   return parseResponse(courseDetailSchema, await authenticatedRequest(coursePath(id), { signal }));
 }
 export async function createCourse(input: CourseCreateInput): Promise<CourseDetail> {
-  const { description, ...fields } = courseCreateSchema.parse(input);
+  const { description, imgUrl, ...fields } = courseCreateSchema.parse(input);
   return parseResponse(
     courseDetailSchema,
     await authenticatedRequest('/admin/courses', {
       method: 'POST',
-      body: JSON.stringify({ ...fields, ...(description ? { description } : {}) }),
+      body: JSON.stringify({
+        ...fields,
+        ...(imgUrl ? { imgUrl } : {}),
+        ...(description ? { description } : {}),
+      }),
     }),
   );
 }
@@ -102,6 +106,7 @@ export async function updateCourse(id: string, input: CourseEditInput): Promise<
   const payload = courseUpdatePayloadSchema.parse({
     ...input,
     description: input.description || null,
+    ...(input.imgUrl === '' ? { imgUrl: null } : {}),
   });
   return parseResponse(
     courseDetailSchema,
@@ -114,7 +119,10 @@ export async function addCourseUnit(id: string, input: UnitInput): Promise<Cours
     courseUnitSchema,
     await authenticatedRequest(`${coursePath(id)}/units`, {
       method: 'POST',
-      body: JSON.stringify({ ...fields, ...(description ? { description } : {}) }),
+      body: JSON.stringify({
+        ...fields,
+        ...(description ? { description } : {}),
+      }),
     }),
   );
 }

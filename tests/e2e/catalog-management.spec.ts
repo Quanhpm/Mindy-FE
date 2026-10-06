@@ -28,6 +28,7 @@ async function mockCatalog(
   let course = {
     id: courseId,
     code: 'WEB101',
+    imgUrl: null,
     title: options.title ?? 'Lập trình Web',
     description: 'Mô tả khóa học' as string | null,
     priceAmount: 2500000,

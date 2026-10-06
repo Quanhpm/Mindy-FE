@@ -21,7 +21,7 @@ export function safeReturnTo(value: string | null, fallback: string): string {
     if (url.origin !== 'https://mindy.invalid') return fallback;
     const id = '[a-f\\d]{8}-[a-f\\d]{4}-[a-f\\d]{4}-[a-f\\d]{4}-[a-f\\d]{12}';
     const accepted = new RegExp(
-      `^/(?:account|cart|checkout|orders(?:/${id})?|courses(?:/${id}(?:/units/${id})?)?|classes/${id}|management/(?:users|course-categories|courses|classes)(?:/(?:new|${id}))?)$`,
+      `^/(?:account|cart|checkout|orders(?:/${id})?|payment/result|mentor/cash-orders|learning/classes/${id}(?:/preview)?|courses(?:/${id}(?:/units/${id})?)?|classes/${id}|management/payments/reconciliation|management/(?:users|course-categories|courses|classes)(?:/(?:new|${id}))?)$`,
       'i',
     );
     if (!accepted.test(url.pathname)) return fallback;

@@ -162,7 +162,7 @@ async function mockCommerce(
         });
       const order = orders.find((item) => item.id === id);
       return order
-        ? route.fulfill({ json: order })
+        ? route.fulfill({ json: { ...order, payment: null } })
         : route.fulfill({ status: 404, json: { code: 'ORDER_NOT_FOUND', message: 'Not found' } });
     }
     return route.fulfill({ status: 404, json: { code: 'NOT_FOUND', message: 'Not found' } });
@@ -350,6 +350,7 @@ test('orders URL filters/pagination and account switch/logout clear private snap
   });
   await expect(page.getByRole('heading', { name: 'Chưa có đơn phù hợp.' })).toBeVisible();
   await expect(page.getByRole('article')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await expect(page.getByText('MD-CASH-1', { exact: true })).toHaveCount(0);

@@ -3,7 +3,15 @@ import { authenticatedRequest } from '@/features/auth/client';
 import { announceCartChanged } from '@/features/cart/client';
 import { ApiError } from '@/shared/lib/http/api-error';
 import { orderIds, orderPageFixture, ordersFixture } from '../test-fixtures';
-import { checkout, getOrder, listOrders } from './orders.browser';
+import {
+  checkout,
+  confirmCashOrder,
+  getOrder,
+  listMentorCashOrders,
+  listOrders,
+  providerOrderCodeSchema,
+  resolvePaymentResult,
+} from './orders.browser';
 
 vi.mock('@/features/auth/client', () => ({ authenticatedRequest: vi.fn() }));
 vi.mock('@/features/cart/client', () => ({ announceCartChanged: vi.fn() }));
@@ -53,5 +61,77 @@ describe('own orders API contract', () => {
       '/me/orders?page=2&pageSize=10&status=PENDING',
       { signal },
     );
+  });
+});
+
+it('keeps payment in detail, accepts null, and keeps list/checkout DTOs separate', async () => {
+  const order = ordersFixture[0];
+  if (!order) throw new Error('Missing fixture');
+  for (const payment of [
+    null,
+    {
+      paymentId: order.id,
+      orderId: order.id,
+      providerOrderCode: null,
+      status: 'CREATING',
+      checkoutUrl: null,
+      qrCode: null,
+      amount: order.totalAmount,
+      expiresAt: order.expiresAt,
+    },
+  ]) {
+    vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, payment });
+    expect(await getOrder(order.id)).toEqual({ ...order, payment });
+  }
+  vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, payment: {} });
+  await expect(getOrder(order.id)).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
+});
+
+it('maps numeric provider codes, rejects invalid code and mismatched payment without replay', async () => {
+  const order = ordersFixture[0];
+  if (!order) throw new Error('Missing fixture');
+  const payment = {
+    paymentId: order.id,
+    orderId: order.id,
+    providerOrderCode: 123456,
+    status: 'PENDING',
+    checkoutUrl: null,
+    qrCode: null,
+    amount: order.totalAmount,
+    expiresAt: order.expiresAt,
+  };
+  vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, paymentType: 'PAYOS', payment });
+  expect((await resolvePaymentResult('123456')).id).toBe(order.id);
+  expect(authenticatedRequest).toHaveBeenCalledExactlyOnceWith(
+    '/me/orders/payment-result?orderCode=123456',
+    { signal: undefined },
+  );
+  for (const code of ['0', '-1', 'MD-123', '1e5', '01', '9007199254740992'])
+    expect(providerOrderCodeSchema.safeParse(code).success).toBe(false);
+  vi.mocked(authenticatedRequest).mockResolvedValue({
+    ...order,
+    paymentType: 'PAYOS',
+    payment: { ...payment, providerOrderCode: 999 },
+  });
+  await expect(resolvePaymentResult('123456')).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
+});
+it('mentor list uses pagination and confirmation sends only the received integer amount', async () => {
+  const order = ordersFixture[0];
+  if (!order) throw new Error('Missing fixture');
+  vi.mocked(authenticatedRequest).mockResolvedValue(orderPageFixture([order]));
+  await listMentorCashOrders(2);
+  expect(authenticatedRequest).toHaveBeenLastCalledWith('/mentor/cash-orders?page=2&pageSize=20', {
+    signal: undefined,
+  });
+  vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, status: 'PAID' });
+  await confirmCashOrder(order.id, order.totalAmount);
+  expect(authenticatedRequest).toHaveBeenLastCalledWith(`/mentor/cash-orders/${order.id}/confirm`, {
+    method: 'POST',
+    body: JSON.stringify({ receivedAmount: order.totalAmount }),
+    signal: undefined,
+  });
+  vi.mocked(authenticatedRequest).mockResolvedValue({ ...order, status: 'PENDING' });
+  await expect(confirmCashOrder(order.id, order.totalAmount)).rejects.toMatchObject({
+    code: 'INVALID_RESPONSE',
   });
 });

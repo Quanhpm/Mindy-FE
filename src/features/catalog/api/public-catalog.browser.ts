@@ -1,4 +1,5 @@
-import type { z } from 'zod';
+import { z } from 'zod';
+import { authenticatedRequest } from '@/features/auth/client';
 import { ApiError } from '@/shared/lib/http/api-error';
 import { request } from '@/shared/lib/http/browser';
 import {
@@ -17,6 +18,18 @@ function parseResponse<T>(schema: z.ZodType<T>, value: unknown): T {
   if (!parsed.success)
     throw new ApiError(502, 'INVALID_RESPONSE', 'Dữ liệu khóa học chưa đúng định dạng.');
   return parsed.data;
+}
+export async function getCashClassPreview(
+  id: string,
+  signal?: AbortSignal,
+): Promise<PublicClassDetail> {
+  z.uuid().parse(id);
+  const result = parseResponse(
+    publicClassDetailSchema,
+    await authenticatedRequest(`/me/classes/${id}/preview`, { signal }),
+  );
+  if (result.id !== id) throw new ApiError(502, 'INVALID_RESPONSE', 'Lớp trả về không khớp.');
+  return result;
 }
 export async function listPublicCourses(
   query: string,

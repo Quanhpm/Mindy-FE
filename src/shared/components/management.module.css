@@ -2,25 +2,33 @@
   min-width: 0;
 }
 .eyebrow {
-  color: var(--green);
   font-size: 10px;
-  letter-spacing: 1.8px;
+  letter-spacing: 1.2px;
   font-weight: 700;
-  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
 }
 .heading {
   display: flex;
-  align-items: flex-start;
+  align-items: start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
+}
+.heading p:last-child {
+  color: var(--muted);
+  font-size: 15px;
 }
 .toolbar {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: end;
   margin-bottom: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 20px 22px;
+  border-radius: 20px;
 }
 .field {
   display: flex;
@@ -29,16 +37,16 @@
   min-width: 0;
 }
 .field label {
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 14px;
+  font-weight: 700;
 }
 .field :is(input, select, textarea) {
   width: 100%;
-  min-height: 49px;
+  min-height: 48px;
   padding: 12px 14px;
-  background: white;
+  background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 12px;
   color: var(--ink);
   font: inherit;
 }
@@ -52,7 +60,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 .button,
@@ -60,68 +68,90 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 10px 18px;
+  min-height: 46px;
+  padding: 11px 18px;
   gap: 8px;
-  font-weight: 650;
-  font-size: 13px;
-  border: 1px solid var(--green);
-  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  transition: background 0.2s;
 }
 .button {
-  background: var(--green);
-  color: white;
+  background: var(--action);
+  color: var(--paper);
 }
 .button:hover:not(:disabled) {
-  background: var(--green-dark);
+  background: var(--action-hover);
 }
 .secondaryButton {
-  background: white;
-  color: var(--green);
+  background: var(--paper);
+  color: var(--action);
+  border-color: var(--line);
 }
 .secondaryButton:hover:not(:disabled) {
   background: var(--soft);
 }
 .notice {
-  padding: 16px 20px;
-  border-left: 3px solid var(--green);
+  padding: 18px 22px;
   background: var(--soft);
-  color: var(--green);
+  color: var(--action);
   margin-bottom: 24px;
   overflow-wrap: anywhere;
+  border-radius: 17px;
+  font-size: 15px;
 }
 .tableWrap {
+  position: relative;
   max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
 }
 .table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  font-size: 15px;
 }
 .table th,
 .table td {
-  padding: 16px 20px;
+  padding: 17px 22px;
   border-bottom: 1px solid var(--line);
 }
+.table th {
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 700;
+}
+.table tr:last-child td {
+  border-bottom: 0;
+}
 .table a {
-  color: var(--green);
+  color: var(--action);
+  font-weight: 700;
+}
+.table a:hover {
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
 }
 .pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 22px;
   flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--muted);
 }
 .panel {
   padding: 28px;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--paper);
+  border-radius: 22px;
+  min-width: 0;
 }
 @media (max-width: 600px) {
   .heading {
@@ -130,12 +160,17 @@
   }
   .toolbar {
     gap: 12px;
+    padding: 18px;
   }
   .toolbar > * {
     flex: 1 1 140px;
     min-width: 0;
   }
   .panel {
-    padding: 20px;
+    padding: 22px;
+  }
+  .table th,
+  .table td {
+    padding: 16px;
   }
 }

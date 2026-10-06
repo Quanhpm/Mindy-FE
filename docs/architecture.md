@@ -1,3 +1,5 @@
+> Cập nhật UI 06/10/2026: giao diện Mindy mới theo UI.md, bỏ UI Learnthru/Ocean cũ. Theme toàn dự án tại shared/config/theme.ts; giữ API và logic nghiệp vụ.
+
 # Frontend architecture
 
 ## Phạm vi
@@ -27,11 +29,13 @@ src/
     cart/               student cart and public class AddToCartButton
     orders/             checkout, own orders and unknown-result recovery
     compiler/           local JavaScript playground and separate runner adapter
-    ui-exploration/     selected Ocean Editorial UI, preview fixtures and local interactions
+    home/               landing content and scoped GSAP motion
+    payments/           PayOS API and reconciliation
+    learning/           private class viewer
   shared/
     api/contracts/      schema API dùng chung giữa auth và users
     components/         feedback, management primitives and UnitWorkspace
-    config/             typed server env
+    config/             typed server env and global Mindy theme
     lib/                HTTP và date formatting
     ui/                 icon, brand, avatar, role/status display
 tests/e2e/              user journeys với API mô phỏng
@@ -41,7 +45,8 @@ scripts/                module boundary check
 `app -> features -> shared`. Approved cross-feature client dependencies:
 `users -> auth/client`, `catalog -> auth/client, cart/client`,
 `classes -> auth/client, catalog/client, users/client`, `cart -> auth/client`, và
-`orders -> auth/client, cart/client`. Catalog dùng public AddToCartButton của cart;
+`orders -> auth/client, cart/client, payments/client`, `payments -> auth/client`,
+`learning -> auth/client`. Catalog dùng public AddToCartButton của cart;
 orders đọc cart và gửi thông báo invalidation không chứa dữ liệu cá nhân. Classes dùng public picker
 API từ catalog/users để đọc toàn bộ active courses/mentors; không import private
 feature code. Auth không phụ thuộc ngược. Script check-boundaries.mjs áp đúng các
@@ -50,21 +55,29 @@ consumer auth/users và class picker. Shared management styles và UnitWorkspace
 có consumer catalog/classes.
 Component của một feature dùng ở nhiều route vẫn ở trong feature.
 
-Giao diện đã chọn là Ocean Editorial (mẫu 07), gồm Home/Courses/Cart/Login/Register/Admin.
-`/ui-lab` chuyển tới `/ui-lab/ocean-editorial/home`; các mẫu khác đã xóa và trả 404.
-Preview có CSS Module/tokens riêng, không bootstrap session hoặc gọi API nghiệp vụ;
-các route sản phẩm giữ feature hiện hành. Courses/Cart dùng fixture tại feature, provider chỉ giữ ID hợp lệ trong sessionStorage; không gọi API hoặc thực hiện thanh toán.
-[Hướng dẫn giao diện đã chọn](./ui-exploration/README.md).
+Thiết kế Mindy mới dùng Nunito Variable local cho header public và các trang bên trong; auth/hero giữ typography riêng. Theme typed tại shared/config/theme.ts đang dùng coastal từ docs/pallete3.png.
+Root layout phát CSS variables; globals.css tạo màu dẫn xuất; CSS Modules chỉ dùng
+token. Logo và palette lấy từ docs, mascot phục vụ từ public/mindy.
+AppShell ghép MindyAdminShell theo role ADMIN/STUDENT/MENTOR: sidebar bên trái,
+workspace bên phải; profile topbar có dropdown tài khoản/trang chủ/đăng xuất,
+đóng bằng Escape/click ngoài/Tab ra ngoài. Mobile sidebar dùng native dialog.
+PublicShell giữ header public. AuthPage dùng intro + form trong 100dvh, mobile ẩn intro, màn hình thấp dùng form hai cột. Form cuộn cục bộ khi lỗi hoặc bàn phím làm thiếu chiều cao, không tràn trang.
+HomeContent có GSAP scoped/reduced-motion, FeaturedCourses dùng GET /courses
+qua adapter catalog; app ghép hai feature bằng ReactNode, không thêm dependency
+chéo. UI preview cũ đã gỡ, các URL lịch sử redirect về /.
 
-Product identity/management dùng Ocean Editorial tokens tại app/globals.css:
-primary #164e73, ink #183246, soft #eaf4fb, border #d8e5ee, radius 3px và Avenir Next
-font stack. Product shell có header/nav, drawer native dialog trên mobile và
-profile thật; không chứa thống kê fixture. Preview giữ scope/fixtures riêng.
+Orders sở hữu payment-result mapping và MENTOR cash orders; catalog sở hữu
+CASH preview dùng public-shaped schema, không có meeting URL. Ba route mới:
+/payment/result, /mentor/cash-orders, /learning/classes/:classId/preview.
+PaymentPanel dùng react-qr-code để encode nguyên chuỗi qrCode thành SVG,
+không đưa dữ liệu QR đến dịch vụ ngoài. QR chỉ hiển thị khi order/payment pending,
+còn hạn và dữ liệu đọc hợp lệ; nullable QR vẫn có checkoutUrl fallback.
+Nguồn API hiện hành: Swagger live và snapshot docs/swagger-live-2026-10-06.json.
 
 Course management units và class units/sessions dùng shared UnitWorkspace:
 rail 300px và content minmax(0,1fr), mỗi vùng scroll riêng, chiều cao theo viewport
 và vị trí workspace, min-height/min-width 0, vùng scroll hỗ trợ keyboard. Mobile
-≤850px dùng native modal drawer (Escape/focus trap/return focus); selection thay
+≤850px hoặc workspace thực tế ≤640px dùng native modal drawer (Escape/focus trap/return focus); selection thay
 đổi đóng drawer. Feature giữ unit selection trên URL, hỗ trợ reload/history và
 unavailable state. Course fields ở tab riêng, class fields thu gọn mặc định.
 Ảnh Coursera vẫn được lưu trong repo. Public unit viewer dùng cùng workspace,
@@ -77,7 +90,7 @@ chứa secrets phải đánh dấu `server-only`. Không export chung server và
 
 ## Rendering và session
 
-- Landing render ở server; form và dashboard tương tác ở client.
+- Route landing compose ở server; HomeContent motion và FeaturedCourses tương tác ở client.
 - Các trang được bảo vệ chỉ lấy dữ liệu cá nhân sau khi bootstrap session hoàn tất.
 - Backend kiểm tra authentication, role và ownership trên mỗi endpoint. AuthBoundary
   chỉ điều khiển UX, không phải ranh giới bảo mật duy nhất.
@@ -85,7 +98,7 @@ chứa secrets phải đánh dấu `server-only`. Không export chung server và
 - Product cart/checkout/orders chỉ đọc sau session STUDENT hợp lệ; component dữ
   liệu private được key theo userId và hủy request khi unmount. Không giữ cart/order
   trong sessionStorage hoặc provider cache. Payload-free cart-change event yêu cầu
-  từng consumer đọc lại giỏ của phiên hiện hành. UI Lab giữ preview cart riêng.
+  từng consumer đọc lại giỏ của phiên hiện hành.
 - Browser giữ cookie HttpOnly do NestJS phát hành qua adapter cùng origin.
 - Access cookie `Path=/`; refresh cookie `Path=/api/v1/auth/refresh`.
 - Bootstrap gọi `/auth/me`; nếu 401 thì khôi phục phiên rồi đọc tiếp.
@@ -132,15 +145,15 @@ không tăng giới hạn payload identity để chuyển file qua đây.
 
 - Session: auth context; form: React Hook Form; filter/page: URL.
 - Dữ liệu users: request theo route/filter, hủy request cũ khi chuyển trang.
-- Identity/catalog/classes schemas theo backend feat(api)/booking-sprint @577af2f.
+- Identity/catalog/classes/payment schemas theo backend Feat/Webhooktest @5c9e581.
 - Form payload tách response; phone rỗng được bỏ khỏi create payload.
 - Datetime JSON là string; hiển thị múi giờ Asia/Ho_Chi_Minh.
-- Types hiện được quản lý bằng Zod schemas đối chiếu controller/DTO/source @577af2f.
+- Types hiện được quản lý bằng Zod schemas đối chiếu controller/DTO/source @5c9e581.
   Chưa thêm generated OpenAPI; DTO admin password đã khớp 12–128, không còn mismatch cũ.
 
 ## Quy ước
 
-Trước khi tạo hoặc sửa UI, đọc và tuân theo [quy tắc Ocean Editorial](./ui-rules.md).
+Trước khi tạo hoặc sửa UI, đọc và tuân theo [quy tắc UI sản phẩm](./ui-rules.md).
 Đây là chuẩn thiết kế cho chức năng mới; nguồn tham khảo và phạm vi preview/sản phẩm
 được mô tả trong tài liệu đó.
 
@@ -148,3 +161,27 @@ File kebab-case; component PascalCase; type public rõ ràng; dùng import type 
 Chỉ tạo shared abstraction khi có consumer thật. Test có `.spec.ts`, đặt cạnh source.
 Commit theo Conventional Commits. Chạy `pnpm hooks:install` sau khi clone để bật pre-commit;
 CI vẫn là quality gate độc lập. Mỗi thay đổi cập nhật progress và tài liệu liên quan.
+
+## Phase 2.2 integration
+
+Payments owns the Payment schema, create/reuse API and ADMIN review UI. Learning owns
+the private StudentClass schema, read client and unit workspace. Order list/checkout
+retain Order; detail uses OrderDetail with required nullable payment. Public/admin
+course responses include nullable imgUrl. Schemas match BE 5c9e581.
+
+Private routes: `/learning/classes/[classId]` and
+`/management/payments/reconciliation`. Private components are keyed by principal and
+abort reads/mutations on unmount. No private browser storage. Order detail serializes
+reads, polls pending every 5 seconds while visible and revalidates on visibility
+return. A failed creation requires read recovery before deliberate retry on the same
+order. Checkout still only creates the order; PayOS link creation is a separate action.
+
+Learning includes timetable/units/private meeting URLs; it has no inferred progress.
+Reconciliation shows review events rather than all payments and cannot manually grant
+access/refund/resolve review. Backend alone decides settlement and access.
+
+`scripts/payment-fixture-smoke.mjs` exercises FE BFF with real cookie guards and the
+companion backend HTTP fixture. It requires a disposable local database named
+`mindy_fe_phase22_*test`; the backend fixture resets only its derived `_http_test`
+database. Build BE and FE first, pass TEST_DATABASE_URL for the disposable container,
+then run the script. Never point this script at application/VPS databases.

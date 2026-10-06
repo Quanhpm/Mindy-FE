@@ -51,12 +51,18 @@ export function UnitWorkspace({
   useEffect(() => {
     const query = window.matchMedia('(max-width: 850px)');
     const update = () => {
-      setMobile(query.matches);
-      if (!query.matches) dialog.current?.close();
+      const compact = query.matches || (workspace.current?.clientWidth ?? 1000) <= 640;
+      setMobile(compact);
+      if (!compact) dialog.current?.close();
     };
+    const observer = new ResizeObserver(update);
+    if (workspace.current) observer.observe(workspace.current);
     update();
     query.addEventListener('change', update);
-    return () => query.removeEventListener('change', update);
+    return () => {
+      observer.disconnect();
+      query.removeEventListener('change', update);
+    };
   }, []);
   useEffect(() => {
     void selectionKey;
@@ -102,6 +108,7 @@ export function UnitWorkspace({
       style={height === undefined ? undefined : { height }}
       className={styles.workspace}
       data-unit-workspace
+      data-compact={mobile}
     >
       <button
         ref={trigger}

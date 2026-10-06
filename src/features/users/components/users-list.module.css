@@ -1,0 +1,124 @@
+.root {
+  min-width: 0;
+}
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--mindy-muted);
+  margin-bottom: 12px;
+}
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 26px;
+}
+.shortcuts > button {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 14px;
+  row-gap: 3px;
+  align-items: center;
+  text-align: left;
+  padding: 20px;
+  border: 1px solid var(--mindy-line);
+  border-radius: 19px;
+  background: var(--mindy-white);
+  color: var(--mindy-ink);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.shortcuts > button[aria-pressed="true"] {
+  border-color: var(--mindy-action);
+  background: var(--mindy-soft);
+}
+.shortcutIcon {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--mindy-soft);
+}
+.shortcuts strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+.shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+  font-size: 10px;
+  color: var(--mindy-muted);
+}
+.shortcutAction {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  margin-top: 10px;
+}
+.roleADMIN .shortcutIcon {
+  background: var(--mindy-soft);
+}
+.roleMENTOR .shortcutIcon {
+  background: color-mix(in srgb, var(--mindy-secondary) 50%, var(--mindy-white));
+}
+.roleSTUDENT .shortcutIcon {
+  background: color-mix(in srgb, var(--mindy-accent) 50%, var(--mindy-white));
+}
+@media (max-width: 1150px) {
+  .shortcuts > button {
+    padding: 17px;
+    grid-template-columns: 1fr;
+  }
+  .shortcutIcon {
+    grid-row: auto;
+    margin-bottom: 10px;
+  }
+  .shortcutAction {
+    grid-column: 1;
+  }
+  .shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+    min-height: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .welcome {
+    align-items: start;
+    flex-direction: column;
+    gap: 17px;
+  }
+  .shortcuts {
+    gap: 8px;
+  }
+  .shortcuts > button {
+    padding: 14px 10px;
+    border-radius: 15px;
+  }
+  .shortcuts strong {
+    font-size: 14px;
+  }
+  .shortcutIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+  .shortcuts > button > span:not(.shortcutIcon):not(.shortcutAction) {
+    display: none;
+  }
+  .shortcutAction {
+    font-size: 9px;
+    gap: 3px;
+  }
+  .shortcutAction svg {
+    display: none;
+  }
+}

@@ -7,7 +7,7 @@
   margin: 0;
   min-width: 0;
   display: grid;
-  gap: 20px;
+  gap: 22px;
 }
 .formGrid {
   display: grid;
@@ -16,59 +16,63 @@
 }
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 .meta {
   display: flex;
   gap: 12px 24px;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin: 0 0 24px;
 }
 .sections {
   display: grid;
-  gap: 32px;
+  gap: 30px;
 }
 .sectionHeading {
   margin: 0 0 20px;
-  font-size: 22px;
+  font-size: 23px;
 }
 .unitLink {
-  padding: 16px;
+  padding: 16px 18px;
   display: grid;
-  gap: 6px;
+  gap: 7px;
   color: var(--text);
-  text-decoration: none;
-  border-bottom: 1px solid var(--border);
   overflow-wrap: anywhere;
+  border-radius: 13px;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.unitLink:hover {
+  background: var(--soft);
 }
 .unitLink[aria-current="page"] {
   background: var(--soft);
-  border-left: 3px solid var(--primary);
-  padding-left: 13px;
   font-weight: 700;
+  color: var(--action);
 }
 .unitLink small {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 400;
 }
-.unitLink:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: -3px;
-}
 .session {
-  border-top: 1px solid var(--border);
-  padding: 20px 0;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 22px;
+  margin-bottom: 15px;
   overflow-wrap: anywhere;
+  background: var(--paper);
 }
 .session h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
+  margin: 0 0 9px;
+  font-size: 19px;
 }
 .session p {
   margin: 6px 0;
+  font-size: 15px;
+  color: var(--muted);
 }
 .confirm {
   display: flex;
@@ -78,25 +82,32 @@
 }
 .readiness {
   margin: 20px 0;
-  padding: 16px 20px;
+  padding: 20px 24px;
   background: var(--soft);
-  border-left: 3px solid var(--primary);
+  border-radius: 17px;
+  font-size: 15px;
 }
 .summary {
   margin-bottom: 24px;
-  padding: 16px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
 }
 .settings {
-  margin-top: 16px;
+  margin-top: 18px;
+  background: var(--paper);
+  padding: 14px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
 }
 .settings summary {
   min-height: 44px;
   padding: 10px 0;
-  font-weight: 650;
-  color: var(--primary);
+  font-weight: 700;
+  color: var(--action);
   cursor: pointer;
+  font-size: 15px;
 }
 .settingsContent {
   padding: 20px 0;
@@ -104,5 +115,9 @@
 @media (max-width: 600px) {
   .formGrid {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .session,
+  .summary {
+    padding: 20px;
   }
 }

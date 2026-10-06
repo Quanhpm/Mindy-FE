@@ -1,7 +1,29 @@
-# API contract — NestJS feat(api)/booking-sprint / 577af2f
+# API contract — Swagger live / 06-10-2026
 
-Đối chiếu controller/DTO/guard/service checkout `../Mindy-BE` ngày 2026-10-02,
-HEAD `577af2f0e11607ed827be9ac1f9682a9c629f7b8`. Backend không đổi revision.
+Nguồn hiện hành: https://api.quanh123.id.vn/docs#/ và snapshot
+[swagger-live-2026-10-06.json](./swagger-live-2026-10-06.json).
+Đã nối 4 endpoint còn thiếu: GET /me/orders/payment-result (chỉ query orderCode),
+GET /mentor/cash-orders (page/pageSize), POST /mentor/cash-orders/:orderId/confirm
+(chỉ receivedAmount), GET /me/classes/:classId/preview (public-shaped ClassDetail).
+Payment.providerOrderCode là number|null bắt buộc; qrCode là payload string|null,
+được encode nguyên văn thành QR trên FE, không phải URL ảnh. QR null dùng checkoutUrl.
+Mentor chỉ xác nhận số nguyên VND đúng toàn bộ tổng đơn; lỗi/mất response yêu cầu
+đọc danh sách trước deliberate retry. Return/cancel/status từ URL PayOS không
+xác nhận PAID; result mapping đọc quyền owner rồi mở internal order.
+Không proxy readiness và webhook provider. Danh sách lớp/progress vẫn chờ BE.
+
+## Snapshot tích hợp cũ (giữ để truy vết)
+
+> Snapshot integration FE tại `5c9e581`. Audit 06/10/2026 xác minh BE hiện tại
+> là `01fc1eb`: đã có `GET /me/orders/payment-result`, `GET /mentor/cash-orders`,
+> `POST /mentor/cash-orders/:orderId/confirm`, `GET /me/classes/:classId/preview`
+> và `Payment.providerOrderCode: number|null`; FE chưa tích hợp các phần mới này.
+> Các ghi chú “chờ BE” về result mapping/CASH phía dưới thuộc snapshot cũ.
+> Contract mới và logic bàn giao: [logic-flow.md](./logic-flow.md),
+> [BE Phase 2 contract](../../Mindy-BE/docs/PHASE_2_FE_CONTRACT.md).
+
+Đối chiếu controller/DTO/guard/service checkout `../Mindy-BE` ngày 2026-10-05,
+HEAD `5c9e581`; nhánh dev đã merge bản này.
 Tất cả path bên dưới được thêm prefix `/api/v1`. Schemas FE kiểm tra runtime;
 backend sở hữu auth, permission, transaction và lifecycle.
 
@@ -91,12 +113,12 @@ Hướng dẫn cấu hình OAuth origin/redirect URI tại
 Categories list page/pageSize; create `{ name, slug?, description? }`.
 Không gửi slug rỗng; backend tự sinh khi bỏ slug. Chưa có edit/delete/inactive list.
 Course list page/pageSize/categoryId/isActive; không search/sort giả.
-Create `{ categoryId, code, title, description?, priceAmount }`, course inactive.
-Price số nguyên VND không âm. PATCH chỉ categoryId/title/description/priceAmount,
+Create `{ categoryId, code, title, description?, priceAmount, imgUrl? }`, course inactive.
+Price số nguyên VND không âm. PATCH chỉ categoryId/title/description/priceAmount/imgUrl,
 không nhận code/isActive; description null để xóa mô tả. Activate command cần
 category active và ít nhất một unit.
 
-Management course fields gồm id/code/title/description/priceAmount/category,
+Management course fields gồm id/code/title/description/imgUrl/priceAmount/category,
 isActive/createdAt/updatedAt. Detail thêm units[] với
 id/unitNumber/title/description/requiredScorePercent.
 Add `{ title, description?, requiredScorePercent? }`, score 0–100, tối đa 2 số
@@ -158,7 +180,7 @@ seat holds**; cần đợi order expiry theo backend hiện tại, đã ghi tron
 Course list query `page,pageSize,categoryId,deliveryMode,startsFrom,startsTo`;
 course classes query bỏ `categoryId`. Date filters là ngày bắt đầu lớp, định dạng
 YYYY-MM-DD; deliveryMode ONLINE/OFFLINE. Không có search, level hay price sort.
-Course item có id/code/title/description nullable/priceAmount/category{id,name,slug}.
+Course item có id/code/title/description nullable/imgUrl nullable/priceAmount/category{id,name,slug}.
 Detail thêm units theo thứ tự BE và openClasses nhóm đầu; pagination classes dùng
 endpoint riêng. Class có courseId/code/name/startDate/endDate/deliveryMode/maxStudents,
 availableSeats và mentor{id,displayName nullable}; giá đọc từ course, server tính
@@ -193,7 +215,7 @@ Private data không persist browser storage và bị loại khi session/user tha
 | --- | --- | --- |
 | POST | /me/cart/checkout | 201 `{orders:[Order]}`, body chỉ `{paymentType}` |
 | GET | /me/orders | Page orders, query page/pageSize/status |
-| GET | /me/orders/:orderId | Order, STUDENT owner |
+| GET | /me/orders/:orderId | Order + payment nullable, STUDENT owner |
 
 paymentType CASH/PAYOS. CASH tách theo mentor; PAYOS một order cho cả giỏ. Hiển thị
 tất cả orders trả về. Order gồm id/orderCode/paymentType/status/totalAmount/expiresAt/
@@ -204,17 +226,19 @@ tự chuyển trạng thái. Owner denial trả 403 ORDER_ACCESS_DENIED, thiếu
 
 Checkout chỉ tạo đơn PENDING và giữ chỗ PENDING_PAYMENT. TTL mặc định PAYOS 15 phút,
 CASH 48 giờ; job server đổi EXPIRED và nhả enrollment. Countdown chỉ tham khảo,
-UI đọc server khi đến deadline; không suy ra PAID/ACTIVE hay tự đổi EXPIRED.
+UI poll pending mỗi 5 giây khi visible và đọc lại khi trở lại tab;
+không suy ra PAID/ACTIVE hay tự đổi EXPIRED.
 Timeout/response không xác định phải đọc own orders và cart trước khi cho retry
 có chủ đích; không replay checkout do lỗi mạng. Backend transaction xóa giỏ khi
 checkout thành công. Order cash chỉ có mentorId; không gọi admin users để lấy tên.
-Chưa có payment link/QR/cash confirmation; UI nói rõ chưa hoàn tất thanh toán.
+PayOS link đã có; student tạo/reuse link trên chi tiết đơn. CASH confirmation chưa có.
 
 ## Adapter, lỗi và phạm vi còn lại
 
 Allowlist exact method/path cho identity, catalog/classes public/admin và student
 cart/orders; PUT chỉ reorder, DELETE chỉ remove cart item UUID. Google có static
-routes riêng. Payment và API học chưa có controller vẫn bị từ chối.
+routes riêng. Allowlist thêm chính xác PayOS/student class/ADMIN reconciliation;
+provider webhook và các API học chưa implement vẫn bị từ chối.
 Mutation bắt buộc Origin=APP_ORIGIN,
 JSON body ≤32 KiB, timeout 10s, no-store/Vary Cookie, không forward cookie tracking.
 Backend error `{ statusCode, code, message: string|string[], details?, requestId? }`.
@@ -223,10 +247,49 @@ Validation422 thường code HTTP_ERROR; không giả VALIDATION_FAILED. Phân b
 
 Prompt 5–7 nối API hiện có; Prompt 8 ghi riêng quality/mock QA, local live smoke
 và phần chưa xác minh tại [full audit](./implement_phase/FULL_AUDIT_2026_10_04.md).
-Backend checkout hiện chỉ tạo PENDING/PENDING_PAYMENT, chưa có payment/ACTIVE
-learning APIs. Không đánh dấu toàn Phase2 complete. Không sửa nghiệp vụ/migration
+Checkout tạo PENDING/PENDING_PAYMENT; PayOS settlement và ACTIVE class access đã có.
+Progress APIs, cash confirmation và preview vẫn chưa có. Không đánh dấu toàn Phase2 complete. Không sửa nghiệp vụ/migration
 BE hoặc chạy destructive integration suite trên application DB. Xem
-[bảng API backend](../../Mindy-BE/docs/FRONTEND_API_PAGE_MAP.md).
+[contract Phase 2 backend](../../Mindy-BE/docs/PHASE_2_FE_CONTRACT.md).
+
+## Payment, student private class và reconciliation — Phase 2.2
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| POST | /me/orders/:orderId/payments/payos | STUDENT owner; body `{}`, 201 Payment |
+| GET | /me/orders/:orderId | OrderDetail = Order + `payment: Payment|null` |
+| GET | /me/classes/:classId | STUDENT ACTIVE enrollment, StudentClass |
+| GET | /admin/payments/reconciliation | ADMIN; page/pageSize, review event page |
+| POST | /admin/payments/:paymentId/reconcile | ADMIN; body `{}`, 200 `{status:string}` |
+
+Payment gồm paymentId/orderId/status/checkoutUrl nullable/qrCode nullable/expiresAt/amount.
+Statuses CREATING, PENDING, SUCCEEDED, REQUIRES_REVIEW; khác enum order status.
+FE validate payment.orderId khớp order. CheckoutUrl chỉ HTTPS pay.payos.vn.
+QR có thể null sau recovery; FE mở trang provider trong tab mới và dùng QR tại đó.
+
+Mutation lỗi/timeout: đọc lại cùng order trước deliberate retry; không checkout lại.
+Order pending poll mỗi 5 giây khi visible, đọc lại khi trở lại tab và dừng khi
+terminal/unmount/ownership denial. Lỗi đọc che link và khóa tạo payment từ dữ liệu cũ.
+Payment processing/review không tự cấp quyền học. 503 PAYMENT_UNAVAILABLE,
+409 PAYMENT_ORDER_INVALID và 422 PAYMENT_AMOUNT_INVALID có feedback riêng.
+
+StudentClass có public class summary + class meetingUrl nullable; units[] gồm
+id/position/title/sessions[], sessions thêm meetingUrl nullable vào lịch public.
+Không có progress/content/materials/attendance trong DTO. FE route
+`/learning/classes/:classId?unitId=...` kiểm tra unit thuộc lớp. Quyền do BE kiểm tra
+lại (CLASS_ACCESS_DENIED); component key userId và hủy request khi unmount.
+
+Review page chứa webhook events cần review, không phải mọi payment. Event gồm
+id/paymentId nullable/providerOrderCode/referenceCode/amount/currency/reason nullable/
+source/actorId nullable/createdAt. Không reconcile event thiếu paymentId. Lệnh trả
+status nguyên văn; refetch danh sách, không tự xóa event hoặc đánh dấu resolved.
+
+Course imgUrl nullable có ở cả public/admin reads. Input HTTP/HTTPS ≤2048, không auth
+trong URL. PATCH omit giữ ảnh, null xóa ảnh. Form blank map null khi đã sửa, untouched
+omit; create blank omit. Có fallback ảnh null/lỗi, không có upload endpoint.
+
+Chưa làm return/cancel result mapping (`/payment/result`), cash confirmation/preview,
+me/classes list, progress APIs hoặc dashboard. Không proxy provider webhook qua FE.
 
 ## Local compiler test module
 

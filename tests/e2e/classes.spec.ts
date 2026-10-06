@@ -19,6 +19,7 @@ const user = {
 const course = (index: number) => ({
   id: uuid(1000 + index),
   code: `WEB${index}`,
+  imgUrl: null,
   title: `Khóa học ${index}`,
   description: null,
   priceAmount: 1000000,

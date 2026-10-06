@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { paymentSchema } from '@/features/payments/client';
 
 export const paymentTypes = ['CASH', 'PAYOS'] as const;
 export const orderStatuses = ['PENDING', 'PAID', 'EXPIRED', 'CANCELLED'] as const;
@@ -32,6 +33,17 @@ export const orderSchema = z.object({
     .min(1),
 });
 export type Order = z.infer<typeof orderSchema>;
+export const orderDetailSchema = orderSchema
+  .extend({ payment: paymentSchema.nullable() })
+  .superRefine((order, ctx) => {
+    if (order.payment && order.payment.orderId !== order.id)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Payment does not belong to order',
+        path: ['payment'],
+      });
+  });
+export type OrderDetail = z.infer<typeof orderDetailSchema>;
 export const checkoutInputSchema = z.object({ paymentType: z.enum(paymentTypes) }).strict();
 export const checkoutResultSchema = z.object({ orders: z.array(orderSchema).min(1).max(20) });
 export const orderPageSchema = z.object({
