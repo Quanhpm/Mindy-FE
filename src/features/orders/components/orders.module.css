@@ -180,6 +180,29 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.orderId {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: -8px 0 24px;
+  background: var(--soft);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.orderId span {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.orderId code {
+  min-width: 0;
+  color: var(--action);
+  font-size: 14px;
+  font-weight: 700;
+  user-select: all;
+}
 .badge {
   display: inline-flex;
   padding: 6px 11px;
@@ -344,6 +367,11 @@
   .orderHeading {
     flex-direction: column;
     gap: 12px;
+  }
+  .orderId {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
   }
   .meta {
     gap: 16px;

@@ -238,14 +238,13 @@ async function dimensions(page: Page, name: string) {
       await page.screenshot({ path: `test-results/phase22-${name}-${width}.png`, fullPage: true });
   }
 }
-test('PayOS create is single-flight, survives reload, and opens recovered QR-null link in a new tab', async ({
+test('PayOS auto-create is single-flight, survives reload, and opens recovered QR-null link', async ({
   page,
 }) => {
   const control = await mock(page, { mode: 'blocked' });
   await page.goto(`/orders/${orderId}`);
-  await expect(page.getByRole('button', { name: 'Tạo link PayOS', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Đang xử lý thanh toán…' })).toBeDisabled();
   await dimensions(page, 'payment');
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
   await page.getByRole('button', { name: 'Đang xử lý thanh toán…' }).dispatchEvent('click');
   await expect.poll(() => control.counts.create).toBe(1);
   control.release();
@@ -259,7 +258,6 @@ test('PayOS create is single-flight, survives reload, and opens recovered QR-nul
 test('CREATING is recoverable on same order without checkout', async ({ page }) => {
   const control = await mock(page, { mode: 'creating' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
   await expect(page.getByText('Đang tạo link thanh toán', { exact: true })).toBeVisible();
   control.setMode('success');
   await page.getByRole('button', { name: 'Tiếp tục tạo link PayOS' }).click();
@@ -269,7 +267,6 @@ test('CREATING is recoverable on same order without checkout', async ({ page }) 
 test('lost creation response locks retry until order recovery succeeds', async ({ page }) => {
   const control = await mock(page, { mode: 'lost' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Kiểm tra kết quả tạo link' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Tạo link PayOS', exact: true })).toBeDisabled();
   control.allowReads();
@@ -280,7 +277,6 @@ test('lost creation response locks retry until order recovery succeeds', async (
 test('unavailable PayOS recovers order before allowing deliberate retry', async ({ page }) => {
   const control = await mock(page, { mode: 'unavailable' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
   await expect(page.getByText(/PayOS tạm thời chưa khả dụng/)).toBeVisible();
   control.setMode('success');
   await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
@@ -432,7 +428,6 @@ test('ADMIN provider error still refreshes review list', async ({ page }) => {
 test('account switch while creating payment discards the old response', async ({ page }) => {
   const control = await mock(page, { mode: 'blocked' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
   await expect.poll(() => control.counts.create).toBe(1);
   control.switchStudent();
   await page.evaluate(() => {

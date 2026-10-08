@@ -115,7 +115,7 @@ function OrderDetailContent({ id }: { id: string }) {
             !error && <LoadingState label="Đang đọc đơn đăng ký…" />
           ) : (
             <>
-              <OrderSummary order={order} link={false} />
+              <OrderSummary order={order} link={false} showId />
               {order.status === 'PENDING' && (
                 <section className={styles.notice} aria-label="Giữ chỗ và thanh toán">
                   <h2>Đơn đang chờ thanh toán.</h2>

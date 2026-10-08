@@ -206,7 +206,14 @@ test('mentor confirms only full amount and recovery reads before retrying unknow
 }) => {
   const api = await mock(page, 'MENTOR');
   await page.goto('/mentor/cash-orders');
-  await page.getByRole('button', { name: 'Ghi nhận thu tiền' }).click();
+  await page.getByLabel('Order ID của học viên').fill('MD-CASH-TEST');
+  await page.getByRole('button', { name: 'Chọn đơn theo Order ID' }).click();
+  await expect(page.locator('#cash-order-id-error')).toContainText(
+    'không dùng mã đơn bắt đầu bằng MD',
+  );
+  await page.getByLabel('Order ID của học viên').fill(orderId);
+  await page.getByRole('button', { name: 'Chọn đơn theo Order ID' }).click();
+  await expect(page.getByRole('status')).toContainText('Đã chọn đơn MD-CASH-TEST');
   await page.getByLabel('Số tiền đã nhận (VND)').fill('4999');
   const confirm = page.getByRole('button', { name: 'Xác nhận đã thu đủ' });
   await expect(confirm).toBeDisabled();
@@ -235,6 +242,7 @@ test('cash preview shows timetable without private links and denies other roles 
 }) => {
   const api = await mock(page);
   await page.goto(`/orders/${orderId}`);
+  await expect(page.getByText(orderId, { exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Xem trước lớp Web buổi tối' }).click();
   await expect(page.getByRole('heading', { name: 'Làm quen HTML', exact: false })).toBeVisible();
   await expect(page.getByText(/Phòng: Phòng A/)).toBeVisible();

@@ -53,8 +53,9 @@ function CheckoutContent() {
         </Link>
       </header>
       <p className={styles.notice}>
-        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. PayOS chưa có link hoặc QR; tiền
-        mặt chưa có chức năng xác nhận. Quyền học sẽ theo trạng thái được hệ thống cấp.
+        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. Với PayOS, bạn tạo link hoặc quét
+        QR tại trang chi tiết đơn; tiền mặt chờ mentor xác nhận đã nhận đủ. Quyền học chỉ được cấp
+        theo trạng thái từ hệ thống.
       </p>
       {state.phase === 'loading' ? (
         <LoadingState label="Đang đọc giỏ hàng và đơn của bạn…" />

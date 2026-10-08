@@ -15,6 +15,8 @@ import {
 } from '../schemas/order.schema';
 import s from './cash-orders.module.css';
 
+const orderIdPattern = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+
 export function MentorCashOrdersPage() {
   const { user, state } = useSession();
   if (state !== 'authenticated' || !user) return <LoadingState />;
@@ -37,12 +39,15 @@ function CashOrders({ mentorId }: { mentorId: string }) {
   const [notice, setNotice] = useState<string>();
   const [selected, setSelected] = useState<string>();
   const [amount, setAmount] = useState('');
+  const [orderId, setOrderId] = useState('');
+  const [orderIdError, setOrderIdError] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [reading, setReading] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const mutation = useRef<AbortController | null>(null);
   const locked = useRef(false);
   const read = useRef<AbortController | null>(null);
+  const amountInput = useRef<HTMLInputElement>(null);
   const refresh = useCallback(async () => {
     read.current?.abort();
     const controller = new AbortController();
@@ -70,12 +75,40 @@ function CashOrders({ mentorId }: { mentorId: string }) {
   useEffect(() => {
     setSelected(undefined);
     setNotice(undefined);
+    setOrderIdError(undefined);
     void refresh();
     return () => {
       read.current?.abort();
       mutation.current?.abort();
     };
   }, [refresh]);
+  useEffect(() => {
+    if (selected) amountInput.current?.focus();
+  }, [selected]);
+  function selectByOrderId() {
+    const value = orderId.trim();
+    if (!orderIdPattern.test(value)) {
+      setOrderIdError(
+        'Order ID phải là UUID trong trường “id”, không dùng mã đơn bắt đầu bằng MD.',
+      );
+      return;
+    }
+    const order = data?.items.find((item) => item.id.toLowerCase() === value.toLowerCase());
+    if (!order) {
+      setOrderIdError(
+        'Không tìm thấy Order ID này trong các đơn được giao ở trang hiện tại. Hãy cập nhật danh sách hoặc chuyển trang.',
+      );
+      return;
+    }
+    if (order.status !== 'PENDING' || Date.parse(order.expiresAt) <= Date.now()) {
+      setOrderIdError('Đơn này không còn ở trạng thái chờ thu tiền.');
+      return;
+    }
+    setOrderIdError(undefined);
+    setSelected(order.id);
+    setAmount('');
+    setNotice(`Đã chọn đơn ${order.orderCode}. Nhập đúng số tiền thực nhận để xác nhận.`);
+  }
   async function confirm(order: Order) {
     if (
       locked.current ||
@@ -100,6 +133,7 @@ function CashOrders({ mentorId }: { mentorId: string }) {
           : current,
       );
       setSelected(undefined);
+      setOrderId('');
       setNotice(`Đã xác nhận thu đủ tiền cho đơn ${paid.orderCode}.`);
     } catch (cause) {
       if (!controller.signal.aborted) {
@@ -135,6 +169,57 @@ function CashOrders({ mentorId }: { mentorId: string }) {
         <p className={s.notice} role="status">
           {notice}
         </p>
+      )}
+      {data && (
+        <section className={s.lookup} aria-labelledby="cash-order-lookup-title">
+          <div>
+            <h2 id="cash-order-lookup-title">Chọn đơn bằng Order ID</h2>
+            <p>
+              Dán UUID trong trường <code>id</code> của đơn học viên. Mã hiển thị bắt đầu bằng{' '}
+              <code>MD</code> không phải Order ID.
+            </p>
+          </div>
+          <form
+            className={s.lookupForm}
+            onSubmit={(event) => {
+              event.preventDefault();
+              selectByOrderId();
+            }}
+          >
+            <div className="field">
+              <label htmlFor="cash-order-id">Order ID của học viên</label>
+              <input
+                id="cash-order-id"
+                type="text"
+                autoComplete="off"
+                spellCheck={false}
+                maxLength={36}
+                placeholder="5aa36c6f-3852-4d44-b02a-b7651b9058d3"
+                value={orderId}
+                aria-invalid={Boolean(orderIdError)}
+                aria-describedby={orderIdError ? 'cash-order-id-error' : undefined}
+                disabled={busy || reading}
+                onChange={(event) => {
+                  setOrderId(event.target.value);
+                  setOrderIdError(undefined);
+                }}
+                required
+              />
+            </div>
+            <button
+              className="button button-primary"
+              type="submit"
+              disabled={busy || reading || blocked || !orderId.trim()}
+            >
+              Chọn đơn theo Order ID
+            </button>
+          </form>
+          {orderIdError && (
+            <p className={s.lookupError} id="cash-order-id-error" role="alert">
+              {orderIdError}
+            </p>
+          )}
+        </section>
       )}
       {error ? (
         <ErrorPanel message={error} retry={() => void refresh()} />
@@ -179,6 +264,7 @@ function CashOrders({ mentorId }: { mentorId: string }) {
                     <div className="field">
                       <label htmlFor={`amount-${order.id}`}>Số tiền đã nhận (VND)</label>
                       <input
+                        ref={amountInput}
                         id={`amount-${order.id}`}
                         type="number"
                         min="1"

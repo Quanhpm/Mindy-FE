@@ -2,6 +2,15 @@
 
 ## Trạng thái hiện tại — 06/10/2026
 
+PaymentPanel PayOS đã được làm mới thành payment card responsive: trạng thái dạng badge,
+số tiền và hạn thanh toán có thứ bậc rõ, QR từ `react-qr-code` nằm trong vùng quét riêng,
+hướng dẫn ba bước và CTA thống nhất. Desktop dùng bố cục QR/thông tin hai cột; mobile
+xếp tuần tự, CTA toàn chiều rộng và không tràn ngang. Giữ nguyên create/reuse, polling,
+recovery, stale-data guard và checkoutUrl fallback. Khi mở own PayOS order còn hạn mà
+chưa có payment, FE tự gọi create/reuse đúng một lần; lỗi dừng tự động và giữ nút retry.
+Unit tests, type-check, boundaries,
+production build và hai browser tests PayOS/QR pass; ảnh desktop/mobile đã cập nhật.
+
 Đã đồng bộ theo Swagger live https://api.quanh123.id.vn/docs#/ (snapshot JSON
 trong docs): đủ 53 endpoint nghiệp vụ/55 tổng; hai endpoint còn lại là readiness
 và provider webhook. Thêm PayOS result mapping, mentor CASH list/confirmation và
@@ -72,6 +81,22 @@ Materials, attendance, assignments, chat, notifications và dashboard là các p
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
 
 [Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-08 — Mentor chọn đơn CASH bằng Order ID
+
+- Thêm ô nhập UUID `order.id` và nút **Chọn đơn theo Order ID** tại
+  `/mentor/cash-orders`. Mã hiển thị `orderCode` bắt đầu bằng `MD` bị từ chối với
+  hướng dẫn rõ ràng.
+- Chi tiết own order của STUDENT hiển thị `Order ID` UUID lấy trực tiếp từ response;
+  giá trị hỗ trợ chọn toàn bộ để chuyển cho mentor, tách biệt với `orderCode` và
+  `mentorId`.
+- Order ID chỉ chọn một đơn CASH đang chờ, còn hạn và đã có trong danh sách được
+  backend giao cho mentor hiện tại. Mentor vẫn phải nhập đúng toàn bộ số tiền đã
+  nhận trước khi FE gọi `POST /mentor/cash-orders/:orderId/confirm`; không mở quyền
+  xác nhận cho STUDENT và không bỏ qua kiểm tra ownership của backend.
+- Targeted Biome, module boundaries, TypeScript, production build, 7 unit tests
+  order API và browser E2E xác nhận CASH pass. Đã xem lại ảnh desktop; E2E kiểm tra
+  không tràn ngang tại 1440/768/390/375px.
 
 ## 2026-10-06 — Thay toàn bộ UI Mindy, giữ logic
 
