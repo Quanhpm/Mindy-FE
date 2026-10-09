@@ -1,176 +1,486 @@
 .page {
   min-width: 0;
-  max-width: 1160px;
+  max-width: 1180px;
   margin: auto;
 }
+
 .heading {
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
   gap: 24px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
-.heading p {
+
+.heading p,
+.kicker {
+  margin: 0;
   color: var(--mindy-muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
+  letter-spacing: 1.15px;
 }
+
+.heading p {
+  margin-bottom: 10px;
+}
+
 .heading h1 {
-  font-size: clamp(30px, 3.5vw, 46px);
+  max-width: 760px;
+  margin-bottom: 7px;
+  font-size: clamp(30px, 3.5vw, 44px);
   font-weight: 800;
-  max-width: 750px;
+  letter-spacing: -0.8px;
 }
+
 .heading span {
   color: var(--mindy-muted);
   font-size: 16px;
 }
-.list {
-  background: var(--mindy-white);
-  border: 1px solid var(--mindy-line);
-  border-radius: 20px;
-  overflow: hidden;
-}
-.order {
-  padding: 28px;
-  border-bottom: 1px solid var(--mindy-line);
-}
-.order:last-child {
-  border-bottom: 0;
-}
-.orderHeading {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: start;
-}
-.orderHeading h2 {
-  font-size: 23px;
-  font-weight: 800;
-  margin-bottom: 8px;
-  overflow-wrap: anywhere;
-}
-.orderHeading > strong {
-  font-size: 24px;
-  white-space: nowrap;
-}
-.status {
-  background: var(--mindy-soft);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 700;
-}
-.order ul {
-  list-style: none;
-  padding: 0;
-  margin: 24px 0;
-}
-.order li {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 12px 0;
-}
-.order li div {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.order li span {
-  color: var(--mindy-muted);
-}
-.order li > span {
-  white-space: nowrap;
-}
+
 .notice,
 .empty {
-  padding: 24px;
+  padding: 22px 24px;
   background: var(--mindy-soft);
-  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--mindy-action) 9%, var(--mindy-line));
+  border-radius: 18px;
 }
-.lookup {
-  padding: 24px;
-  margin-bottom: 24px;
+
+.notice {
+  margin-bottom: 22px;
+  color: var(--mindy-action);
+}
+
+.empty h2 {
+  margin-bottom: 6px;
+  font-size: 21px;
+}
+
+.empty p {
+  color: var(--mindy-muted);
+}
+
+.classPanel,
+.rosterSection {
+  min-width: 0;
   background: var(--mindy-white);
   border: 1px solid var(--mindy-line);
-  border-radius: 20px;
+  border-radius: 24px;
 }
-.lookup h2 {
-  margin-bottom: 6px;
-  font-size: 20px;
+
+.classPanel {
+  padding: 24px;
+  overflow: hidden;
 }
-.lookup p {
-  color: var(--mindy-muted);
-}
-.lookup code {
-  color: var(--mindy-ink);
-  font-weight: 700;
-}
-.lookupForm {
+
+.classHero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: end;
-  margin-top: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  align-items: center;
+  gap: 28px;
 }
-.lookupForm :global(.field) {
+
+.classIdentity,
+.studentIdentity {
+  display: flex;
+  align-items: center;
   min-width: 0;
 }
-.lookupForm button {
-  min-height: 48px;
+
+.classIdentity {
+  gap: 15px;
 }
-.lookupError {
-  margin-top: 12px;
-  color: var(--mindy-danger);
+
+.classIcon,
+.studentAvatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: var(--mindy-action);
+  background: var(--mindy-soft);
+  border: 1px solid color-mix(in srgb, var(--mindy-action) 12%, var(--mindy-line));
+}
+
+.classIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+}
+
+.classIdentity h2 {
+  margin: 4px 0 2px;
+  font-size: clamp(20px, 2vw, 25px);
+  overflow-wrap: anywhere;
+}
+
+.classIdentity > div > span {
+  color: var(--mindy-muted);
+  font-size: 13px;
   font-weight: 700;
 }
-.confirm {
-  padding: 24px;
-  background: var(--mindy-soft);
-  border-radius: 16px;
-  max-width: 600px;
-}
-.actions {
+
+.classPicker {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
 }
-.confirm .actions {
-  margin-top: 18px;
+
+.classPicker label {
+  font-size: 13px;
+  font-weight: 800;
 }
-.closed {
+
+.classPicker select {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 38px 11px 14px;
+  color: var(--mindy-ink);
+  background: var(--mindy-surface);
+  border: 1px solid var(--mindy-line);
+  border-radius: 13px;
+  font: inherit;
+  font-weight: 700;
+}
+
+.classMeta,
+.studentMeta {
+  display: grid;
+  margin: 0;
+}
+
+.classMeta {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.classMeta > div {
+  padding: 14px 15px;
+  background: var(--mindy-surface);
+  border-radius: 14px;
+}
+
+.classMeta dt,
+.studentMeta dt {
+  margin-bottom: 6px;
   color: var(--mindy-muted);
-  font-size: 15px;
+  font-size: 12px;
 }
+
+.classMeta dd,
+.studentMeta dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.classStatus,
+.status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.classStatus {
+  color: var(--mindy-success);
+}
+
+.classStatus[data-status="DRAFT"],
+.classStatus[data-status="CANCELLED"] {
+  color: var(--mindy-muted);
+}
+
+.classPagination,
 .pagination {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--mindy-muted);
+  font-size: 13px;
+}
+
+.classPagination {
+  margin-top: 18px;
+  padding-top: 17px;
+  border-top: 1px solid var(--mindy-line);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.classPagination button {
+  min-height: 38px;
+  padding: 8px 14px;
+}
+
+.rosterSection {
+  padding: 26px;
+  margin-top: 22px;
+}
+
+.rosterToolbar,
+.studentHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.rosterToolbar {
+  margin-bottom: 20px;
+}
+
+.rosterToolbar h2 {
+  margin-top: 5px;
+  font-size: 23px;
+}
+
+.rosterToolbar :global(.field) {
+  width: min(250px, 100%);
+}
+
+.list {
+  display: grid;
+  gap: 16px;
+}
+
+.student {
+  padding: 22px;
+  background: var(--mindy-white);
+  border: 1px solid var(--mindy-line);
+  border-radius: 19px;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--mindy-ink) 5%, transparent);
+}
+
+.studentIdentity {
+  gap: 12px;
+}
+
+.studentAvatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}
+
+.studentHeading h3 {
+  margin: 2px 0 1px;
+  font-size: 21px;
+}
+
+.studentIdentity > div > span {
+  color: var(--mindy-muted);
+  font-size: 13px;
+}
+
+.status {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  color: var(--mindy-action);
+  background: var(--mindy-soft);
+  border-radius: 999px;
+}
+
+.status[data-status="PAID"] {
+  color: var(--mindy-success);
+  background: var(--mindy-success-soft);
+}
+
+.status[data-status="EXPIRED"],
+.status[data-status="CANCELLED"] {
+  color: var(--mindy-muted);
+  background: var(--mindy-surface);
+}
+
+.studentMeta {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+  padding: 18px 0;
+  border-top: 1px solid var(--mindy-line);
+  border-bottom: 1px solid var(--mindy-line);
+}
+
+.orderId {
+  grid-column: span 2;
+}
+
+.orderId code {
+  color: var(--mindy-action);
+  font-size: 12px;
+  font-weight: 700;
+  user-select: all;
+}
+
+.paymentSummary {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-top: 24px;
-  align-items: center;
+  padding: 16px 18px;
+  margin-top: 18px;
+  background: color-mix(in srgb, var(--mindy-soft) 72%, var(--mindy-white));
+  border-radius: 15px;
 }
+
+.paymentSummary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.paymentSummary > div span,
+.paymentRule {
+  color: var(--mindy-muted);
+  font-size: 12px;
+}
+
+.paymentSummary strong {
+  color: var(--mindy-action);
+  font-size: 22px;
+}
+
+.paymentRule {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 280px;
+  color: var(--mindy-action);
+  font-weight: 700;
+}
+
+.amountHint {
+  padding: 13px 15px;
+  margin: 14px 0 0;
+  color: var(--mindy-action);
+  background: var(--mindy-soft);
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.confirm {
+  max-width: 620px;
+  padding: 19px;
+  margin-top: 16px;
+  background: var(--mindy-surface);
+  border: 1px solid var(--mindy-line);
+  border-radius: 15px;
+}
+
+.confirm .actions {
+  margin-top: 15px;
+}
+
+.closed {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 14px;
+  margin-top: 16px;
+  color: var(--mindy-muted);
+  background: var(--mindy-surface);
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.pagination {
+  margin-top: 20px;
+  padding-top: 19px;
+  border-top: 1px solid var(--mindy-line);
+}
+
+@media (max-width: 850px) {
+  .classHero {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .classMeta,
+  .studentMeta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .orderId {
+    grid-column: span 2;
+  }
+
+  .rosterToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rosterToolbar :global(.field) {
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .heading,
-  .orderHeading,
-  .pagination {
+  .studentHeading,
+  .classPagination,
+  .pagination,
+  .paymentSummary {
+    align-items: stretch;
     flex-direction: column;
   }
-  .order {
-    padding: 20px;
+
+  .heading button {
+    width: 100%;
   }
-  .order li {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .confirm {
+
+  .classPanel,
+  .rosterSection,
+  .student {
     padding: 18px;
+    border-radius: 18px;
   }
-  .lookupForm {
+
+  .classIdentity {
+    align-items: flex-start;
+  }
+
+  .studentMeta {
     grid-template-columns: 1fr;
   }
-  .lookupForm button {
+
+  .classMeta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .orderId {
+    grid-column: auto;
+  }
+
+  .studentHeading {
+    gap: 14px;
+  }
+
+  .status {
+    align-self: flex-start;
+  }
+
+  .paymentRule {
+    max-width: none;
+  }
+
+  .classPagination .actions,
+  .pagination .actions,
+  .confirm .actions,
+  .classPagination .actions button,
+  .pagination .actions button,
+  .confirm .actions button {
     width: 100%;
+  }
+
+  .confirm {
+    padding: 17px;
   }
 }

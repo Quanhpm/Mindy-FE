@@ -3,6 +3,12 @@ import { authenticatedRequest } from '@/features/auth/client';
 import { announceCartChanged } from '@/features/cart/client';
 import { ApiError } from '@/shared/lib/http/api-error';
 import {
+  type MentorClassPage,
+  type MentorRosterPage,
+  mentorClassPageSchema,
+  mentorRosterPageSchema,
+} from '../schemas/mentor-roster.schema';
+import {
   checkoutInputSchema,
   checkoutResultSchema,
   type Order,
@@ -75,6 +81,42 @@ export async function listMentorCashOrders(page: number, signal?: AbortSignal): 
   );
   if (!result.success || result.data.items.some((order) => order.paymentType !== 'CASH'))
     throw new ApiError(502, 'INVALID_RESPONSE', 'Dữ liệu đơn tiền mặt chưa hợp lệ.');
+  return result.data;
+}
+export async function listMentorClasses(
+  page: number,
+  signal?: AbortSignal,
+): Promise<MentorClassPage> {
+  z.number().int().min(1).max(1_000_000).parse(page);
+  const query = new URLSearchParams({ page: String(page), pageSize: '6' });
+  const result = mentorClassPageSchema.safeParse(
+    await authenticatedRequest(`/mentor/classes?${query}`, { signal }),
+  );
+  if (!result.success)
+    throw new ApiError(502, 'INVALID_RESPONSE', 'Dữ liệu lớp được giao chưa hợp lệ.');
+  return result.data;
+}
+export async function listMentorClassStudents(
+  classId: string,
+  page: number,
+  orderStatus?: Order['status'],
+  signal?: AbortSignal,
+): Promise<MentorRosterPage> {
+  z.uuid().parse(classId);
+  z.number().int().min(1).max(1_000_000).parse(page);
+  const query = new URLSearchParams({
+    page: String(page),
+    pageSize: '20',
+    paymentType: 'CASH',
+  });
+  if (orderStatus) query.set('orderStatus', orderStatus);
+  const result = mentorRosterPageSchema.safeParse(
+    await authenticatedRequest(`/mentor/classes/${encodeURIComponent(classId)}/students?${query}`, {
+      signal,
+    }),
+  );
+  if (!result.success || result.data.items.some((student) => student.paymentType !== 'CASH'))
+    throw new ApiError(502, 'INVALID_RESPONSE', 'Dữ liệu học viên của lớp chưa hợp lệ.');
   return result.data;
 }
 export async function confirmCashOrder(

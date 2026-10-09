@@ -69,10 +69,15 @@ chéo. UI preview cũ đã gỡ, các URL lịch sử redirect về /.
 Orders sở hữu payment-result mapping và MENTOR cash orders; catalog sở hữu
 CASH preview dùng public-shaped schema, không có meeting URL. Ba route mới:
 /payment/result, /mentor/cash-orders, /learning/classes/:classId/preview.
+Trang thu tiền mặt đọc lớp được phân công từ `GET /mentor/classes`, sau đó đọc
+học viên và trạng thái thanh toán bằng `GET /mentor/classes/:classId/students`
+với `paymentType=CASH`. Xác nhận dùng đúng `orderId` của roster và luôn thu
+`orderTotalAmount`, vì một order có thể bao gồm nhiều lớp.
 PaymentPanel dùng react-qr-code để encode nguyên chuỗi qrCode thành SVG,
 không đưa dữ liệu QR đến dịch vụ ngoài. QR chỉ hiển thị khi order/payment pending,
 còn hạn và dữ liệu đọc hợp lệ; nullable QR vẫn có checkoutUrl fallback.
-Nguồn API hiện hành: Swagger live và snapshot docs/swagger-live-2026-10-06.json.
+Nguồn API hiện hành: Swagger live; `docs/swagger-live-2026-10-06.json` là snapshot
+lịch sử dùng cho regression của các endpoint đã có tại ngày tạo snapshot.
 
 Course management units và class units/sessions dùng shared UnitWorkspace:
 rail 300px và content minmax(0,1fr), mỗi vùng scroll riêng, chiều cao theo viewport

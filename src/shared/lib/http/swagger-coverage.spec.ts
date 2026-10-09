@@ -5,7 +5,7 @@ import { isAllowedEndpoint } from './proxy-policy';
 const swagger = JSON.parse(
   readFileSync(new URL('../../../../docs/swagger-live-2026-10-06.json', import.meta.url), 'utf8'),
 ) as { paths: Record<string, Record<string, unknown>> };
-describe('live Swagger business coverage', () => {
+describe('saved Swagger business coverage', () => {
   it('supports every business operation, keeping provider webhook and readiness outside FE', () => {
     const dedicatedGoogle = new Set(['/api/v1/auth/google', '/api/v1/auth/google/callback']);
     const infrastructure = new Set(['/api/v1/health/ready', '/api/v1/payment-callbacks/payos']);
@@ -32,5 +32,9 @@ describe('live Swagger business coverage', () => {
       isAllowedEndpoint('GET', 'mentor/cash-orders/123e4567-e89b-42d3-a456-426614174000/confirm'),
     ).toBe(false);
     expect(isAllowedEndpoint('POST', 'me/orders/payment-result')).toBe(false);
+    expect(isAllowedEndpoint('GET', 'mentor/classes')).toBe(true);
+    expect(
+      isAllowedEndpoint('GET', 'mentor/classes/123e4567-e89b-42d3-a456-426614174000/students'),
+    ).toBe(true);
   });
 });

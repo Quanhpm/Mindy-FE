@@ -1,16 +1,20 @@
-# API contract — Swagger live / 06-10-2026
+# API contract — Swagger live / 09-10-2026
 
-Nguồn hiện hành: https://api.quanh123.id.vn/docs#/ và snapshot
-[swagger-live-2026-10-06.json](./swagger-live-2026-10-06.json).
-Đã nối 4 endpoint còn thiếu: GET /me/orders/payment-result (chỉ query orderCode),
-GET /mentor/cash-orders (page/pageSize), POST /mentor/cash-orders/:orderId/confirm
-(chỉ receivedAmount), GET /me/classes/:classId/preview (public-shaped ClassDetail).
+Nguồn hiện hành: https://api.quanh123.id.vn/docs#/; snapshot
+[swagger-live-2026-10-06.json](./swagger-live-2026-10-06.json) được giữ để truy vết.
+Swagger live có 55 endpoint nghiệp vụ/57 tổng. Ngoài result mapping, CASH preview
+và cash confirmation, FE đã nối `GET /mentor/classes` cùng
+`GET /mentor/classes/:classId/students` để mentor chọn lớp, xem học viên và lấy
+`orderId` đúng từ roster. Danh sách học viên luôn gửi `paymentType=CASH`.
+POST `/mentor/cash-orders/:orderId/confirm` chỉ gửi `receivedAmount`.
 Payment.providerOrderCode là number|null bắt buộc; qrCode là payload string|null,
 được encode nguyên văn thành QR trên FE, không phải URL ảnh. QR null dùng checkoutUrl.
-Mentor chỉ xác nhận số nguyên VND đúng toàn bộ tổng đơn; lỗi/mất response yêu cầu
-đọc danh sách trước deliberate retry. Return/cancel/status từ URL PayOS không
+Mentor chỉ xác nhận số nguyên VND đúng `orderTotalAmount`, không dùng riêng
+`classAmount`, vì một đơn có thể gồm nhiều lớp. Lỗi/mất response yêu cầu đọc lại
+roster trước deliberate retry. Return/cancel/status từ URL PayOS không
 xác nhận PAID; result mapping đọc quyền owner rồi mở internal order.
-Không proxy readiness và webhook provider. Danh sách lớp/progress vẫn chờ BE.
+Không proxy readiness và webhook provider. Danh sách/progress lớp phía học viên
+vẫn là phạm vi khác; roster mentor không được dùng để suy ra quyền học.
 
 ## Snapshot tích hợp cũ (giữ để truy vết)
 

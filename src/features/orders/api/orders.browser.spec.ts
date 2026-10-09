@@ -8,6 +8,8 @@ import {
   confirmCashOrder,
   getOrder,
   listMentorCashOrders,
+  listMentorClasses,
+  listMentorClassStudents,
   listOrders,
   providerOrderCodeSchema,
   resolvePaymentResult,
@@ -134,4 +136,60 @@ it('mentor list uses pagination and confirmation sends only the received integer
   await expect(confirmCashOrder(order.id, order.totalAmount)).rejects.toMatchObject({
     code: 'INVALID_RESPONSE',
   });
+});
+
+it('reads assigned mentor classes and CASH students with the order id used for confirmation', async () => {
+  const classId = orderIds[0];
+  const mentorId = '423e4567-e89b-42d3-a456-426614174001';
+  const assignedClass = {
+    id: classId,
+    courseId: '323e4567-e89b-42d3-a456-426614174001',
+    code: 'WEB-01',
+    name: 'Web buổi tối',
+    startDate: '2026-10-12',
+    endDate: '2026-11-15',
+    deliveryMode: 'ONLINE',
+    maxStudents: 20,
+    availableSeats: 18,
+    mentor: { id: mentorId, displayName: 'Mentor Minh' },
+    status: 'OPEN',
+  };
+  vi.mocked(authenticatedRequest).mockResolvedValue({
+    items: [assignedClass],
+    page: 2,
+    pageSize: 6,
+    total: 21,
+  });
+  expect((await listMentorClasses(2)).items).toEqual([assignedClass]);
+  expect(authenticatedRequest).toHaveBeenLastCalledWith('/mentor/classes?page=2&pageSize=6', {
+    signal: undefined,
+  });
+
+  const rosterStudent = {
+    enrollmentId: '523e4567-e89b-42d3-a456-426614174001',
+    enrollmentStatus: 'PENDING_PAYMENT',
+    studentId: '623e4567-e89b-42d3-a456-426614174001',
+    studentName: 'Hào',
+    orderId: orderIds[1],
+    orderCode: 'MD-CASH-STUDENT',
+    orderStatus: 'PENDING',
+    paymentType: 'CASH',
+    classAmount: 2000,
+    orderTotalAmount: 5000,
+    orderClassCount: 2,
+    expiresAt: '2026-10-10T10:59:44.567Z',
+    paidAt: null,
+    canConfirmCash: true,
+  };
+  vi.mocked(authenticatedRequest).mockResolvedValue({
+    items: [rosterStudent],
+    page: 1,
+    pageSize: 20,
+    total: 1,
+  });
+  expect((await listMentorClassStudents(classId, 1, 'PENDING')).items).toEqual([rosterStudent]);
+  expect(authenticatedRequest).toHaveBeenLastCalledWith(
+    `/mentor/classes/${classId}/students?page=1&pageSize=20&paymentType=CASH&orderStatus=PENDING`,
+    { signal: undefined },
+  );
 });

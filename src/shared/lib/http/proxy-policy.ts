@@ -17,6 +17,8 @@ const rules: readonly [string, RegExp][] = [
   ['GET', /^me\/orders$/],
   ['GET', /^me\/orders\/payment-result$/],
   ['GET', /^mentor\/cash-orders$/],
+  ['GET', /^mentor\/classes$/],
+  ['GET', /^mentor\/classes\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}\/students$/i],
   [
     'POST',
     /^mentor\/cash-orders\/[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}\/confirm$/i,

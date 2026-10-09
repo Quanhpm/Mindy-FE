@@ -71,8 +71,23 @@ const classData = {
     },
   ],
 };
+const mentorClassData = {
+  id: classId,
+  courseId: classData.courseId,
+  code: classData.code,
+  name: classData.name,
+  startDate: classData.startDate,
+  endDate: classData.endDate,
+  deliveryMode: classData.deliveryMode,
+  maxStudents: classData.maxStudents,
+  availableSeats: classData.availableSeats,
+  mentor: classData.mentor,
+  status: 'OPEN',
+};
 async function mock(page: Page, role = 'STUDENT') {
-  let current = { ...baseOrder };
+  let current: Omit<typeof baseOrder, 'paidAt'> & { paidAt: string | null } = {
+    ...baseOrder,
+  };
   let paymentType = 'CASH';
   let denied = false;
   let lost = false;
@@ -80,7 +95,9 @@ async function mock(page: Page, role = 'STUDENT') {
   let creates = 0,
     previews = 0,
     results = 0,
-    confirmations = 0;
+    confirmations = 0,
+    mentorClassReads = 0,
+    rosterReads = 0;
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request(),
       url = new URL(request.url()),
@@ -133,6 +150,44 @@ async function mock(page: Page, role = 'STUDENT') {
       creates++;
       return route.fulfill({ status: 201, json: payment });
     }
+    if (path === '/mentor/classes') {
+      mentorClassReads++;
+      expect(Object.fromEntries(url.searchParams)).toEqual({ page: '1', pageSize: '6' });
+      return route.fulfill({
+        json: { items: [mentorClassData], total: 1, page: 1, pageSize: 6 },
+      });
+    }
+    if (path === `/mentor/classes/${classId}/students`) {
+      rosterReads++;
+      expect(url.searchParams.get('paymentType')).toBe('CASH');
+      return readsFail
+        ? route.fulfill({ status: 503, json: { message: 'Chưa đọc được danh sách.' } })
+        : route.fulfill({
+            json: {
+              items: [
+                {
+                  enrollmentId: id(10),
+                  enrollmentStatus: current.status === 'PAID' ? 'ACTIVE' : 'PENDING_PAYMENT',
+                  studentId: id(11),
+                  studentName: 'Hào',
+                  orderId,
+                  orderCode: current.orderCode,
+                  orderStatus: current.status,
+                  paymentType: 'CASH',
+                  classAmount: 2000,
+                  orderTotalAmount: current.totalAmount,
+                  orderClassCount: 2,
+                  expiresAt: current.expiresAt,
+                  paidAt: current.paidAt,
+                  canConfirmCash: current.status === 'PENDING',
+                },
+              ],
+              total: 1,
+              page: Number(url.searchParams.get('page')),
+              pageSize: 20,
+            },
+          });
+    }
     if (path === '/mentor/cash-orders')
       return readsFail
         ? route.fulfill({ status: 503, json: { message: 'Chưa đọc được danh sách.' } })
@@ -147,7 +202,7 @@ async function mock(page: Page, role = 'STUDENT') {
     if (path === `/mentor/cash-orders/${orderId}/confirm`) {
       confirmations++;
       expect(request.postDataJSON()).toEqual({ receivedAmount: 5000 });
-      current = { ...current, status: 'PAID' };
+      current = { ...current, status: 'PAID', paidAt: '2026-10-08T11:02:30.816Z' };
       if (lost) return route.abort('timedout');
       return route.fulfill({ json: current });
     }
@@ -181,7 +236,14 @@ async function mock(page: Page, role = 'STUDENT') {
     clearReads: () => {
       readsFail = false;
     },
-    counts: () => ({ creates, previews, results, confirmations }),
+    counts: () => ({
+      creates,
+      previews,
+      results,
+      confirmations,
+      mentorClassReads,
+      rosterReads,
+    }),
   };
 }
 test('PayOS result maps only orderCode and never trusts redirect success or cancel', async ({
@@ -206,30 +268,36 @@ test('mentor confirms only full amount and recovery reads before retrying unknow
 }) => {
   const api = await mock(page, 'MENTOR');
   await page.goto('/mentor/cash-orders');
-  await page.getByLabel('Order ID của học viên').fill('MD-CASH-TEST');
-  await page.getByRole('button', { name: 'Chọn đơn theo Order ID' }).click();
-  await expect(page.locator('#cash-order-id-error')).toContainText(
-    'không dùng mã đơn bắt đầu bằng MD',
-  );
-  await page.getByLabel('Order ID của học viên').fill(orderId);
-  await page.getByRole('button', { name: 'Chọn đơn theo Order ID' }).click();
-  await expect(page.getByRole('status')).toContainText('Đã chọn đơn MD-CASH-TEST');
-  await page.getByLabel('Số tiền đã nhận (VND)').fill('4999');
-  const confirm = page.getByRole('button', { name: 'Xác nhận đã thu đủ' });
-  await expect(confirm).toBeDisabled();
-  await page.getByLabel('Số tiền đã nhận (VND)').fill('5000');
+  await expect(page).toHaveURL(new RegExp(`classId=${classId}`));
+  await expect(page.getByRole('heading', { name: 'Hào' })).toBeVisible();
+  await expect(page.getByText(orderId, { exact: true })).toBeVisible();
+  await expect(page.getByText('Đơn này gồm 2 lớp.')).toBeVisible();
+  await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({
     path: 'docs/ui-redesign/screenshots/mentor-cash-desktop.png',
-    fullPage: true,
+    fullPage: false,
   });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({
+    path: 'docs/ui-redesign/screenshots/mentor-cash-mobile.png',
+    fullPage: false,
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.getByRole('button', { name: 'Ghi nhận thu tiền cho Hào' }).click();
+  await page.getByLabel('Tổng số tiền đã nhận (VND)').fill('4999');
+  const confirm = page.getByRole('button', { name: 'Xác nhận đã thu đủ' });
+  await expect(confirm).toBeDisabled();
+  await page.getByLabel('Tổng số tiền đã nhận (VND)').fill('5000');
   api.lose();
   await confirm.click();
-  await expect(page.getByRole('status')).toContainText('Hãy cập nhật danh sách');
-  await expect(page.getByRole('button', { name: 'Ghi nhận thu tiền' })).toBeDisabled();
+  await expect(page.getByRole('status')).toContainText('Hãy cập nhật danh sách học viên');
+  await expect(page.getByRole('button', { name: 'Ghi nhận thu tiền cho Hào' })).toBeDisabled();
   expect(api.counts().confirmations).toBe(1);
   await page.getByRole('button', { name: 'Cập nhật danh sách' }).click();
-  await expect(page.getByText('Đã ghi nhận thanh toán.')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Ghi nhận thu tiền' })).toHaveCount(0);
+  await expect(page.getByText('Đơn đã được ghi nhận thanh toán.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Ghi nhận thu tiền cho Hào' })).toHaveCount(0);
+  expect(api.counts().mentorClassReads).toBeGreaterThanOrEqual(1);
+  expect(api.counts().rosterReads).toBeGreaterThanOrEqual(2);
   for (const width of [1440, 768, 390, 375]) {
     await page.setViewportSize({ width, height: 900 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
