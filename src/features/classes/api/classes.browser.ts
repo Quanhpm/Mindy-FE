@@ -33,12 +33,16 @@ export async function getClass(id: string, signal?: AbortSignal): Promise<Manage
     await authenticatedRequest(`/admin/classes/${encodeURIComponent(id)}`, { signal }),
   );
 }
-export async function createClass(values: CreateClassInput): Promise<ManagementClassDetail> {
+export async function createClass(
+  values: CreateClassInput,
+  signal?: AbortSignal,
+): Promise<ManagementClassDetail> {
   const { meetingUrl, ...fields } = values;
   return validated(
     managementClassDetailSchema,
     await authenticatedRequest('/admin/classes', {
       method: 'POST',
+      signal,
       body: JSON.stringify({
         ...fields,
         ...(meetingUrl.trim() ? { meetingUrl: meetingUrl.trim() } : {}),
@@ -49,11 +53,13 @@ export async function createClass(values: CreateClassInput): Promise<ManagementC
 export async function updateClass(
   id: string,
   values: UpdateClassInput,
+  signal?: AbortSignal,
 ): Promise<ManagementClassDetail> {
   return validated(
     managementClassDetailSchema,
     await authenticatedRequest(`/admin/classes/${encodeURIComponent(id)}`, {
       method: 'PATCH',
+      signal,
       body: JSON.stringify(values),
     }),
   );
@@ -61,11 +67,13 @@ export async function updateClass(
 export async function scheduleSession(
   id: string,
   values: ScheduleSessionInput,
+  signal?: AbortSignal,
 ): Promise<ManagementClassDetail> {
   return validated(
     managementClassDetailSchema,
     await authenticatedRequest(`/admin/classes/${encodeURIComponent(id)}/sessions`, {
       method: 'POST',
+      signal,
       body: JSON.stringify(values),
     }),
   );
@@ -73,11 +81,13 @@ export async function scheduleSession(
 export async function commandClass(
   id: string,
   command: ClassCommand,
+  signal?: AbortSignal,
 ): Promise<ManagementClassDetail> {
   return validated(
     managementClassDetailSchema,
     await authenticatedRequest(`/admin/classes/${encodeURIComponent(id)}/${command}`, {
       method: 'POST',
+      signal,
     }),
   );
 }

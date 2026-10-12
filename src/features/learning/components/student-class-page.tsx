@@ -84,7 +84,7 @@ function ClassContent({ id }: { id: string }) {
           <p className={s.eyebrow}>MINDY / LỚP HỌC</p>
           <h1>{data.name}</h1>
           <p>
-            {data.deliveryMode === 'ONLINE' ? 'Trực tuyến' : 'Tại trung tâm'} · Mentor:{' '}
+            {data.deliveryMode === 'ONLINE' ? 'Trực tuyến' : 'Tại trung tâm'} · Giảng viên:{' '}
             {data.mentor.displayName ?? 'Chưa có tên hiển thị'}
           </p>
         </div>

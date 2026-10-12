@@ -133,14 +133,14 @@ export function ClassesList() {
           </select>
         </div>
         <div className={styles.field}>
-          <label htmlFor="class-mentor-filter">Mentor</label>
+          <label htmlFor="class-mentor-filter">Giảng viên</label>
           <select
             id="class-mentor-filter"
             value={mentorId}
             disabled={choicesLoading}
             onChange={(event) => filter('mentorId', event.target.value)}
           >
-            <option value="">Tất cả mentor</option>
+            <option value="">Tất cả giảng viên</option>
             {mentorId && !choices.mentors.some((mentor) => mentor.id === mentorId) && (
               <option value={mentorId}>Đã chọn · {mentorId}</option>
             )}
@@ -182,7 +182,7 @@ export function ClassesList() {
           </select>
         </div>
       </div>
-      {choicesLoading && <LoadingState label="Đang tải bộ lọc khóa học và mentor…" />}
+      {choicesLoading && <LoadingState label="Đang tải bộ lọc khóa học và giảng viên…" />}
       {choicesError && (
         <ErrorPanel
           message={`Chưa tải được lựa chọn bộ lọc. ${choicesError}`}
@@ -191,8 +191,8 @@ export function ClassesList() {
       )}
       {!choicesLoading && !choicesError && (
         <p className="muted">
-          Danh sách lựa chọn gồm khóa học và mentor đang hoạt động. Bộ lọc đã có trên URL vẫn được
-          giữ.
+          Danh sách lựa chọn gồm khóa học và giảng viên đang hoạt động. Bộ lọc đã có trên URL vẫn
+          được giữ.
         </p>
       )}
       {loading ? (
@@ -211,7 +211,7 @@ export function ClassesList() {
                   <thead>
                     <tr>
                       <th>Lớp học</th>
-                      <th>Mentor</th>
+                      <th>Giảng viên</th>
                       <th>Thời gian</th>
                       <th>Hình thức</th>
                       <th>Trạng thái</th>

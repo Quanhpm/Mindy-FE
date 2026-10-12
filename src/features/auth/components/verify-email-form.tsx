@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { errorMessage } from '@/shared/lib/http/api-error';
 import { homeForRole } from '../permissions/access-policy';
 import { useSession } from '../session/session-provider';
@@ -10,12 +10,14 @@ import { useSession } from '../session/session-provider';
 export function VerifyEmailForm({ token }: { token: string | null }) {
   const { confirmEmail } = useSession();
   const router = useRouter();
+  const locked = useRef(false);
   const [pending, setPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string>();
   const valid = token !== null && token.length >= 32 && token.length <= 512;
   async function verify() {
-    if (!valid || pending || success) return;
+    if (!valid || locked.current || success) return;
+    locked.current = true;
     setPending(true);
     setError(undefined);
     try {
@@ -25,6 +27,7 @@ export function VerifyEmailForm({ token }: { token: string | null }) {
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
+      locked.current = false;
       setPending(false);
     }
   }

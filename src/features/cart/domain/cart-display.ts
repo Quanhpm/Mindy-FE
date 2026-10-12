@@ -15,9 +15,7 @@ export function cartErrorMessage(error: unknown): string {
     ? (messages[error.code] ?? errorMessage(error))
     : errorMessage(error);
 }
-export function unknownMutationResult(error: unknown): boolean {
-  return !(error instanceof ApiError) || error.status >= 500;
-}
+export { unknownMutationResult } from '@/shared/lib/http/api-error';
 export function formatCartAmount(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',

@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { mindyTheme } from '../../src/shared/config/theme';
 
+test.beforeEach(async ({ page }) => {
+  for (const endpoint of ['me', 'refresh'])
+    await page.route(`**/api/v1/auth/${endpoint}`, (route) =>
+      route.fulfill({ status: 401, json: { code: 'AUTHENTICATION_REQUIRED' } }),
+    );
+});
+
 const course = {
   id: '10000000-0000-4000-8000-000000000001',
   code: 'JS-101',
@@ -22,7 +29,7 @@ test('homepage renders API courses, fits four widths and supports keyboard menu'
   for (const width of [1440, 768, 390, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Học code.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Học lập trình.');
     await expect(page.getByRole('heading', { name: course.title })).toBeVisible();
     await expect(page.getByText('1.800.000 ₫', { exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
@@ -36,10 +43,10 @@ test('homepage renders API courses, fits four widths and supports keyboard menu'
     expect(headingLines).toBeLessThanOrEqual(3.1);
     await page.screenshot({ path: info.outputPath(`home-${width}.png`), fullPage: true });
   }
-  const trigger = page.getByRole('button', { name: 'Mở menu', exact: true });
+  const trigger = page.getByRole('button', { name: 'Mở trình đơn', exact: true });
   await trigger.focus();
   await page.keyboard.press('Enter');
-  const drawer = page.getByRole('dialog', { name: 'Menu Mindy' });
+  const drawer = page.getByRole('dialog', { name: 'Trình đơn Mindy' });
   await expect(drawer).toBeVisible();
   await page.keyboard.press('Tab');
   expect(await drawer.evaluate((element) => element.contains(document.activeElement))).toBe(true);
@@ -60,7 +67,7 @@ test('homepage API failure recovers on retry and an empty catalog stays truthful
     ),
   );
   await page.goto('/');
-  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Thử lại', exact: true })).toBeVisible();
   fail = false;
   await page.getByRole('button', { name: 'Thử lại', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Chương mới đang được chuẩn bị.' })).toBeVisible();
@@ -127,7 +134,7 @@ test('default motion reveals content and cleans up through route navigation', as
   await expect(
     page.getByRole('heading', { name: 'Có nhiều cách để bắt đầu.' }).locator('..'),
   ).toHaveCSS('opacity', '1');
-  await page.getByRole('link', { name: /Mở không gian code/ }).click();
+  await page.getByRole('link', { name: /Mở không gian lập trình/ }).click();
   await expect(page).toHaveURL('/compiler');
   await page.goBack();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

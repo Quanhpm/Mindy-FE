@@ -54,7 +54,7 @@ async function mockPublicCatalog(
     deliveryMode: 'ONLINE',
     maxStudents: 20,
     availableSeats: options.full ? 0 : 5,
-    mentor: { id: categoryId, displayName: 'Mentor Minh Anh' },
+    mentor: { id: categoryId, displayName: 'Giảng viên Minh Anh' },
   };
   const units = Array.from({ length: 40 }, (_, index) => ({
     id: unitId(index + 1),

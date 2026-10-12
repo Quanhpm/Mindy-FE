@@ -7,6 +7,11 @@ import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
 import s from '@/shared/components/management.module.css';
 import { formatDate } from '@/shared/lib/date';
 import { listReconciliation, paymentErrorMessage, reconcilePayment } from '../api/payments.browser';
+import {
+  reconciliationReasonLabel,
+  reconciliationSourceLabel,
+  reconciliationStatusLabel,
+} from '../domain/reconciliation-display';
 import type { ReconciliationPage as ReviewPage } from '../schemas/payment.schema';
 
 export function ReconciliationPage() {
@@ -64,7 +69,7 @@ function ReviewContent() {
         const status = await reconcilePayment(paymentId, controller.signal);
         if (!controller.signal.aborted)
           setResult(
-            `Kết quả từ hệ thống: ${status}. Các giao dịch cần review có thể vẫn còn trong danh sách.`,
+            `Kết quả từ hệ thống: ${reconciliationStatusLabel(status)}. Các giao dịch cần kiểm tra có thể vẫn còn trong danh sách.`,
           );
       } catch (cause) {
         if (!controller.signal.aborted) setResult(paymentErrorMessage(cause));
@@ -83,7 +88,7 @@ function ReviewContent() {
     <div className={s.page}>
       <header className={s.heading}>
         <div>
-          <p className={s.eyebrow}>MINDY / PAYMENT REVIEW</p>
+          <p className={s.eyebrow}>MINDY / ĐỐI SOÁT THANH TOÁN</p>
           <h1>Đối soát thanh toán</h1>
           <p>
             Các sự kiện cần kiểm tra. Đối soát đọc dữ liệu từ PayOS; không tự cấp quyền hoặc hoàn
@@ -129,9 +134,9 @@ function ReviewContent() {
                         {item.amount.toLocaleString('vi-VN')} {item.currency}
                       </td>
                       <td>
-                        {item.reason ?? 'Chưa có lý do'}
+                        {reconciliationReasonLabel(item.reason)}
                         <br />
-                        {item.source}
+                        {reconciliationSourceLabel(item.source)}
                         {item.actorId && <p>Mã người thao tác: {item.actorId}</p>}
                       </td>
                       <td>
@@ -145,7 +150,7 @@ function ReviewContent() {
                             {busy === item.paymentId ? 'Đang đối soát…' : 'Đối soát với PayOS'}
                           </button>
                         ) : (
-                          'Chưa liên kết payment'
+                          'Chưa liên kết thanh toán'
                         )}
                       </td>
                     </tr>
@@ -156,7 +161,7 @@ function ReviewContent() {
           )}
           <div className={s.pagination}>
             <span>
-              {data.total} sự kiện cần review · Trang {data.page}
+              {data.total} sự kiện cần kiểm tra · Trang {data.page}
             </span>
             <div className={s.actions}>
               <button

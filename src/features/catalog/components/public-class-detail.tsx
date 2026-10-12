@@ -80,7 +80,7 @@ export function PublicClassDetail({ id }: { id: string }) {
           </p>
           <h1>{classItem.name}</h1>
           <div className={styles.metadata}>
-            <p>Mentor: {classItem.mentor.displayName ?? 'Chưa có tên hiển thị'}</p>
+            <p>Giảng viên: {classItem.mentor.displayName ?? 'Chưa có tên hiển thị'}</p>
             <p>
               {formatCourseDate(classItem.startDate)} – {formatCourseDate(classItem.endDate)}
             </p>

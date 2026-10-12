@@ -37,7 +37,7 @@ const classData = {
   deliveryMode: 'ONLINE',
   maxStudents: 20,
   availableSeats: 5,
-  mentor: { id: id(7), displayName: 'Mentor Test' },
+  mentor: { id: id(7), displayName: 'Giảng viên Test' },
   meetingUrl: 'https://meet.example.com/class-private',
   units: [
     {
@@ -243,9 +243,9 @@ test('PayOS create is single-flight, survives reload, and opens recovered QR-nul
 }) => {
   const control = await mock(page, { mode: 'blocked' });
   await page.goto(`/orders/${orderId}`);
-  await expect(page.getByRole('button', { name: 'Tạo link PayOS', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true })).toBeEnabled();
   await dimensions(page, 'payment');
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
   await page.getByRole('button', { name: 'Đang xử lý thanh toán…' }).dispatchEvent('click');
   await expect.poll(() => control.counts.create).toBe(1);
   control.release();
@@ -259,31 +259,33 @@ test('PayOS create is single-flight, survives reload, and opens recovered QR-nul
 test('CREATING is recoverable on same order without checkout', async ({ page }) => {
   const control = await mock(page, { mode: 'creating' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
-  await expect(page.getByText('Đang tạo link thanh toán', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
+  await expect(page.getByText('Đang tạo liên kết thanh toán', { exact: true })).toBeVisible();
   control.setMode('success');
-  await page.getByRole('button', { name: 'Tiếp tục tạo link PayOS' }).click();
+  await page.getByRole('button', { name: 'Tiếp tục tạo liên kết PayOS' }).click();
   await expect(page.getByRole('link', { name: 'Mở PayOS để thanh toán' })).toBeVisible();
   expect(control.counts.create).toBe(2);
 });
 test('lost creation response locks retry until order recovery succeeds', async ({ page }) => {
   const control = await mock(page, { mode: 'lost' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Kiểm tra kết quả tạo link' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Tạo link PayOS', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Kiểm tra kết quả tạo liên kết' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }),
+  ).toBeDisabled();
   control.allowReads();
-  await page.getByRole('button', { name: 'Kiểm tra kết quả tạo link' }).click();
+  await page.getByRole('button', { name: 'Kiểm tra kết quả tạo liên kết' }).click();
   await expect(page.getByRole('link', { name: 'Mở PayOS để thanh toán' })).toBeVisible();
   expect(control.counts.create).toBe(1);
 });
 test('unavailable PayOS recovers order before allowing deliberate retry', async ({ page }) => {
   const control = await mock(page, { mode: 'unavailable' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
   await expect(page.getByText(/PayOS tạm thời chưa khả dụng/)).toBeVisible();
   control.setMode('success');
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Mở PayOS để thanh toán' })).toBeVisible();
   expect(control.counts.create).toBe(2);
 });
@@ -296,7 +298,9 @@ for (const status of ['EXPIRED', 'CANCELLED'])
       status === 'EXPIRED' ? 'Đã hết hạn' : 'Đã hủy',
     );
     await expect(page.getByRole('link', { name: 'Mở PayOS để thanh toán' })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /Tạo link PayOS|Tiếp tục tạo/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Tạo liên kết PayOS|Tiếp tục tạo/ })).toHaveCount(
+      0,
+    );
     expect(control.counts.create).toBe(0);
   });
 test('review payment has no payable link or learning CTA', async ({ page }) => {
@@ -388,7 +392,7 @@ test('account switch discards authorized private content; logout removes private
   await page.evaluate(() => window.dispatchEvent(new Event('focus')));
   await expect(page.getByText(/Bạn chưa có quyền truy cập lớp này/)).toBeVisible();
   await expect(page.getByRole('link', { name: 'Mở phòng học buổi 1' })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
+  await page.getByRole('button', { name: 'Mở trình đơn tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).first().click();
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole('link', { name: /Mở phòng học/ })).toHaveCount(0);
@@ -411,13 +415,13 @@ test('ADMIN review handles null paymentId, refreshes after reconciliation, and p
   const control = await mock(page, { role: 'ADMIN', mode: 'blocked' });
   await page.goto('/management/payments/reconciliation');
   await expect(page.getByRole('button', { name: 'Đối soát với PayOS' })).toHaveCount(1);
-  await expect(page.getByText('Chưa liên kết payment')).toBeVisible();
+  await expect(page.getByText('Chưa liên kết thanh toán')).toBeVisible();
   await dimensions(page, 'review');
   await page.getByRole('button', { name: 'Đối soát với PayOS' }).click();
   await page.getByRole('button', { name: 'Đang đối soát…' }).dispatchEvent('click');
   await expect.poll(() => control.counts.reconcile).toBe(1);
   control.release();
-  await expect(page.getByText(/Kết quả từ hệ thống: REQUIRES_REVIEW/)).toBeVisible();
+  await expect(page.getByText(/Kết quả từ hệ thống: Cần đối soát/)).toBeVisible();
   await expect.poll(() => control.counts.review).toBe(2);
   await expect(page.getByRole('row')).toHaveCount(3);
 });
@@ -432,7 +436,7 @@ test('ADMIN provider error still refreshes review list', async ({ page }) => {
 test('account switch while creating payment discards the old response', async ({ page }) => {
   const control = await mock(page, { mode: 'blocked' });
   await page.goto(`/orders/${orderId}`);
-  await page.getByRole('button', { name: 'Tạo link PayOS', exact: true }).click();
+  await page.getByRole('button', { name: 'Tạo liên kết PayOS', exact: true }).click();
   await expect.poll(() => control.counts.create).toBe(1);
   control.switchStudent();
   await page.evaluate(() => {

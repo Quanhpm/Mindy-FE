@@ -33,7 +33,7 @@ const mentor = (index: number) => ({
   id: uuid(2000 + index),
   role: 'MENTOR',
   email: `mentor${index}@example.com`,
-  displayName: `Mentor ${index}`,
+  displayName: `Giảng viên ${index}`,
 });
 function initialDetail(unitCount = 2) {
   return {
@@ -41,7 +41,7 @@ function initialDetail(unitCount = 2) {
     courseId,
     code: 'WEB-2026',
     name: 'Lớp Web tối',
-    mentor: { id: mentorId, displayName: 'Mentor 101' },
+    mentor: { id: mentorId, displayName: 'Giảng viên 101' },
     startDate: '2026-11-01',
     endDate: '2026-11-30',
     maxStudents: 20,
@@ -138,7 +138,7 @@ async function mockClasses(
         name: input.name,
         code: input.code,
         courseId: input.courseId,
-        mentor: { id: input.mentorId, displayName: 'Mentor 101' },
+        mentor: { id: input.mentorId, displayName: 'Giảng viên 101' },
         startDate: input.startDate,
         endDate: input.endDate,
         maxStudents: input.maxStudents,
@@ -263,7 +263,7 @@ async function mockCreationRecovery(page: Page, rejectionStatus: 409 | 422) {
         json: {
           ...initialDetail(),
           ...input,
-          mentor: { id: input.mentorId, displayName: 'Mentor đang hoạt động' },
+          mentor: { id: input.mentorId, displayName: 'Giảng viên đang hoạt động' },
         },
       });
     }
@@ -289,9 +289,9 @@ async function mockCreationRecovery(page: Page, rejectionStatus: 409 | 422) {
 }
 
 async function fillClassDraft(page: Page) {
-  await expect(page.getByLabel('Mentor đang hoạt động')).toContainText('Mentor 101');
+  await expect(page.getByLabel('Giảng viên đang hoạt động')).toContainText('Giảng viên 101');
   await page.getByLabel('Khóa học đang hoạt động').selectOption(courseId);
-  await page.getByLabel('Mentor đang hoạt động').selectOption(mentorId);
+  await page.getByLabel('Giảng viên đang hoạt động').selectOption(mentorId);
   await page.getByLabel('Mã lớp', { exact: true }).fill('WEB-DRAFT');
   await page.getByLabel('Tên lớp', { exact: true }).fill('Lớp giữ nguyên bản nháp');
   await page.getByLabel('Ngày bắt đầu').fill('2026-11-01');
@@ -303,7 +303,7 @@ async function fillClassDraft(page: Page) {
 
 async function expectClassDraft(page: Page) {
   await expect(page.getByLabel('Khóa học đang hoạt động')).toHaveValue(courseId);
-  await expect(page.getByLabel('Mentor đang hoạt động')).toHaveValue(mentorId);
+  await expect(page.getByLabel('Giảng viên đang hoạt động')).toHaveValue(mentorId);
   await expect(page.getByLabel('Mã lớp', { exact: true })).toHaveValue('WEB-DRAFT');
   await expect(page.getByLabel('Tên lớp', { exact: true })).toHaveValue('Lớp giữ nguyên bản nháp');
   await expect(page.getByLabel('Ngày bắt đầu')).toHaveValue('2026-11-01');
@@ -325,14 +325,17 @@ test('creation draft survives 409 picker loading, no active mentor, failed refre
   state.setMentors([]);
   const release = state.holdNextMentorRead();
   await page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true }).click();
-  await expect(page.getByText('Đang tải khóa học và mentor…')).toBeVisible();
+  await expect(page.getByText('Đang tải khóa học và giảng viên…')).toBeVisible();
   await expectClassDraft(page);
   release();
-  await expect(page.getByText('Chưa có mentor đang hoạt động.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Chưa có giảng viên đang hoạt động.', { exact: true })).toBeVisible();
   await expectClassDraft(page);
-  await expect(page.getByLabel('Mentor đang hoạt động')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.getByLabel('Giảng viên đang hoạt động')).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  );
   await expect(
-    page.getByText('Mentor đã chọn không còn hoạt động. Chọn mentor khác.'),
+    page.getByText('Giảng viên đã chọn không còn hoạt động. Chọn giảng viên khác.'),
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true })).toBeDisabled();
   state.setMentors([101]);
@@ -365,22 +368,22 @@ test('422 ineligible mentor refreshes choices and manual refresh exposes a repla
   await fillClassDraft(page);
   state.setMentors([]);
   await page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true }).click();
-  await expect(page.getByText('Chưa có mentor đang hoạt động.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Chưa có giảng viên đang hoạt động.', { exact: true })).toBeVisible();
   await expect(
     page
       .locator('.error-panel[role="alert"]')
-      .filter({ hasText: 'Mentor phải có tài khoản đang hoạt động.' }),
+      .filter({ hasText: 'Giảng viên phải có tài khoản đang hoạt động.' }),
   ).toBeVisible();
   await expectClassDraft(page);
   state.setMentors([102]);
   await page.getByRole('button', { name: 'Tải lại lựa chọn', exact: true }).click();
-  await expect(page.getByLabel('Mentor đang hoạt động')).toContainText('Mentor 102');
+  await expect(page.getByLabel('Giảng viên đang hoạt động')).toContainText('Giảng viên 102');
   await expectClassDraft(page);
   await expect(
-    page.getByText('Mentor đã chọn không còn hoạt động. Chọn mentor khác.'),
+    page.getByText('Giảng viên đã chọn không còn hoạt động. Chọn giảng viên khác.'),
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true })).toBeDisabled();
-  await page.getByLabel('Mentor đang hoạt động').selectOption(uuid(2102));
+  await page.getByLabel('Giảng viên đang hoạt động').selectOption(uuid(2102));
   await expect(page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: 'Tạo lớp bản nháp', exact: true }).click();
   await expect(page).toHaveURL(`/management/classes/${classId}`);
@@ -396,24 +399,24 @@ test('admin creates class from fully paginated pickers, schedules snapshot unit 
   const staleMentor = uuid(8888);
   await page.goto(`/management/classes?page=2&courseId=${staleCourse}&mentorId=${staleMentor}`);
   await expect(page.getByLabel('Khóa học', { exact: true })).toHaveValue(staleCourse);
-  await expect(page.getByLabel('Mentor', { exact: true })).toHaveValue(staleMentor);
+  await expect(page.getByLabel('Giảng viên', { exact: true })).toHaveValue(staleMentor);
   await expect(page.getByLabel('Khóa học', { exact: true })).toContainText('Khóa học 101');
-  await expect(page.getByLabel('Mentor', { exact: true })).toContainText('Mentor 101');
+  await expect(page.getByLabel('Giảng viên', { exact: true })).toContainText('Giảng viên 101');
   await page.getByLabel('Khóa học', { exact: true }).selectOption(courseId);
   await expect(page).toHaveURL(new RegExp(`page=1.*courseId=${courseId}`));
-  await page.getByLabel('Mentor', { exact: true }).selectOption(mentorId);
+  await page.getByLabel('Giảng viên', { exact: true }).selectOption(mentorId);
   await expect(page).toHaveURL(new RegExp(`mentorId=${mentorId}`));
   await expect.poll(() => new URLSearchParams(state.queries.at(-1)).get('courseId')).toBe(courseId);
   await expect.poll(() => new URLSearchParams(state.queries.at(-1)).get('mentorId')).toBe(mentorId);
   await page.getByLabel('Khóa học', { exact: true }).selectOption('');
   await expect.poll(() => new URL(page.url()).searchParams.has('courseId')).toBe(false);
-  await page.getByLabel('Mentor', { exact: true }).selectOption('');
+  await page.getByLabel('Giảng viên', { exact: true }).selectOption('');
   await expect.poll(() => new URL(page.url()).searchParams.has('mentorId')).toBe(false);
   await page.goto('/management/classes/new');
   await expect(page.getByLabel('Khóa học đang hoạt động')).toContainText('Khóa học 101');
-  await expect(page.getByLabel('Mentor đang hoạt động')).toContainText('Mentor 101');
+  await expect(page.getByLabel('Giảng viên đang hoạt động')).toContainText('Giảng viên 101');
   await page.getByLabel('Khóa học đang hoạt động').selectOption(courseId);
-  await page.getByLabel('Mentor đang hoạt động').selectOption(mentorId);
+  await page.getByLabel('Giảng viên đang hoạt động').selectOption(mentorId);
   await page.getByLabel('Mã lớp', { exact: true }).fill('WEB-NEW');
   await page.getByLabel('Tên lớp', { exact: true }).fill('Lớp Web mới');
   await page.getByLabel('Ngày bắt đầu').fill('2026-11-01');
@@ -463,7 +466,7 @@ test('409 mentor calendar conflict refetches lifecycle and preserves entered ses
   await fillSession(page);
   await page.getByRole('button', { name: 'Thêm buổi học', exact: true }).click();
   const conflict = page.locator('.error-panel[role="alert"]');
-  await expect(conflict).toContainText('Mentor đã có lịch dạy lớp khác');
+  await expect(conflict).toContainText('Giảng viên đã có lịch dạy lớp khác');
   await expect(conflict).toContainText('Đã tải lại trạng thái lớp');
   await expect(page.getByLabel('Tiêu đề buổi học')).toHaveValue('Buổi giới thiệu');
   await expect(page.getByRole('button', { name: 'Bắt đầu lớp', exact: true })).toBeVisible();

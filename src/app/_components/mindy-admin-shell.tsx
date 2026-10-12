@@ -57,9 +57,11 @@ export function MindyAdminShell({
         <p className={s.sectionLabel}>
           {user.role === 'ADMIN'
             ? 'QUẢN LÝ TRUNG TÂM'
-            : user.role === 'MENTOR'
-              ? 'KHÔNG GIAN MENTOR'
-              : 'KHÔNG GIAN HỌC TẬP'}
+            : user.role === 'MANAGER'
+              ? 'KHÔNG GIAN QUẢN LÝ'
+              : user.role === 'MENTOR'
+                ? 'KHÔNG GIAN GIẢNG VIÊN'
+                : 'KHÔNG GIAN HỌC TẬP'}
         </p>
         <nav className={s.navigation} aria-label="Điều hướng chính">
           {navigation()}
@@ -72,12 +74,28 @@ export function MindyAdminShell({
             một khởi đầu.
           </h2>
           <p>Chuẩn bị lộ trình và kết nối người học cùng Mindy.</p>
-          <Link href={user.role === 'ADMIN' ? '/management/classes' : '/courses'}>
-            {user.role === 'ADMIN' ? 'Xem lớp học' : 'Khám phá khóa học'}{' '}
+          <Link
+            href={
+              user.role === 'ADMIN'
+                ? '/management/classes'
+                : user.role === 'MANAGER'
+                  ? '/manager/classes'
+                  : user.role === 'MENTOR'
+                    ? '/mentor/classes'
+                    : '/courses'
+            }
+          >
+            {user.role === 'ADMIN'
+              ? 'Xem lớp học'
+              : user.role === 'MANAGER'
+                ? 'Xem lớp học'
+                : user.role === 'MENTOR'
+                  ? 'Lớp giảng dạy'
+                  : 'Khám phá khóa học'}{' '}
             <Icon name="arrow" size={16} />
           </Link>
         </div>
-        <small>© {new Date().getFullYear()} Mindy Coding</small>
+        <small>© {new Date().getFullYear()} Mindy Lập trình</small>
       </aside>
       <div className={s.body}>
         <header className={s.topbar}>
@@ -86,7 +104,7 @@ export function MindyAdminShell({
               ref={trigger}
               type="button"
               className={`icon-button ${s.menu}`}
-              aria-label="Mở menu"
+              aria-label="Mở trình đơn"
               aria-haspopup="dialog"
               onClick={() => drawer.current?.showModal()}
             >
@@ -95,9 +113,11 @@ export function MindyAdminShell({
             <span>
               {user.role === 'ADMIN'
                 ? 'Không gian quản trị'
-                : user.role === 'MENTOR'
-                  ? 'Không gian mentor'
-                  : 'Không gian học tập'}
+                : user.role === 'MANAGER'
+                  ? 'Không gian quản lý'
+                  : user.role === 'MENTOR'
+                    ? 'Không gian giảng viên'
+                    : 'Không gian học tập'}
             </span>
             <Icon name="chevron" size={14} />
             <strong>{current}</strong>
@@ -107,7 +127,7 @@ export function MindyAdminShell({
               ref={profileTrigger}
               type="button"
               className={s.user}
-              aria-label="Mở menu tài khoản"
+              aria-label="Mở trình đơn tài khoản"
               aria-expanded={profileOpen}
               aria-controls="profile-dropdown"
               onClick={() => setProfileOpen((value) => !value)}
@@ -153,7 +173,7 @@ export function MindyAdminShell({
       <dialog
         ref={drawer}
         className={s.drawer}
-        aria-label="Menu Mindy"
+        aria-label="Trình đơn Mindy"
         onClose={() => trigger.current?.focus()}
       >
         <div className={s.drawerHeading}>
@@ -161,7 +181,7 @@ export function MindyAdminShell({
           <button
             type="button"
             className="icon-button"
-            aria-label="Đóng menu"
+            aria-label="Đóng trình đơn"
             onClick={() => drawer.current?.close()}
           >
             <Icon name="close" />

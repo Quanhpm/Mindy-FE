@@ -10,7 +10,7 @@ test('compiler samples send stdin and show output and runtime errors', async ({ 
         ok: !error,
         status: error ? 'user_error' : 'success',
         stdout: error ? '' : '10\n',
-        stderr: error ? 'Error: Test runtime error' : '',
+        stderr: error ? 'Error: Lỗi khi chạy thử' : '',
         exitCode: error ? 1 : 0,
         durationMs: 20,
         truncated: false,
@@ -18,15 +18,15 @@ test('compiler samples send stdin and show output and runtime errors', async ({ 
     });
   });
   await page.goto('/compiler');
-  await page.getByLabel('Code mẫu').selectOption('stdin');
-  await expect(page.getByLabel('stdin (tùy chọn)')).toHaveValue('2 3 5');
-  await page.getByRole('button', { name: 'Chạy code' }).click();
+  await page.getByLabel('Mã nguồn mẫu').selectOption('stdin');
+  await expect(page.getByLabel('Dữ liệu đầu vào (tùy chọn)')).toHaveValue('2 3 5');
+  await page.getByRole('button', { name: 'Chạy mã nguồn' }).click();
   await expect(page.getByRole('status')).toHaveText('Thành công');
   await expect(page.locator('pre').first()).toHaveText('10');
-  await page.getByLabel('Code mẫu').selectOption('error');
-  await page.getByLabel('Code JavaScript').press('Control+Enter');
+  await page.getByLabel('Mã nguồn mẫu').selectOption('error');
+  await page.getByLabel('Mã nguồn JavaScript').press('Control+Enter');
   await expect(page.getByRole('status')).toHaveText('Lỗi chương trình');
-  await expect(page.locator('pre').last()).toContainText('Error: Test runtime error');
+  await expect(page.locator('pre').last()).toContainText('Error: Lỗi khi chạy thử');
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,

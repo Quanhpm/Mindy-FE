@@ -88,7 +88,7 @@ export function PublicCourses() {
             <br />
             Một người đồng hành.
           </h2>
-          <p>Xem đề cương, mentor và lịch học trước khi chọn lớp.</p>
+          <p>Xem đề cương, giảng viên và lịch học trước khi chọn lớp.</p>
           <a href="#course-list" className={styles.summaryLink}>
             Tìm điểm bắt đầu <Icon name="arrow" size={18} />
           </a>

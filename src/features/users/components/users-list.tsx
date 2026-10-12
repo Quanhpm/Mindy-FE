@@ -59,7 +59,7 @@ export function UsersList() {
     <div className={styles.root}>
       <div className={styles.welcome}>
         <div>
-          <p className={styles.eyebrow}>MINDY COMMUNITY</p>
+          <p className={styles.eyebrow}>CỘNG ĐỒNG MINDY</p>
           <h1>Người dùng</h1>
           <p className="page-description">Quản lý tài khoản và kết nối mọi người tại Mindy.</p>
         </div>
@@ -79,7 +79,13 @@ export function UsersList() {
           >
             <span className={styles.shortcutIcon}>
               <Icon
-                name={role === 'ADMIN' ? 'shield' : role === 'MENTOR' ? 'book' : 'users'}
+                name={
+                  role === 'ADMIN' || role === 'MANAGER'
+                    ? 'shield'
+                    : role === 'MENTOR'
+                      ? 'book'
+                      : 'users'
+                }
                 size={21}
               />
             </span>
@@ -87,9 +93,11 @@ export function UsersList() {
             <span>
               {role === 'ADMIN'
                 ? 'Vận hành & quản lý trung tâm'
-                : role === 'MENTOR'
-                  ? 'Đồng hành cùng lớp học'
-                  : 'Cộng đồng học tập Mindy'}
+                : role === 'MANAGER'
+                  ? 'Theo dõi lớp và tài liệu môn học'
+                  : role === 'MENTOR'
+                    ? 'Đồng hành cùng lớp học'
+                    : 'Cộng đồng học tập Mindy'}
             </span>
             <span className={styles.shortcutAction}>
               {filters.role === role ? 'Đang chọn · Bỏ lọc' : 'Xem danh sách'}{' '}

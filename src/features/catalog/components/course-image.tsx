@@ -25,7 +25,7 @@ function CourseImageContent({
   if (!src || failed)
     return (
       <div className={styles.art} aria-hidden="true">
-        <span>MINDY / LEARNING SERIES</span>
+        <span>MINDY / HÀNH TRÌNH HỌC TẬP</span>
         <strong>{code}</strong>
       </div>
     );

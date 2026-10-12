@@ -18,7 +18,7 @@ export async function createPayosPayment(orderId: string, signal?: AbortSignal):
     }),
   );
   if (!result.success || result.data.orderId !== orderId)
-    throw new ApiError(502, 'INVALID_RESPONSE', 'Không thể xác định kết quả tạo link.');
+    throw new ApiError(502, 'INVALID_RESPONSE', 'Không thể xác định kết quả tạo liên kết.');
   return result.data;
 }
 export async function listReconciliation(page: number, signal?: AbortSignal) {

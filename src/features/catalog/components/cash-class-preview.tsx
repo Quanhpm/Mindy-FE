@@ -74,7 +74,7 @@ function Preview({ id }: { id: string }) {
           <p className={s.eyebrow}>XEM TRƯỚC LỚP</p>
           <h1>{data.name}</h1>
           <p>
-            Mentor: {data.mentor.displayName ?? 'Chưa có tên hiển thị'} ·{' '}
+            Giảng viên: {data.mentor.displayName ?? 'Chưa có tên hiển thị'} ·{' '}
             {formatCourseDate(data.startDate)} – {formatCourseDate(data.endDate)}
           </p>
         </div>
@@ -84,7 +84,7 @@ function Preview({ id }: { id: string }) {
       </header>
       <p className="inline-notice">
         Bạn có thể xem học phần, lịch học và phòng khi đơn tiền mặt còn giữ chỗ. Phòng học trực
-        tuyến mở sau khi mentor xác nhận thanh toán.
+        tuyến mở sau khi giảng viên xác nhận thanh toán.
       </p>
       <UnitWorkspace
         title={data.name}

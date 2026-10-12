@@ -21,8 +21,8 @@ export function MentorCashOrdersPage() {
   if (user.role !== 'MENTOR')
     return (
       <section className="empty-state">
-        <h1>Khu vực dành cho mentor</h1>
-        <p>Mentor được giao thu tiền mới có thể xem và xác nhận các đơn này.</p>
+        <h1>Khu vực dành cho giảng viên</h1>
+        <p>Giảng viên được giao thu tiền mới có thể xem và xác nhận các đơn này.</p>
         <Link href="/account">Về tài khoản</Link>
       </section>
     );
@@ -53,7 +53,11 @@ function CashOrders({ mentorId }: { mentorId: string }) {
     try {
       const result = await listMentorCashOrders(page, controller.signal);
       if (result.items.some((order) => order.mentorId !== mentorId))
-        throw new ApiError(502, 'INVALID_RESPONSE', 'Danh sách đơn không thuộc mentor hiện tại.');
+        throw new ApiError(
+          502,
+          'INVALID_RESPONSE',
+          'Danh sách đơn không thuộc giảng viên hiện tại.',
+        );
       if (!controller.signal.aborted) {
         setData(result);
         setBlocked(false);

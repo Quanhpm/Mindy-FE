@@ -32,7 +32,7 @@ export function CourseCreateForm() {
     <div className={s.page}>
       <div className={s.heading}>
         <div>
-          <p className={s.eyebrow}>MINDY / NEW COURSE</p>
+          <p className={s.eyebrow}>MINDY / KHÓA HỌC MỚI</p>
           <h1>Tạo khóa học</h1>
           <p>Khóa học mới chưa kích hoạt. Thêm học phần, sau đó kích hoạt để dùng cho lớp học.</p>
         </div>

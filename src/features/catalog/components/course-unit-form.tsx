@@ -1,22 +1,39 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ErrorPanel, FormError } from '@/shared/components/feedback';
+import { FormError } from '@/shared/components/feedback';
 import s from '@/shared/components/management.module.css';
-import { addCourseUnit, catalogErrorMessage } from '../api/catalog.browser';
-import { type CourseUnit, type UnitInput, unitInputSchema } from '../schemas/catalog.schema';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
+import { addCourseUnit, catalogErrorMessage, getAdminCourse } from '../api/catalog.browser';
+import {
+  type CourseDetail,
+  type CourseUnit,
+  type UnitInput,
+  unitInputSchema,
+} from '../schemas/catalog.schema';
 import styles from './catalog.module.css';
 
 export function CourseUnitForm({
+  disabled = false,
+  onBusyChange,
   courseId,
   onAdded,
+  onChecked,
 }: {
+  disabled?: boolean;
+  onBusyChange?: (busy: boolean) => void;
   courseId: string;
-  onAdded: (unit: CourseUnit) => void;
+  onAdded: (unit: CourseUnit, signal: AbortSignal) => void;
+  onChecked?: (course: CourseDetail) => void;
 }) {
-  const [error, setError] = useState<string>();
+  const mutation = useUiMutation(catalogErrorMessage);
+  useEffect(() => {
+    onBusyChange?.(mutation.blocked);
+    return () => onBusyChange?.(false);
+  }, [onBusyChange, mutation.blocked]);
   const {
     register,
     handleSubmit,
@@ -27,15 +44,27 @@ export function CourseUnitForm({
     defaultValues: { title: '', description: '', requiredScorePercent: 80 },
   });
   async function submit(input: UnitInput) {
-    setError(undefined);
-    try {
-      const unit = await addCourseUnit(courseId, input);
-      reset();
-      onAdded(unit);
-    } catch (cause) {
-      setError(catalogErrorMessage(cause));
-    }
+    if (disabled) return;
+    let requestSignal: AbortSignal;
+    await mutation.run(
+      (signal) => {
+        requestSignal = signal;
+        return addCourseUnit(courseId, input, signal);
+      },
+      (unit) => {
+        reset();
+        onAdded(unit, requestSignal);
+      },
+    );
   }
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const current = await getAdminCourse(courseId, signal);
+      if (!signal.aborted) onChecked?.(current);
+      return `Khóa có ${current.units.length} học phần: ${current.units.map((unit) => unit.title).join(', ') || 'Chưa có'}. Kiểm tra trước khi thêm lại.`;
+    });
+  }
+
   return (
     <form className={styles.form} noValidate onSubmit={handleSubmit(submit)}>
       <h2>Thêm học phần</h2>
@@ -44,6 +73,7 @@ export function CourseUnitForm({
         <label htmlFor="unit-title">Tên học phần *</label>
         <input
           id="unit-title"
+          disabled={mutation.busy}
           aria-invalid={Boolean(errors.title)}
           aria-describedby="unit-title-error"
           {...register('title')}
@@ -57,6 +87,7 @@ export function CourseUnitForm({
         <textarea
           id="unit-description"
           rows={8}
+          disabled={mutation.busy}
           aria-invalid={Boolean(errors.description)}
           aria-describedby="unit-description-error"
           {...register('description')}
@@ -73,6 +104,7 @@ export function CourseUnitForm({
           min={0}
           max={100}
           step={0.01}
+          disabled={mutation.busy}
           aria-invalid={Boolean(errors.requiredScorePercent)}
           aria-describedby="unit-score-error"
           {...register('requiredScorePercent', { valueAsNumber: true })}
@@ -81,9 +113,17 @@ export function CourseUnitForm({
           <FormError message={errors.requiredScorePercent?.message} />
         </div>
       </div>
-      {error && <ErrorPanel message={error} />}
+      <MutationFeedback
+        mutation={mutation}
+        onCheck={() => void checkResult()}
+        reviewHref={`/management/courses/${courseId}`}
+      />
       <div className={s.actions}>
-        <button type="submit" className={s.button} disabled={isSubmitting}>
+        <button
+          type="submit"
+          className={s.button}
+          disabled={disabled || isSubmitting || mutation.blocked}
+        >
           {isSubmitting ? 'Đang thêm…' : 'Thêm học phần'}
         </button>
       </div>

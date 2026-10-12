@@ -50,7 +50,7 @@ const classItem = {
   deliveryMode: 'ONLINE',
   maxStudents: 20,
   availableSeats: 10,
-  mentor: { id: id(6), displayName: 'Mentor Minh' },
+  mentor: { id: id(6), displayName: 'Giảng viên Minh' },
   status: 'DRAFT',
   meetingUrl: null,
   createdAt: user.createdAt,
@@ -255,9 +255,9 @@ test('Mindy admin pages and narrow workspaces keep mobile navigation and focus',
     ],
     (name) => info.outputPath(name),
   );
-  const trigger = page.getByRole('button', { name: 'Mở menu', exact: true });
+  const trigger = page.getByRole('button', { name: 'Mở trình đơn', exact: true });
   await trigger.click();
-  await expect(page.getByRole('dialog', { name: 'Menu Mindy' })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Trình đơn Mindy' })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(trigger).toBeFocused();
   await page.setViewportSize({ width: 901, height: 900 });

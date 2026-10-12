@@ -724,6 +724,16 @@ tbody tr:hover {
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.session-placeholder {
+  display: inline-block;
+  flex: 0 0 144px;
+  height: 44px;
+  visibility: hidden;
+  pointer-events: none;
+}
+dialog .session-placeholder {
+  display: none;
+}
 .loading-state {
   display: flex;
   align-items: center;

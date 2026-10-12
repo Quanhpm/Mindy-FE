@@ -24,7 +24,7 @@ export function PublicClassCard({
         <Link href={`/classes/${item.id}`}>{item.name}</Link>
       </h3>
       <div className={styles.metadata}>
-        <p>Mentor: {item.mentor.displayName ?? 'Chưa có tên hiển thị'}</p>
+        <p>Giảng viên: {item.mentor.displayName ?? 'Chưa có tên hiển thị'}</p>
         <p>
           {formatCourseDate(item.startDate)} – {formatCourseDate(item.endDate)}
         </p>

@@ -52,7 +52,7 @@ export function OrderSummary({ order, link = true }: { order: Order; link?: bool
       </ul>
       {order.mentorId && (
         <p className={styles.mentorId}>
-          Mã mentor thu tiền mặt: <span>{order.mentorId}</span>
+          Mã giảng viên thu tiền mặt: <span>{order.mentorId}</span>
         </p>
       )}
       {order.paidAt && (

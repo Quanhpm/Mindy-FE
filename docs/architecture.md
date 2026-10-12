@@ -185,3 +185,32 @@ companion backend HTTP fixture. It requires a disposable local database named
 `mindy_fe_phase22_*test`; the backend fixture resets only its derived `_http_test`
 database. Build BE and FE first, pass TEST_DATABASE_URL for the disposable container,
 then run the script. Never point this script at application/VPS databases.
+
+
+## Mentor classes — 10/10/2026
+
+Classes owns mentor class list/roster clients, runtime schemas and UI; routes
+compose through classes/client. Uses auth/client and existing shared management
+styles, with no new cross-feature dependency. Both mentor endpoints are GET-only
+in the BFF. Cash collection continues in orders through a navigation link.
+
+
+## Manager — 11/10/2026
+
+MANAGER is a supported identity role with its own navigation and role home.
+Classes owns manager list/roster and the requested materials route shell. Both
+manager and mentor compose the same roster UI with separate exact role gates,
+principal keys and manager read client. Manager class reads use the same GET
+mentor endpoints, with local backend role-aware scope. Admin management remains
+ADMIN-only; cash UI remains MENTOR-only. Materials has no upload implementation.
+
+
+## Role landing — 12/10/2026
+
+Auth owns HomeRoleBoundary and the shared role-home/login-destination policy.
+The root page composes the boundary within AppProviders, before HomeShell. Only
+validated authenticated staff are redirected; session loading does not mount
+landing/catalog children. Existing cookie recovery remains the identity source.
+Google session marker consumption applies the same destination policy after
+identity validation and announces login; direct account visits stay available.
+No backend/session contract change and no role hints from browser storage.

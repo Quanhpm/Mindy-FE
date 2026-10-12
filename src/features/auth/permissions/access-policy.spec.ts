@@ -1,16 +1,39 @@
 import { describe, expect, it } from 'vitest';
-import { canManageUsers, canPurchaseClasses, safeReturnTo } from './access-policy';
+import {
+  canManageUsers,
+  canPurchaseClasses,
+  destinationAfterLogin,
+  homeForRole,
+  safeReturnTo,
+} from './access-policy';
 
 describe('navigation policy', () => {
+  it('opens the correct workspace for each role', () => {
+    expect(homeForRole('ADMIN')).toBe('/management/users');
+    expect(homeForRole('MANAGER')).toBe('/manager/classes');
+    expect(homeForRole('MENTOR')).toBe('/mentor/classes');
+    expect(homeForRole('STUDENT')).toBe('/account');
+  });
+  it('keeps staff return paths inside their own workspace and preserves student links', () => {
+    expect(destinationAfterLogin('ADMIN', '/courses')).toBe('/management/users');
+    expect(destinationAfterLogin('MANAGER', '/account')).toBe('/manager/classes');
+    expect(destinationAfterLogin('MENTOR', '/manager/classes')).toBe('/mentor/classes');
+    expect(destinationAfterLogin('MENTOR', '/mentor/cash-orders?page=2')).toBe(
+      '/mentor/cash-orders?page=2',
+    );
+    expect(destinationAfterLogin('STUDENT', '/orders?page=2')).toBe('/orders?page=2');
+  });
   it('allows only ADMIN to access management', () => {
     expect(canManageUsers('ADMIN')).toBe(true);
     expect(canManageUsers('MENTOR')).toBe(false);
+    expect(canManageUsers('MANAGER')).toBe(false);
     expect(canManageUsers('STUDENT')).toBe(false);
   });
   it('allows purchases only for STUDENT and preserves supported browse/order return paths', () => {
     expect(canPurchaseClasses('STUDENT')).toBe(true);
     expect(canPurchaseClasses('ADMIN')).toBe(false);
     expect(canPurchaseClasses('MENTOR')).toBe(false);
+    expect(canPurchaseClasses('MANAGER')).toBe(false);
     const id = '123e4567-e89b-42d3-a456-426614174000';
     for (const path of [
       '/courses?deliveryMode=ONLINE&page=2',
@@ -22,6 +45,9 @@ describe('navigation policy', () => {
       `/orders/${id}`,
       '/payment/result?orderCode=123456&cancel=true',
       '/mentor/cash-orders?page=2',
+      '/manager/classes?status=OPEN&page=2',
+      `/manager/classes/${id}/students?paymentType=CASH`,
+      '/manager/materials',
       `/learning/classes/${id}?unitId=${id}`,
       `/learning/classes/${id}/preview`,
       '/management/payments/reconciliation?page=2',

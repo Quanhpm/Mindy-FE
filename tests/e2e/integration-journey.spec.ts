@@ -30,7 +30,7 @@ const classItem = {
   deliveryMode: 'ONLINE',
   maxStudents: 20,
   availableSeats: 10,
-  mentor: { id: id(5), displayName: 'Mentor An' },
+  mentor: { id: id(5), displayName: 'Giảng viên An' },
   units: [{ id: id(6), position: 1, title: 'Khởi đầu', sessions: [] }],
 };
 const user = {
@@ -183,7 +183,7 @@ test('public class → login return → cart → checkout → own order, then cl
     { path: '/me/cart/items', body: { classId: classItem.id } },
     { path: '/me/cart/checkout', body: { paymentType: 'CASH' } },
   ]);
-  await page.getByRole('button', { name: 'Mở menu tài khoản' }).click();
+  await page.getByRole('button', { name: 'Mở trình đơn tài khoản' }).click();
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel('Email', { exact: true }).fill('second@example.com');
@@ -217,13 +217,13 @@ test('home and public menu fit 1440/768/390/375 with keyboard focus return', asy
     const filteredRoute = '/courses?deliveryMode=ONLINE&page=2';
     await page.goto(filteredRoute);
     if (width < 850) {
-      const trigger = page.getByRole('button', { name: 'Mở menu', exact: true });
+      const trigger = page.getByRole('button', { name: 'Mở trình đơn', exact: true });
       await trigger.focus();
       await page.keyboard.press('Enter');
-      await expect(page.getByRole('dialog', { name: 'Menu Mindy' })).toBeVisible();
+      await expect(page.getByRole('dialog', { name: 'Trình đơn Mindy' })).toBeVisible();
       await expect(
         page
-          .getByRole('dialog', { name: 'Menu Mindy' })
+          .getByRole('dialog', { name: 'Trình đơn Mindy' })
           .getByRole('link', { name: 'Đăng nhập', exact: true }),
       ).toHaveAttribute('href', `/login?next=${encodeURIComponent(filteredRoute)}`);
       await page.keyboard.press('Escape');

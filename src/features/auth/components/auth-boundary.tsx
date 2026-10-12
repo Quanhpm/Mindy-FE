@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
 import { canManageUsers } from '../permissions/access-policy';
 import { useSession } from '../session/session-provider';
@@ -41,5 +41,5 @@ export function AuthBoundary({
         </Link>
       </section>
     );
-  return children;
+  return <Fragment key={`${user.id}:${user.role}`}>{children}</Fragment>;
 }

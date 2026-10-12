@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSession } from '@/features/auth/client';
 import { errorMessage } from '@/shared/lib/http/api-error';
 import { Icon } from '@/shared/ui/icon';
@@ -19,19 +19,30 @@ const studentLinks = [
   { href: '/cart', label: 'Giỏ hàng', icon: 'cart' },
   { href: '/orders', label: 'Đơn đăng ký', icon: 'clock' },
 ] as const;
+const managerLinks = [
+  { href: '/manager/classes', label: 'Lớp học', icon: 'book' },
+  { href: '/manager/materials', label: 'Tài liệu môn học', icon: 'book' },
+] as const;
 const mentorLinks = [
+  { href: '/mentor/classes', label: 'Lớp giảng dạy', icon: 'book' },
   { href: '/mentor/cash-orders', label: 'Thu tiền mặt', icon: 'cart' },
-  { href: '/courses', label: 'Khóa học', icon: 'book' },
 ] as const;
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const locked = useRef(false);
   const [error, setError] = useState<string>();
   if (!user) return null;
   const links =
-    user.role === 'ADMIN' ? managementLinks : user.role === 'STUDENT' ? studentLinks : mentorLinks;
+    user.role === 'ADMIN'
+      ? managementLinks
+      : user.role === 'MANAGER'
+        ? managerLinks
+        : user.role === 'STUDENT'
+          ? studentLinks
+          : mentorLinks;
   const current =
     pathname === '/checkout'
       ? 'Tạo đơn giữ chỗ'
@@ -41,7 +52,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ? 'Kết quả thanh toán'
           : (links.find(({ href }) => pathname.startsWith(href))?.label ?? 'Tài khoản');
   async function exit() {
-    if (busy) return;
+    if (locked.current) return;
+    locked.current = true;
     setBusy(true);
     setError(undefined);
     try {
@@ -50,6 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
+      locked.current = false;
       setBusy(false);
     }
   }

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorPanel, FormError, LoadingState } from '@/shared/components/feedback';
 import { formatDate } from '@/shared/lib/date';
@@ -23,6 +23,7 @@ import { useSession } from '../session/session-provider';
 export function GoogleRegistrationForm() {
   const { completeRegistration } = useSession();
   const router = useRouter();
+  const locked = useRef(false);
   const [context, setContext] = useState<RegistrationContext>();
   const [error, setError] = useState<string>();
   const [expired, setExpired] = useState(false);
@@ -66,6 +67,8 @@ export function GoogleRegistrationForm() {
   }, [context]);
 
   async function submit(input: GoogleRegistrationInput) {
+    if (locked.current) return;
+    locked.current = true;
     setError(undefined);
     try {
       const identity = await completeRegistration(input);
@@ -74,6 +77,8 @@ export function GoogleRegistrationForm() {
       if (cause instanceof ApiError && cause.code === 'INVALID_REGISTRATION_INTENT')
         setExpired(true);
       else setError(errorMessage(cause));
+    } finally {
+      locked.current = false;
     }
   }
   if (expired)

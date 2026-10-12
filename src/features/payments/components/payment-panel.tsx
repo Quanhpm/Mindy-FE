@@ -99,7 +99,7 @@ export function PaymentPanel({
           </p>
         </>
       ) : (
-        <p>Chưa tạo link thanh toán cho đơn này.</p>
+        <p>Chưa tạo liên kết thanh toán cho đơn này.</p>
       )}
       {payment?.status === 'REQUIRES_REVIEW' && (
         <p>
@@ -107,12 +107,12 @@ export function PaymentPanel({
         </p>
       )}
       {payment?.status === 'CREATING' && (
-        <p>Hệ thống đang xử lý. Kiểm tra lại hoặc tiếp tục tạo link trên cùng đơn.</p>
+        <p>Hệ thống đang xử lý. Kiểm tra lại hoặc tiếp tục tạo liên kết trên cùng đơn.</p>
       )}
       {error && <ErrorPanel message={error} />}
       {uncertain && (
         <p role="status">
-          Chưa đọc được kết quả mới nhất. Kiểm tra trạng thái trước khi thử tạo link lại.
+          Chưa đọc được kết quả mới nhất. Kiểm tra trạng thái trước khi thử tạo liên kết lại.
         </p>
       )}
       {qr && (
@@ -151,8 +151,8 @@ export function PaymentPanel({
             {busy
               ? 'Đang xử lý thanh toán…'
               : payment
-                ? 'Tiếp tục tạo link PayOS'
-                : 'Tạo link PayOS'}
+                ? 'Tiếp tục tạo liên kết PayOS'
+                : 'Tạo liên kết PayOS'}
           </button>
         )}
       {uncertain && (
@@ -162,7 +162,7 @@ export function PaymentPanel({
           disabled={busy}
           onClick={() => void check()}
         >
-          Kiểm tra kết quả tạo link
+          Kiểm tra kết quả tạo liên kết
         </button>
       )}
       {link && (

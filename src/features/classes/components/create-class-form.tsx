@@ -8,8 +8,10 @@ import { listAllActiveMentors } from '@/features/users/client';
 import type { User } from '@/shared/api/contracts/identity';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
 import styles from '@/shared/components/management.module.css';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
 import { ApiError } from '@/shared/lib/http/api-error';
-import { createClass } from '../api/classes.browser';
+import { createClass, listClasses } from '../api/classes.browser';
 import { classErrorMessage } from '../domain/class-rules';
 import type { CreateClassInput } from '../schemas/class.schema';
 import { ClassForm } from './class-form';
@@ -18,7 +20,8 @@ export function CreateClassForm() {
   const router = useRouter();
   const [options, setOptions] = useState<{ courses: CourseManagement[]; mentors: User[] }>();
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
+  const mutation = useUiMutation(classErrorMessage);
+  const busy = mutation.busy;
   const [error, setError] = useState<string>();
   const [choicesError, setChoicesError] = useState<string>();
   const choicesController = useRef<AbortController | null>(null);
@@ -51,28 +54,30 @@ export function CreateClassForm() {
       !options.courses.some((course) => course.id === values.courseId) ||
       !options.mentors.some((mentor) => mentor.id === values.mentorId)
     ) {
-      setError('Chọn khóa học và mentor đang hoạt động trước khi tạo lớp.');
+      setError('Chọn khóa học và giảng viên đang hoạt động trước khi tạo lớp.');
       return null;
     }
-    setBusy(true);
     setError(undefined);
-    try {
-      const detail = await createClass(values);
-      router.push(`/management/classes/${detail.id}`);
-      return detail;
-    } catch (failure) {
-      setError(classErrorMessage(failure));
-      if (
-        failure instanceof ApiError &&
-        (failure.status === 409 ||
-          (failure.status === 422 && failure.code === 'CLASS_MENTOR_NOT_ELIGIBLE'))
-      )
-        await refreshChoices();
-      return null;
-    } finally {
-      setBusy(false);
-    }
+    return mutation.run(
+      (signal) => createClass(values, signal),
+      (detail) => router.push(`/management/classes/${detail.id}`),
+      async (failure) => {
+        if (
+          failure instanceof ApiError &&
+          (failure.status === 409 ||
+            (failure.status === 422 && failure.code === 'CLASS_MENTOR_NOT_ELIGIBLE'))
+        )
+          await refreshChoices();
+      },
+    );
   }
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const result = await listClasses('page=1&pageSize=100', signal);
+      return `Đã đọc ${result.items.length} lớp mới nhất: ${result.items.map((item) => `${item.code} · ${item.name}`).join(', ') || 'Chưa có'}. Kiểm tra trước khi tạo lại.`;
+    });
+  }
+
   return (
     <section className={styles.page}>
       <p className={styles.eyebrow}>MINDY / QUẢN TRỊ LỚP</p>
@@ -97,9 +102,14 @@ export function CreateClassForm() {
         </button>
         <p className="muted">Tải lại danh sách giữ nguyên thông tin lớp đã nhập.</p>
       </div>
-      {loading && <LoadingState label="Đang tải khóa học và mentor…" />}
+      {loading && <LoadingState label="Đang tải khóa học và giảng viên…" />}
       {choicesError && <ErrorPanel message={`Không thể tải danh sách lựa chọn. ${choicesError}`} />}
       {error && <ErrorPanel message={error} />}
+      <MutationFeedback
+        mutation={mutation}
+        onCheck={() => void checkResult()}
+        reviewHref="/management/classes"
+      />
       {!loading &&
         !choicesError &&
         options &&
@@ -108,7 +118,7 @@ export function CreateClassForm() {
             <p>
               {options.courses.length === 0
                 ? 'Chưa có khóa học đang hoạt động.'
-                : 'Chưa có mentor đang hoạt động.'}
+                : 'Chưa có giảng viên đang hoạt động.'}
             </p>
             <Link
               href={options.courses.length === 0 ? '/management/courses' : '/management/users'}
@@ -123,6 +133,7 @@ export function CreateClassForm() {
         mentors={options?.mentors ?? []}
         choicesReady={Boolean(options && !loading && !choicesError)}
         busy={busy}
+        blocked={mutation.uncertain}
         onSubmit={submit}
       />
     </section>

@@ -20,6 +20,7 @@ export function ClassForm({
   mentors,
   choicesReady = true,
   busy,
+  blocked = false,
   onSubmit,
 }: {
   detail?: ManagementClassDetail;
@@ -27,6 +28,7 @@ export function ClassForm({
   mentors: User[];
   choicesReady?: boolean;
   busy: boolean;
+  blocked?: boolean;
   onSubmit: (values: CreateClassInput) => Promise<ManagementClassDetail | null>;
 }) {
   const {
@@ -79,7 +81,7 @@ export function ClassForm({
   const mentorError =
     errors.mentorId?.message ??
     (choicesReady && missingMentor
-      ? 'Mentor đã chọn không còn hoạt động. Chọn mentor khác.'
+      ? 'Giảng viên đã chọn không còn hoạt động. Chọn giảng viên khác.'
       : undefined);
   const validCreationChoices =
     choicesReady &&
@@ -88,6 +90,7 @@ export function ClassForm({
   const frozen = Boolean(detail && detail.status !== 'DRAFT');
   const editable = !detail || isClassEditable(detail.status);
   const submit = handleSubmit(async (values) => {
+    if (busy || blocked) return;
     const result = await onSubmit(values);
     if (result)
       reset({
@@ -156,7 +159,7 @@ export function ClassForm({
               aria-describedby={errors.name ? 'name-error' : undefined}
             />
           </ClassField>
-          <ClassField id="mentorId" label="Mentor đang hoạt động" error={mentorError}>
+          <ClassField id="mentorId" label="Giảng viên đang hoạt động" error={mentorError}>
             <select
               id="mentorId"
               {...register('mentorId')}
@@ -164,7 +167,7 @@ export function ClassForm({
               aria-invalid={Boolean(mentorError)}
               aria-describedby={mentorError ? 'mentorId-error' : undefined}
             >
-              <option value="">Chọn mentor</option>
+              <option value="">Chọn giảng viên</option>
               {missingMentor && (
                 <option value={selectedMentorId}>
                   Đã chọn · {selectedMentorId}
@@ -173,7 +176,7 @@ export function ClassForm({
               )}
               {detail && !mentors.some((mentor) => mentor.id === detail.mentor.id) && (
                 <option value={detail.mentor.id}>
-                  {detail.mentor.displayName ?? 'Mentor hiện tại'} · hiện tại
+                  {detail.mentor.displayName ?? 'Giảng viên hiện tại'} · hiện tại
                 </option>
               )}
               {mentors.map((mentor) => (
@@ -255,7 +258,7 @@ export function ClassForm({
           <button
             className={styles.button}
             type="submit"
-            disabled={!detail && !validCreationChoices}
+            disabled={blocked || (!detail && !validCreationChoices)}
           >
             {busy ? 'Đang lưu…' : detail ? 'Lưu thông tin lớp' : 'Tạo lớp bản nháp'}
           </button>

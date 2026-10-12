@@ -30,7 +30,7 @@ export function AuthPage({
             từ một chút tò mò.
           </h2>
           <p>
-            Mỗi dòng code là một bước nhỏ.
+            Mỗi dòng mã nguồn là một bước nhỏ.
             <br />
             Cùng khám phá điều bạn có thể tạo ra.
           </p>
@@ -57,7 +57,7 @@ export function AuthPage({
         </section>
       </div>
       <footer className={s.footer}>
-        <span>© {new Date().getFullYear()} Mindy Coding</span>
+        <span>© {new Date().getFullYear()} Mindy Lập trình</span>
         <span>Cứ thử. Bạn sẽ làm được.</span>
       </footer>
     </main>

@@ -3,20 +3,21 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { roleLabels, roles } from '@/shared/api/contracts/identity';
 import { FormError } from '@/shared/components/feedback';
-import { errorMessage } from '@/shared/lib/http/api-error';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
 import { Icon } from '@/shared/ui/icon';
-import { createUser } from '../api/users.browser';
+import { createUser, listUsers } from '../api/users.browser';
 import { type CreateUserInput, createUserSchema } from '../schemas/user.schema';
 
 export function CreateUserForm() {
   const router = useRouter();
-  const [error, setError] = useState<string>();
+  const mutation = useUiMutation();
   const {
     register,
+    getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<CreateUserInput>({
@@ -24,14 +25,22 @@ export function CreateUserForm() {
     defaultValues: { displayName: '', email: '', phone: '', password: '', role: 'STUDENT' },
   });
   async function submit(input: CreateUserInput): Promise<void> {
-    setError(undefined);
-    try {
-      const user = await createUser(input);
-      router.replace(`/management/users/${user.id}?created=1`);
-    } catch (cause) {
-      setError(errorMessage(cause));
-    }
+    await mutation.run(
+      (signal) => createUser(input, signal),
+      (user) => router.replace(`/management/users/${user.id}?created=1`),
+    );
   }
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const result = await listUsers('page=1&pageSize=100', signal);
+      const email = getValues('email').trim().toLowerCase();
+      const found = result.items.find((user) => user.email.toLowerCase() === email);
+      return found
+        ? `Đã tìm thấy ${found.displayName} (${found.email}) trong danh sách. Kiểm tra tài khoản trước khi tạo lại.`
+        : `Đã đọc ${result.items.length} tài khoản mới nhất. Kiểm tra danh sách người dùng trước khi tạo lại.`;
+    });
+  }
+
   return (
     <>
       <Link className="back-link" href="/management/users">
@@ -56,6 +65,7 @@ export function CreateUserForm() {
               id="displayName"
               autoComplete="name"
               placeholder="Nguyễn Minh Anh"
+              disabled={mutation.busy}
               aria-invalid={Boolean(errors.displayName)}
               aria-describedby="name-error"
               {...register('displayName')}
@@ -72,6 +82,7 @@ export function CreateUserForm() {
                 type="email"
                 autoComplete="off"
                 placeholder="minhanh@example.com"
+                disabled={mutation.busy}
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby="email-error"
                 {...register('email')}
@@ -87,6 +98,7 @@ export function CreateUserForm() {
                 type="tel"
                 autoComplete="tel"
                 placeholder="090 123 4567"
+                disabled={mutation.busy}
                 aria-invalid={Boolean(errors.phone)}
                 aria-describedby="phone-error"
                 {...register('phone')}
@@ -98,14 +110,22 @@ export function CreateUserForm() {
           </div>
           <div className="field">
             <label htmlFor="role">Vai trò *</label>
-            <select id="role" {...register('role')}>
+            <select
+              disabled={mutation.busy}
+              id="role"
+              aria-invalid={Boolean(errors.role)}
+              aria-describedby="role-error"
+              {...register('role')}
+            >
               {roles.map((role) => (
                 <option key={role} value={role}>
                   {roleLabels[role]}
                 </option>
               ))}
             </select>
-            <FormError message={errors.role?.message} />
+            <div id="role-error">
+              <FormError message={errors.role?.message} />
+            </div>
           </div>
           <div className="field">
             <label htmlFor="password">Mật khẩu ban đầu *</label>
@@ -113,6 +133,7 @@ export function CreateUserForm() {
               id="password"
               type="password"
               autoComplete="new-password"
+              disabled={mutation.busy}
               aria-invalid={Boolean(errors.password)}
               aria-describedby="password-error"
               {...register('password')}
@@ -122,17 +143,21 @@ export function CreateUserForm() {
               <FormError message={errors.password?.message} />
             </div>
           </div>
-          {error && (
-            <div className="inline-error" role="alert">
-              {error}
-            </div>
-          )}
+          <MutationFeedback
+            mutation={mutation}
+            onCheck={() => void checkResult()}
+            reviewHref="/management/users"
+          />
           <div className="form-actions">
             <Link className="button button-secondary" href="/management/users">
               Hủy
             </Link>
-            <button type="submit" className="button button-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Đang tạo…' : 'Tạo tài khoản'}
+            <button
+              type="submit"
+              className="button button-primary"
+              disabled={isSubmitting || mutation.blocked}
+            >
+              {isSubmitting || mutation.busy ? 'Đang tạo…' : 'Tạo tài khoản'}
               <Icon name="plus" size={18} />
             </button>
           </div>
@@ -149,7 +174,7 @@ export function CreateUserForm() {
               <span>Tham gia hành trình học tập.</span>
             </li>
             <li>
-              <strong>Mentor</strong>
+              <strong>Giảng viên</strong>
               <span>Đồng hành và giảng dạy.</span>
             </li>
             <li>

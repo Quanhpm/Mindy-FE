@@ -4,10 +4,10 @@ export const MAX_CODE_BYTES = 65_536;
 export const MAX_STDIN_BYTES = 32_768;
 const bytes = (value: string) => new TextEncoder().encode(value).length;
 export const runInputSchema = z.object({
-  code: z.string().refine((value) => bytes(value) <= MAX_CODE_BYTES, 'Code vượt quá 64 KiB.'),
+  code: z.string().refine((value) => bytes(value) <= MAX_CODE_BYTES, 'Mã nguồn vượt quá 64 KiB.'),
   stdin: z
     .string()
-    .refine((value) => bytes(value) <= MAX_STDIN_BYTES, 'stdin vượt quá 32 KiB.')
+    .refine((value) => bytes(value) <= MAX_STDIN_BYTES, 'Dữ liệu đầu vào vượt quá 32 KiB.')
     .default(''),
 });
 export const runResultSchema = z.object({

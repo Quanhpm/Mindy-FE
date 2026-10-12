@@ -17,7 +17,7 @@ const steps = [
     icon: 'book',
   },
   {
-    title: 'Chọn lớp, gặp mentor',
+    title: 'Chọn lớp, gặp giảng viên',
     text: 'Xem lịch, hình thức học và người đồng hành trước khi đăng ký.',
     icon: 'clock',
   },
@@ -87,16 +87,16 @@ export function HomeContent({ courses }: { courses: ReactNode }) {
         <div className={s.heroInner}>
           <div className={s.heroCopy}>
             <p className={s.intro} data-hero-reveal>
-              <span /> Khởi đầu ở Min - bùng nổ ở Max.
+              <span /> Khởi đầu nhỏ - bứt phá lớn.
             </p>
             <h1 data-hero-reveal>
-              Học code.
+              Học lập trình.
               <br />
               Mở thế giới của bạn.
             </h1>
             <p className={s.description} data-hero-reveal>
-              Từ dòng code đầu tiên đến điều bạn muốn tạo ra. Khám phá, thực hành và từng bước tiến
-              bộ cùng Mindy.
+              Từ dòng mã nguồn đầu tiên đến điều bạn muốn tạo ra. Khám phá, thực hành và từng bước
+              tiến bộ cùng Mindy.
             </p>
             <div className={s.heroActions} data-hero-reveal>
               <Link href="/courses" className={s.primary}>
@@ -106,7 +106,7 @@ export function HomeContent({ courses }: { courses: ReactNode }) {
                 </span>
               </Link>
               <Link href="/compiler" className={s.textLink}>
-                Thử viết code <Icon name="chevron" size={16} />
+                Thử viết mã nguồn <Icon name="chevron" size={16} />
               </Link>
             </div>
             <p className={s.heroNote} data-hero-reveal>
@@ -152,7 +152,7 @@ export function HomeContent({ courses }: { courses: ReactNode }) {
               hợp với bạn.
             </h3>
             <p>
-              Lộ trình, lịch học và mentor.
+              Lộ trình, lịch học và giảng viên.
               <br />
               Mọi điều cần biết trước khi bắt đầu.
             </p>
@@ -242,10 +242,10 @@ export function HomeContent({ courses }: { courses: ReactNode }) {
           </h2>
           <p>
             Đôi khi, cách tốt nhất để hiểu một điều là tự tay làm thử. Mở trình soạn thảo và viết
-            dòng code của bạn.
+            dòng mã nguồn của bạn.
           </p>
           <Link href="/compiler" className={s.primary}>
-            Mở không gian code{' '}
+            Mở không gian lập trình{' '}
             <span>
               <Icon name="arrow" />
             </span>
@@ -275,7 +275,7 @@ export function HomeContent({ courses }: { courses: ReactNode }) {
       </section>
       <section className={s.closing} data-reveal>
         <div>
-          <p className={s.kicker}>HẸN GẶP BẠN Ở DÒNG CODE ĐẦU TIÊN</p>
+          <p className={s.kicker}>HẸN GẶP BẠN Ở DÒNG MÃ NGUỒN ĐẦU TIÊN</p>
           <h2>
             Sẵn sàng học
             <br />

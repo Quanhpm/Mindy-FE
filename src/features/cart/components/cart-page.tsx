@@ -186,7 +186,7 @@ function StudentCart() {
             </section>
             <aside className={styles.aside} aria-label="Tóm tắt giỏ hàng">
               <div className={styles.summary}>
-                <p className="eyebrow">YOUR NEXT CHAPTER</p>
+                <p className="eyebrow">HÀNH TRÌNH TIẾP THEO</p>
                 <h2>Khởi đầu của bạn.</h2>
                 <div className={styles.summaryRow}>
                   <span>Số lớp</span>

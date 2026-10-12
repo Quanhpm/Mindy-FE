@@ -132,7 +132,9 @@ function OrderDetailContent({ id }: { id: string }) {
                   )}
                   <p>Tạo đơn chưa hoàn tất thanh toán và chưa cấp quyền học.</p>
                   {order.paymentType === 'CASH' && (
-                    <p>Đơn tiền mặt đang chờ mentor được giao thu tiền xác nhận đã nhận đủ tiền.</p>
+                    <p>
+                      Đơn tiền mặt đang chờ giảng viên được giao thu tiền xác nhận đã nhận đủ tiền.
+                    </p>
                   )}
                   <p className="small">
                     Đồng hồ chỉ tham khảo. Hệ thống quyết định trạng thái và thời điểm giải phóng

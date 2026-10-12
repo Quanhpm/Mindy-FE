@@ -27,11 +27,26 @@ const messages: Record<string, string> = {
   INVALID_RESPONSE: 'Dữ liệu trả về chưa đúng định dạng. Vui lòng thử lại.',
 };
 
+const statusMessages: Record<number, string> = {
+  400: 'Yêu cầu không hợp lệ. Vui lòng kiểm tra thông tin đã nhập.',
+  401: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  403: 'Bạn chưa có quyền thực hiện thao tác này.',
+  404: 'Không tìm thấy nội dung được yêu cầu.',
+  409: 'Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.',
+  413: 'Dữ liệu gửi lên vượt quá giới hạn cho phép.',
+  422: 'Thông tin chưa hợp lệ hoặc chưa đủ điều kiện thực hiện.',
+  429: 'Bạn thao tác quá nhanh. Vui lòng đợi một lát rồi thử lại.',
+};
+
 export function errorMessage(error: unknown): string {
   if (!(error instanceof ApiError)) return 'Có lỗi xảy ra. Vui lòng thử lại.';
   return (
     messages[error.code] ??
-    (error.status === 403 ? messages.INSUFFICIENT_ROLE : error.message) ??
-    'Yêu cầu thất bại.'
+    statusMessages[error.status] ??
+    'Yêu cầu chưa thực hiện được. Vui lòng thử lại sau.'
   );
+}
+
+export function unknownMutationResult(error: unknown): boolean {
+  return !(error instanceof ApiError) || error.status >= 500;
 }

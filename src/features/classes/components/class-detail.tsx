@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { listAllActiveMentors } from '@/features/users/client';
 import type { User } from '@/shared/api/contracts/identity';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
 import styles from '@/shared/components/management.module.css';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
 import { UnitWorkspace } from '@/shared/components/unit-workspace';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
 import { formatDate } from '@/shared/lib/date';
 import { ApiError } from '@/shared/lib/http/api-error';
 import { commandClass, getClass, scheduleSession, updateClass } from '../api/classes.browser';
@@ -49,7 +51,14 @@ export function ClassDetail({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
-  const [busy, setBusy] = useState(false);
+  const mutation = useUiMutation(classErrorMessage);
+  const [reading, setReading] = useState(false);
+  const busy = mutation.busy || reading;
+  const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const commands = useRef<HTMLDivElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const readController = useRef<AbortController | null>(null);
   const [retry, setRetry] = useState(0);
   const [confirm, setConfirm] = useState<ClassCommand>();
   // biome-ignore lint/correctness/useExhaustiveDependencies: retry triggers a deliberate data reload.
@@ -78,65 +87,88 @@ export function ClassDetail({ id }: { id: string }) {
       });
     return () => controller.abort();
   }, [id, retry]);
+  useEffect(() => () => readController.current?.abort(), []);
+  useEffect(() => {
+    if (confirm) dialog.current?.showModal();
+    else dialog.current?.close();
+  }, [confirm]);
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const current = await getClass(id, signal);
+      if (!signal.aborted) setDetail(current);
+      return `${current.name}: ${classStatusLabels[current.status]}. ${current.units.flatMap((unit) => unit.sessions).length} buổi học. Kiểm tra lịch và trạng thái trước khi thao tác tiếp.`;
+    });
+  }
   async function reloadClass() {
     if (busy) return;
-    setBusy(true);
+    readController.current?.abort();
+    const controller = new AbortController();
+    readController.current = controller;
+    setReading(true);
     try {
-      setDetail(await getClass(id));
+      const current = await getClass(id, controller.signal);
+      if (controller.signal.aborted) return;
+      setDetail(current);
       setError(undefined);
       setMessage('Đã tải lại trạng thái lớp; dữ liệu đã nhập được giữ nguyên.');
     } catch (failure) {
-      setError(classErrorMessage(failure));
+      if (!controller.signal.aborted) setError(classErrorMessage(failure));
     } finally {
-      setBusy(false);
+      if (!controller.signal.aborted) setReading(false);
     }
   }
   async function reloadMentors() {
+    if (busy) return;
+    const controller = new AbortController();
+    readController.current = controller;
+    setReading(true);
     try {
-      setMentors(await listAllActiveMentors());
-      setMentorError(undefined);
+      const current = await listAllActiveMentors(controller.signal);
+      if (!controller.signal.aborted) {
+        setMentors(current);
+        setMentorError(undefined);
+      }
     } catch (failure) {
-      setMentorError(classErrorMessage(failure));
+      if (!controller.signal.aborted) setMentorError(classErrorMessage(failure));
+    } finally {
+      if (!controller.signal.aborted) setReading(false);
     }
   }
-  async function mutate(action: () => Promise<ManagementClassDetail>, success: string) {
-    if (busy) return null;
-    setBusy(true);
+  async function mutate(
+    action: (signal: AbortSignal) => Promise<ManagementClassDetail>,
+    success: string,
+  ) {
+    if (reading) return null;
     setError(undefined);
     setMessage(undefined);
-    setConfirm(undefined);
-    try {
-      const response = await action();
-      setDetail(response);
-      setMessage(success);
-      return response;
-    } catch (failure) {
-      const description = classErrorMessage(failure);
-      setError(description);
-      if (failure instanceof ApiError && failure.status === 409) {
-        try {
-          setDetail(await getClass(id));
-          setError(`${description} Đã tải lại trạng thái lớp; dữ liệu đã nhập được giữ nguyên.`);
-        } catch {
-          setError(`${description} Chưa thể tải lại trạng thái lớp. Hãy thử lại.`);
+    return mutation.run(
+      action,
+      (response) => {
+        setDetail(response);
+        setMessage(success);
+        setConfirm(undefined);
+      },
+      async (failure, signal) => {
+        if (failure instanceof ApiError && failure.status === 409) {
+          const current = await getClass(id, signal);
+          if (!signal.aborted) setDetail(current);
+          return 'Đã tải lại trạng thái lớp; dữ liệu đã nhập được giữ nguyên.';
         }
-      }
-      return null;
-    } finally {
-      setBusy(false);
-    }
+        return undefined;
+      },
+    );
   }
   async function save(values: CreateClassInput) {
     if (!detail) return null;
     return mutate(
-      () => updateClass(id, updateClassPayload(detail.status, values)),
+      (signal) => updateClass(id, updateClassPayload(detail.status, values), signal),
       'Đã lưu thông tin lớp.',
     );
   }
   async function addSession(values: SessionFormInput, unitId: string) {
     if (!detail) return null;
     return mutate(
-      () => scheduleSession(id, scheduleSessionPayload(values, unitId, detail)),
+      (signal) => scheduleSession(id, scheduleSessionPayload(values, unitId, detail), signal),
       'Đã thêm buổi học.',
     );
   }
@@ -160,7 +192,9 @@ export function ClassDetail({ id }: { id: string }) {
     <section className={styles.page}>
       <p className={styles.eyebrow}>MINDY / QUẢN TRỊ LỚP</p>
       <div className={styles.heading}>
-        <h1>{detail.name}</h1>
+        <h1 ref={heading} tabIndex={-1}>
+          {detail.name}
+        </h1>
         <Link href="/management/classes" className={styles.secondaryButton}>
           Danh sách lớp
         </Link>
@@ -177,6 +211,7 @@ export function ClassDetail({ id }: { id: string }) {
         </span>
       </div>
       {error && <ErrorPanel message={error} retry={() => void reloadClass()} />}
+      {!confirm && <MutationFeedback mutation={mutation} onCheck={() => void checkResult()} />}
       {message && (
         <p className={styles.notice} role="status">
           {message}
@@ -186,55 +221,86 @@ export function ClassDetail({ id }: { id: string }) {
         {detail.status === 'DRAFT' && (
           <p className={local.readiness}>
             {ready
-              ? 'Lịch học đã đủ để gửi yêu cầu mở tuyển sinh. Hệ thống sẽ kiểm tra lịch dạy của mentor khi mở lớp.'
+              ? 'Lịch học đã đủ để gửi yêu cầu mở tuyển sinh. Hệ thống sẽ kiểm tra lịch dạy của giảng viên khi mở lớp.'
               : 'Để mở tuyển sinh: cần học phần và ít nhất một buổi đã xếp lịch, tất cả buổi học nằm trong thời gian của lớp.'}
           </p>
         )}
-        <div className={styles.actions}>
+        <div ref={commands} className={styles.actions}>
           {classCommands(detail.status).map((command) => (
             <button
               type="button"
               className={styles.secondaryButton}
               key={command}
               disabled={busy || (command === 'open' && !ready)}
-              onClick={() => setConfirm(command)}
+              onClick={(event) => {
+                trigger.current = event.currentTarget;
+                setConfirm(command);
+              }}
             >
               {commandLabels[command]}
             </button>
           ))}
         </div>
-        {confirm && (
-          <section className={local.readiness} aria-label="Xác nhận thay đổi trạng thái">
-            <p>
-              Xác nhận “{commandLabels[confirm]}” cho lớp {detail.code}?
-            </p>
-            {confirm === 'cancel' && (
-              <p>Hủy lớp hiện chưa tự giải phóng các chỗ đang được giữ bởi đơn chờ thanh toán.</p>
-            )}
-            <div className={local.confirm}>
-              <button
-                type="button"
-                className={styles.button}
-                disabled={busy}
-                onClick={() =>
-                  void mutate(
-                    () => commandClass(id, confirm),
-                    `Đã thực hiện: ${commandLabels[confirm]}.`,
-                  )
-                }
-              >
-                Xác nhận
-              </button>
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={() => setConfirm(undefined)}
-              >
-                Quay lại
-              </button>
-            </div>
-          </section>
-        )}
+        <dialog
+          ref={dialog}
+          className="confirm-dialog"
+          aria-labelledby="class-command-title"
+          onCancel={(event) => {
+            if (busy) event.preventDefault();
+          }}
+          onClose={() => {
+            setConfirm(undefined);
+            if (trigger.current?.isConnected && !trigger.current.disabled) trigger.current.focus();
+            else {
+              const next =
+                commands.current?.querySelector<HTMLButtonElement>('button:not(:disabled)');
+              (next ?? heading.current)?.focus();
+            }
+          }}
+        >
+          {confirm && (
+            <>
+              <h2 id="class-command-title">{commandLabels[confirm]}?</h2>
+              <p>
+                Xác nhận “{commandLabels[confirm]}” cho lớp {detail.code}?
+              </p>
+              {confirm === 'cancel' && (
+                <p>Hủy lớp hiện chưa tự giải phóng các chỗ đang được giữ bởi đơn chờ thanh toán.</p>
+              )}
+              <MutationFeedback mutation={mutation} onCheck={() => void checkResult()} />
+              {!classCommands(detail.status).includes(confirm) && (
+                <p role="status">
+                  Trạng thái lớp đã thay đổi. Đóng xác nhận để chọn hành động phù hợp.
+                </p>
+              )}
+              <div className={local.confirm}>
+                <button
+                  type="button"
+                  className={styles.button}
+                  disabled={
+                    busy || mutation.uncertain || !classCommands(detail.status).includes(confirm)
+                  }
+                  onClick={() =>
+                    void mutate(
+                      (signal) => commandClass(id, confirm, signal),
+                      `Đã thực hiện: ${commandLabels[confirm]}.`,
+                    )
+                  }
+                >
+                  Xác nhận
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  disabled={busy}
+                  onClick={() => setConfirm(undefined)}
+                >
+                  Quay lại
+                </button>
+              </div>
+            </>
+          )}
+        </dialog>
         <details className={local.settings}>
           <summary>
             Thông tin lớp · {isClassEditable(detail.status) ? 'Chỉnh sửa' : 'Chỉ đọc'}
@@ -243,11 +309,17 @@ export function ClassDetail({ id }: { id: string }) {
             <h2 className={local.sectionHeading}>Thông tin lớp</h2>
             {mentorError && (
               <ErrorPanel
-                message={`Chưa tải được danh sách mentor. ${mentorError}`}
+                message={`Chưa tải được danh sách giảng viên. ${mentorError}`}
                 retry={() => void reloadMentors()}
               />
             )}
-            <ClassForm detail={detail} mentors={mentors} busy={busy} onSubmit={save} />
+            <ClassForm
+              detail={detail}
+              mentors={mentors}
+              busy={busy}
+              blocked={mutation.uncertain}
+              onSubmit={save}
+            />
           </div>
         </details>
       </div>
@@ -325,6 +397,7 @@ export function ClassDetail({ id }: { id: string }) {
                   key={selectedUnit.id}
                   unitId={selectedUnit.id}
                   busy={busy}
+                  blocked={mutation.uncertain}
                   onSubmit={addSession}
                 />
               </section>

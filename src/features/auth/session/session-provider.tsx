@@ -11,6 +11,7 @@ import {
   recoverSession,
   verifyEmail,
 } from '../api/auth.browser';
+import { destinationAfterLogin } from '../permissions/access-policy';
 import type { GoogleRegistrationInput } from '../schemas/google-registration.schema';
 import type { LoginInput } from '../schemas/login.schema';
 import { consumeGoogleSessionMarker } from './session-marker';
@@ -72,9 +73,17 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       }
       if (version !== generation.current) return;
       bindSessionIdentity(identity.id);
+      if (consumeGoogleSessionMarker()) {
+        announce('login');
+        const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+        const destination = destinationAfterLogin(identity.role, currentPath);
+        if (identity.role !== 'STUDENT' && destination !== currentPath) {
+          window.location.replace(destination);
+          return;
+        }
+      }
       setUser(identity);
       setState('authenticated');
-      if (consumeGoogleSessionMarker()) announce('login');
     } catch (cause) {
       if (version !== generation.current) return;
       bindSessionIdentity(null);

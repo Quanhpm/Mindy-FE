@@ -3,12 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '@/shared/components/feedback';
 import { errorMessage } from '@/shared/lib/http/api-error';
 import { Icon } from '@/shared/ui/icon';
-import { homeForRole, safeReturnTo } from '../permissions/access-policy';
+import { destinationAfterLogin } from '../permissions/access-policy';
 import { type LoginInput, loginSchema } from '../schemas/login.schema';
 import { useSession } from '../session/session-provider';
 import { GoogleSignIn } from './google-sign-in';
@@ -16,6 +16,7 @@ import { GoogleSignIn } from './google-sign-in';
 export function LoginForm() {
   const { signIn, user, state } = useSession();
   const router = useRouter();
+  const locked = useRef(false);
   const [error, setError] = useState<string>();
   const [visible, setVisible] = useState(false);
   const [googleError, setGoogleError] = useState<string>();
@@ -43,17 +44,21 @@ export function LoginForm() {
       )
         return;
       const next = params.get('next');
-      router.replace(safeReturnTo(next, homeForRole(user.role)));
+      router.replace(destinationAfterLogin(user.role, next));
     }
   }, [user, state, router, signedInHere]);
 
   async function submit(values: LoginInput): Promise<void> {
+    if (locked.current) return;
+    locked.current = true;
     setError(undefined);
     try {
       await signIn(values);
       setSignedInHere(true);
     } catch (cause) {
       setError(errorMessage(cause));
+    } finally {
+      locked.current = false;
     }
   }
 
@@ -66,6 +71,7 @@ export function LoginForm() {
           type="email"
           autoComplete="username"
           placeholder="ban@example.com"
+          disabled={isSubmitting}
           aria-invalid={Boolean(errors.email)}
           aria-describedby="email-error"
           {...register('email')}
@@ -82,6 +88,7 @@ export function LoginForm() {
             type={visible ? 'text' : 'password'}
             autoComplete="current-password"
             placeholder="Nhập mật khẩu của bạn"
+            disabled={isSubmitting}
             aria-invalid={Boolean(errors.password)}
             aria-describedby="password-error"
             {...register('password')}

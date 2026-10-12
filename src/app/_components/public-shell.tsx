@@ -9,21 +9,24 @@ import { Icon } from '@/shared/ui/icon';
 import styles from './public-shell.module.css';
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
-  const { user, state } = useSession();
+  const { user, state, error, reload } = useSession();
   const pathname = usePathname();
   const params = useSearchParams();
   const query = params.toString();
   const returnTo = safeReturnTo(`${pathname}${query ? `?${query}` : ''}`, '/courses');
   const drawer = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const mentor = state === 'authenticated' && user?.role === 'MENTOR';
+  const manager = state === 'authenticated' && user?.role === 'MANAGER';
+  const courseHref = manager ? '/manager/classes' : mentor ? '/mentor/classes' : '/courses';
   const navigation = (
     <>
       <Link
-        href="/courses"
-        aria-current={pathname.startsWith('/courses') ? 'page' : undefined}
+        href={courseHref}
+        aria-current={pathname.startsWith(courseHref) ? 'page' : undefined}
         onClick={() => drawer.current?.close()}
       >
-        Khóa học
+        {manager ? 'Lớp học' : mentor ? 'Lớp giảng dạy' : 'Khóa học'}
       </Link>
       {state === 'authenticated' && user ? (
         <>
@@ -38,6 +41,11 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               </Link>
             </>
           )}
+          {user.role === 'MENTOR' && (
+            <Link href="/mentor/cash-orders" onClick={() => drawer.current?.close()}>
+              Thu tiền mặt
+            </Link>
+          )}
           {user.role === 'ADMIN' && (
             <Link href="/management/courses" onClick={() => drawer.current?.close()}>
               Quản trị
@@ -47,6 +55,12 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             Tài khoản
           </Link>
         </>
+      ) : state === 'loading' ? (
+        <span className="session-placeholder" aria-hidden="true" />
+      ) : state === 'error' ? (
+        <button type="button" className="button button-secondary" onClick={() => void reload()}>
+          Thử lại phiên đăng nhập
+        </button>
       ) : (
         <Link
           href={`/login?next=${encodeURIComponent(returnTo)}`}
@@ -68,22 +82,29 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
           ref={trigger}
           className={`icon-button ${styles.menu}`}
           type="button"
-          aria-label="Mở menu"
+          aria-label="Mở trình đơn"
           aria-haspopup="dialog"
           onClick={() => drawer.current?.showModal()}
         >
           <Icon name="menu" />
         </button>
       </header>
-      <main id="main-content">{children}</main>
+      <main id="main-content">
+        {state === 'error' && (
+          <p className="inline-error" role="alert">
+            {error ?? 'Chưa kiểm tra được phiên đăng nhập. Nội dung public vẫn có thể xem.'}
+          </p>
+        )}
+        {children}
+      </main>
       <footer className={styles.footer}>
-        <span>© {new Date().getFullYear()} Mindy Center</span>
+        <span>© {new Date().getFullYear()} Trung tâm Mindy</span>
         <span>Cùng nhau tiến bộ mỗi ngày.</span>
       </footer>
       <dialog
         ref={drawer}
         className={styles.drawer}
-        aria-label="Menu Mindy"
+        aria-label="Trình đơn Mindy"
         onClose={() => trigger.current?.focus()}
       >
         <div className={styles.drawerHeading}>
@@ -91,7 +112,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
           <button
             className="icon-button"
             type="button"
-            aria-label="Đóng menu"
+            aria-label="Đóng trình đơn"
             onClick={() => drawer.current?.close()}
           >
             <Icon name="close" />

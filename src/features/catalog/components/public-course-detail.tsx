@@ -89,7 +89,7 @@ export function PublicCourseDetail({ id }: { id: string }) {
         </aside>
       </header>
       <section className={styles.section} aria-labelledby="syllabus-title">
-        <p className={styles.eyebrow}>COURSE CONTENTS</p>
+        <p className={styles.eyebrow}>NỘI DUNG KHÓA HỌC</p>
         <h2 id="syllabus-title">Đề cương khóa học</h2>
         {course.units.length === 0 ? (
           <p className={s.notice}>Khóa học chưa có học phần công khai.</p>

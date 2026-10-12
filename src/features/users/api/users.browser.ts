@@ -34,20 +34,26 @@ export async function getUser(id: string, signal?: AbortSignal): Promise<User> {
   );
 }
 
-export async function createUser(input: CreateUserInput): Promise<User> {
+export async function createUser(input: CreateUserInput, signal?: AbortSignal): Promise<User> {
   const { phone, ...fields } = input;
   return userSchema.parse(
     await authenticatedRequest('/admin/users', {
       method: 'POST',
+      signal,
       body: JSON.stringify({ ...fields, ...(phone.trim() ? { phone: phone.trim() } : {}) }),
     }),
   );
 }
 
-export async function updateUserStatus(id: string, status: UserStatus): Promise<User> {
+export async function updateUserStatus(
+  id: string,
+  status: UserStatus,
+  signal?: AbortSignal,
+): Promise<User> {
   return userSchema.parse(
     await authenticatedRequest(`/admin/users/${encodeURIComponent(id)}/status`, {
       method: 'PATCH',
+      signal,
       body: JSON.stringify({ status }),
     }),
   );

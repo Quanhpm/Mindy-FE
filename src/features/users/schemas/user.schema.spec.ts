@@ -15,7 +15,7 @@ describe('user input contract', () => {
     expect(createUserSchema.safeParse({ ...input, password: 'a'.repeat(128) }).success).toBe(true);
     expect(createUserSchema.safeParse({ ...input, password: 'a'.repeat(11) }).success).toBe(false);
     expect(createUserSchema.safeParse({ ...input, password: 'a'.repeat(129) }).success).toBe(false);
-    expect(createUserSchema.safeParse({ ...input, role: 'MANAGER' }).success).toBe(false);
+    expect(createUserSchema.safeParse({ ...input, role: 'MANAGER' }).success).toBe(true);
     expect(createUserSchema.safeParse({ ...input, password: 'short' }).success).toBe(false);
     expect(createUserSchema.safeParse({ ...input, displayName: '   ' }).success).toBe(false);
   });

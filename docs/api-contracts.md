@@ -1,3 +1,42 @@
+## Bổ sung MANAGER — 11/10/2026 (backend local, chưa deploy)
+
+FE nhận role MANAGER trong user/session/create/filter; home password là
+`/manager/classes`. ADMIN vẫn là role duy nhất quản trị users và sửa lớp.
+MANAGER dùng GET `/mentor/classes` để xem tất cả lớp (status/page/pageSize),
+GET `/mentor/classes/:classId/students` để xem học viên của lớp bất kỳ
+(paymentType/orderStatus/page/pageSize). Chính tả path là `classes`.
+Cùng DTO/schema mentor; manager không kiểm tra mentor.id bằng user.id và không có
+CTA thu tiền. Backend local cho MANAGER đọc hai endpoint này, không thêm quyền
+cash confirmation hoặc class mutations; mentor vẫn bị giới hạn theo phân công.
+Role lấy từ session guard, không từ query/body. Manager roster luôn canConfirmCash=false.
+
+Live smoke ngày 11/10: MANAGER đăng nhập 200, GET mentor/classes và admin/classes
+đều 403 INSUFFICIENT_ROLE trước deploy. FE hiển thị lỗi quyền và thử lại, không dùng
+admin credentials/fallback/fixture để đi vòng. Sau deploy cần smoke cả list/roster.
+Trang `/manager/materials` hiện chỉ là điểm đến sidebar có thông báo chờ bổ sung;
+chưa có form upload, chọn môn/chương hoặc API upload.
+
+## Bổ sung API giảng viên — 10/10/2026
+
+Đối chiếu Swagger live: [snapshot riêng](./swagger-mentor-2026-10-10.json).
+Hai API chỉ cho MENTOR, kiểm tra lớp được giao tại BE:
+
+| Method | Path (sau `/api/v1`) | Query | Response |
+| --- | --- | --- | --- |
+| GET | `/mentor/classes` | page, pageSize, status? | MentorClassPageDto |
+| GET | `/mentor/classes/:classId/students` | page, pageSize, paymentType?, orderStatus? | MentorRosterPageDto |
+
+FE dùng pageSize 20, filter/page lưu URL; schema Zod kiểm tra response.
+Class DTO là public class fields + status, không có meeting URL hoặc lịch buổi học.
+Roster có enrollment/student/order IDs, tên học viên, trạng thái đăng ký/đơn,
+CASH/PAYOS, classAmount, orderTotalAmount, orderClassCount, expiresAt, paidAt nullable
+và canConfirmCash. Không suy ra tổng học viên từ chỗ trống hoặc danh sách đơn.
+`canConfirmCash` chỉ là gợi ý lúc đọc; xác nhận vẫn qua trang `/mentor/cash-orders`
+và gửi đúng toàn bộ tổng đơn, không dùng classAmount để thu một phần.
+Routes FE: `/mentor/classes`, `/mentor/classes/:classId/students`.
+Dữ liệu chỉ đọc sau bootstrap MENTOR, key theo user/lớp, abort khi đổi query/unmount,
+không lưu dữ liệu cá nhân vào browser storage. ADMIN/STUDENT bị chặn trước request.
+
 # API contract — Swagger live / 06-10-2026
 
 Nguồn hiện hành: https://api.quanh123.id.vn/docs#/ và snapshot

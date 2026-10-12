@@ -52,12 +52,16 @@ export async function listAllCategories(signal?: AbortSignal): Promise<CourseCat
     page += 1;
   }
 }
-export async function createCategory(input: CategoryInput): Promise<CourseCategory> {
+export async function createCategory(
+  input: CategoryInput,
+  signal?: AbortSignal,
+): Promise<CourseCategory> {
   const fields = categoryInputSchema.parse(input);
   return parseResponse(
     categorySchema,
     await authenticatedRequest('/admin/course-categories', {
       method: 'POST',
+      signal,
       body: JSON.stringify({
         name: fields.name,
         ...(fields.slug ? { slug: fields.slug } : {}),
@@ -88,12 +92,16 @@ export async function listActiveAdminCourses(signal?: AbortSignal): Promise<Cour
 export async function getAdminCourse(id: string, signal?: AbortSignal): Promise<CourseDetail> {
   return parseResponse(courseDetailSchema, await authenticatedRequest(coursePath(id), { signal }));
 }
-export async function createCourse(input: CourseCreateInput): Promise<CourseDetail> {
+export async function createCourse(
+  input: CourseCreateInput,
+  signal?: AbortSignal,
+): Promise<CourseDetail> {
   const { description, imgUrl, ...fields } = courseCreateSchema.parse(input);
   return parseResponse(
     courseDetailSchema,
     await authenticatedRequest('/admin/courses', {
       method: 'POST',
+      signal,
       body: JSON.stringify({
         ...fields,
         ...(imgUrl ? { imgUrl } : {}),
@@ -102,7 +110,11 @@ export async function createCourse(input: CourseCreateInput): Promise<CourseDeta
     }),
   );
 }
-export async function updateCourse(id: string, input: CourseEditInput): Promise<CourseDetail> {
+export async function updateCourse(
+  id: string,
+  input: CourseEditInput,
+  signal?: AbortSignal,
+): Promise<CourseDetail> {
   const payload = courseUpdatePayloadSchema.parse({
     ...input,
     description: input.description || null,
@@ -110,15 +122,24 @@ export async function updateCourse(id: string, input: CourseEditInput): Promise<
   });
   return parseResponse(
     courseDetailSchema,
-    await authenticatedRequest(coursePath(id), { method: 'PATCH', body: JSON.stringify(payload) }),
+    await authenticatedRequest(coursePath(id), {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+      signal,
+    }),
   );
 }
-export async function addCourseUnit(id: string, input: UnitInput): Promise<CourseUnit> {
+export async function addCourseUnit(
+  id: string,
+  input: UnitInput,
+  signal?: AbortSignal,
+): Promise<CourseUnit> {
   const { description, ...fields } = unitInputSchema.parse(input);
   return parseResponse(
     courseUnitSchema,
     await authenticatedRequest(`${coursePath(id)}/units`, {
       method: 'POST',
+      signal,
       body: JSON.stringify({
         ...fields,
         ...(description ? { description } : {}),
@@ -130,19 +151,21 @@ export async function reorderCourseUnits(
   id: string,
   current: readonly string[],
   next: readonly string[],
+  signal?: AbortSignal,
 ): Promise<CourseDetail> {
   return parseResponse(
     courseDetailSchema,
     await authenticatedRequest(`${coursePath(id)}/units/order`, {
       method: 'PUT',
+      signal,
       body: JSON.stringify(unitOrderPayload(current, next)),
     }),
   );
 }
-export async function activateCourse(id: string): Promise<CourseDetail> {
+export async function activateCourse(id: string, signal?: AbortSignal): Promise<CourseDetail> {
   return parseResponse(
     courseDetailSchema,
-    await authenticatedRequest(`${coursePath(id)}/activate`, { method: 'POST' }),
+    await authenticatedRequest(`${coursePath(id)}/activate`, { method: 'POST', signal }),
   );
 }
 const messages: Record<string, string> = {

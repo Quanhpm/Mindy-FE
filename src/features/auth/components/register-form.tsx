@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '@/shared/components/feedback';
 import { errorMessage } from '@/shared/lib/http/api-error';
@@ -11,6 +11,8 @@ import { type RegisterInput, registerSchema } from '../schemas/register.schema';
 import { GoogleSignIn } from './google-sign-in';
 
 export function RegisterForm() {
+  const locked = useRef(false);
+  const resendLock = useRef(false);
   const [email, setEmail] = useState<string>();
   const [error, setError] = useState<string>();
   const [notice, setNotice] = useState<string>();
@@ -21,16 +23,21 @@ export function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({ resolver: zodResolver(registerSchema) });
   async function submit(input: RegisterInput) {
+    if (locked.current) return;
+    locked.current = true;
     setError(undefined);
     try {
       await registerAccount(input);
       setEmail(input.email);
     } catch (cause) {
       setError(errorMessage(cause));
+    } finally {
+      locked.current = false;
     }
   }
   async function resend() {
-    if (!email) return;
+    if (!email || resendLock.current) return;
+    resendLock.current = true;
     setSending(true);
     setError(undefined);
     setNotice(undefined);
@@ -40,6 +47,7 @@ export function RegisterForm() {
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
+      resendLock.current = false;
       setSending(false);
     }
   }

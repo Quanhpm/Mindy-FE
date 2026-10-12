@@ -54,7 +54,6 @@
   color: var(--mindy-action);
 }
 .desktopNavigation .navigation a:first-child,
-.desktopNavigation .navigation a:last-child,
 .desktopNavigation svg {
   display: none;
 }
@@ -208,6 +207,9 @@
   }
   .headerActions {
     gap: 8px;
+  }
+  .headerActions > :global(.session-placeholder) {
+    display: none;
   }
   .headerActions > a {
     font-size: 13px;

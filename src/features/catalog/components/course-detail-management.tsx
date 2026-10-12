@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
 import s from '@/shared/components/management.module.css';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
 import { UnitWorkspace } from '@/shared/components/unit-workspace';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
 import { ApiError } from '@/shared/lib/http/api-error';
 import {
   activateCourse,
@@ -28,9 +30,10 @@ export function CourseDetailManagement({ id }: { id: string }) {
   const [categories, setCategories] = useState<CourseCategory[]>([]);
   const [error, setError] = useState<string>();
   const [categoryError, setCategoryError] = useState<string>();
+  const mutation = useUiMutation(catalogErrorMessage);
   const [mutationError, setMutationError] = useState<string>();
   const [notice, setNotice] = useState<string>();
-  const [saving, setSaving] = useState(false);
+  const [formBlocked, setFormBlocked] = useState(false);
   const [revision, setRevision] = useState(0);
   const [categoryRevision, setCategoryRevision] = useState(0);
   const unitId = params.get('unitId');
@@ -67,44 +70,53 @@ export function CourseDetailManagement({ id }: { id: string }) {
         scroll: false,
       });
   }, [course, unitId, tab, id, router]);
-  async function recoverConflict(cause: unknown) {
+  async function recoverConflict(cause: unknown, signal?: AbortSignal) {
     if (!(cause instanceof ApiError) || cause.status !== 409) return;
     try {
-      setCourse(await getAdminCourse(id));
+      const current = await getAdminCourse(id, signal);
+      if (!signal?.aborted) setCourse(current);
     } catch (readError) {
-      setMutationError(`${catalogErrorMessage(cause)} ${catalogErrorMessage(readError)}`);
+      if (!signal?.aborted)
+        setMutationError(`${catalogErrorMessage(cause)} ${catalogErrorMessage(readError)}`);
+      throw readError;
     }
   }
   async function reorder(unit: string, direction: -1 | 1) {
-    if (!course || saving) return;
-    setSaving(true);
-    setMutationError(undefined);
+    if (!course || formBlocked) return;
     setNotice(undefined);
     const current = course.units.map((item) => item.id);
-    try {
-      setCourse(await reorderCourseUnits(id, current, moveUnit(current, unit, direction)));
-      setNotice('Đã lưu thứ tự học phần. Các lớp đã tạo giữ nguyên thứ tự riêng.');
-    } catch (cause) {
-      setMutationError(catalogErrorMessage(cause));
-      await recoverConflict(cause);
-    } finally {
-      setSaving(false);
-    }
+    await mutation.run(
+      (signal) => reorderCourseUnits(id, current, moveUnit(current, unit, direction), signal),
+      (updated) => {
+        setCourse(updated);
+        setNotice('Đã lưu thứ tự học phần. Các lớp đã tạo giữ nguyên thứ tự riêng.');
+      },
+      async (cause, signal) => {
+        if (cause instanceof ApiError && cause.status === 409) {
+          const current = await getAdminCourse(id, signal);
+          if (!signal.aborted) setCourse(current);
+        }
+      },
+    );
   }
   async function activate() {
-    if (saving) return;
-    setSaving(true);
-    setMutationError(undefined);
+    if (formBlocked) return;
     setNotice(undefined);
-    try {
-      setCourse(await activateCourse(id));
-      setNotice('Đã kích hoạt khóa học.');
-    } catch (cause) {
-      setMutationError(catalogErrorMessage(cause));
-      await recoverConflict(cause);
-    } finally {
-      setSaving(false);
-    }
+    await mutation.run(
+      (signal) => activateCourse(id, signal),
+      (updated) => {
+        setCourse(updated);
+        setNotice('Đã kích hoạt khóa học.');
+      },
+      recoverConflict,
+    );
+  }
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const current = await getAdminCourse(id, signal);
+      if (!signal.aborted) setCourse(current);
+      return `${current.title}: ${current.isActive ? 'Đang hoạt động' : 'Chưa kích hoạt'}. Thứ tự học phần: ${current.units.map((unit) => unit.title).join(', ') || 'Chưa có'}.`;
+    });
   }
   if (error) return <ErrorPanel message={error} retry={() => setRevision((value) => value + 1)} />;
   if (!course) return <LoadingState />;
@@ -112,25 +124,7 @@ export function CourseDetailManagement({ id }: { id: string }) {
   const href = (selectedId: string) => `/management/courses/${id}?unitId=${selectedId}`;
   return (
     <div className={s.page}>
-      <div className={s.heading}>
-        <div>
-          <p className={s.eyebrow}>MINDY / COURSE MANAGEMENT</p>
-          <h1>{course.title}</h1>
-          <p>
-            {course.code} · {course.isActive ? 'Đang hoạt động' : 'Chưa kích hoạt'}
-          </p>
-        </div>
-        {!course.isActive && (
-          <button
-            className={s.button}
-            type="button"
-            disabled={saving || course.units.length === 0}
-            onClick={() => void activate()}
-          >
-            {saving ? 'Đang xử lý…' : 'Kích hoạt khóa học'}
-          </button>
-        )}
-      </div>
+      <h1 className="sr-only">{course.title}</h1>
       {!course.isActive && course.units.length === 0 && (
         <p className={s.notice}>Thêm ít nhất một học phần trước khi kích hoạt.</p>
       )}
@@ -140,22 +134,35 @@ export function CourseDetailManagement({ id }: { id: string }) {
         </p>
       )}
       {mutationError && <ErrorPanel message={mutationError} />}
-      <nav aria-label="Quản lý khóa học" className={styles.tabs}>
-        <Link
-          href={href(unitId ?? course.units[0]?.id ?? 'new')}
-          scroll={false}
-          aria-current={tab === 'units' ? 'page' : undefined}
-        >
-          Học phần ({course.units.length})
-        </Link>
-        <Link
-          href={`/management/courses/${id}?tab=fields${unitId ? `&unitId=${unitId}` : ''}`}
-          scroll={false}
-          aria-current={tab === 'fields' ? 'page' : undefined}
-        >
-          Thông tin khóa học
-        </Link>
-      </nav>
+      <MutationFeedback mutation={mutation} onCheck={() => void checkResult()} />
+      <div className={styles.courseToolbar}>
+        <nav aria-label="Quản lý khóa học" className={styles.tabs}>
+          <Link
+            href={href(unitId ?? course.units[0]?.id ?? 'new')}
+            scroll={false}
+            aria-current={tab === 'units' ? 'page' : undefined}
+          >
+            Học phần ({course.units.length})
+          </Link>
+          <Link
+            href={`/management/courses/${id}?tab=fields${unitId ? `&unitId=${unitId}` : ''}`}
+            scroll={false}
+            aria-current={tab === 'fields' ? 'page' : undefined}
+          >
+            Thông tin khóa học
+          </Link>
+        </nav>
+        {!course.isActive && (
+          <button
+            className={s.button}
+            type="button"
+            disabled={formBlocked || mutation.blocked || course.units.length === 0}
+            onClick={() => void activate()}
+          >
+            {mutation.busy ? 'Đang xử lý…' : 'Kích hoạt khóa học'}
+          </button>
+        )}
+      </div>
       {tab === 'fields' ? (
         <>
           <div className={styles.metadata}>
@@ -169,6 +176,9 @@ export function CourseDetailManagement({ id }: { id: string }) {
             />
           )}
           <CourseFieldsForm
+            disabled={mutation.blocked}
+            onBusyChange={setFormBlocked}
+            onChecked={setCourse}
             key={course.id}
             categories={categories}
             course={course}
@@ -214,7 +224,12 @@ export function CourseDetailManagement({ id }: { id: string }) {
                         <button
                           type="button"
                           aria-label={`Đưa ${unit.title} lên`}
-                          disabled={saving || index === 0 || course.units.length > 200}
+                          disabled={
+                            formBlocked ||
+                            mutation.blocked ||
+                            index === 0 ||
+                            course.units.length > 200
+                          }
                           onClick={() => void reorder(unit.id, -1)}
                         >
                           ↑
@@ -223,7 +238,10 @@ export function CourseDetailManagement({ id }: { id: string }) {
                           type="button"
                           aria-label={`Đưa ${unit.title} xuống`}
                           disabled={
-                            saving || index === course.units.length - 1 || course.units.length > 200
+                            formBlocked ||
+                            mutation.blocked ||
+                            index === course.units.length - 1 ||
+                            course.units.length > 200
                           }
                           onClick={() => void reorder(unit.id, 1)}
                         >
@@ -240,16 +258,23 @@ export function CourseDetailManagement({ id }: { id: string }) {
         >
           {unitId === 'new' ? (
             <CourseUnitForm
+              disabled={mutation.blocked}
+              onBusyChange={setFormBlocked}
+              onChecked={setCourse}
               courseId={id}
-              onAdded={(unit) => {
+              onAdded={(unit, signal) => {
                 setCourse((current) =>
                   current ? { ...current, units: [...current.units, unit] } : current,
                 );
                 setNotice('Đã thêm học phần.');
                 router.push(href(unit.id), { scroll: false });
-                void getAdminCourse(id)
-                  .then(setCourse)
-                  .catch((cause: unknown) => setMutationError(catalogErrorMessage(cause)));
+                void getAdminCourse(id, signal)
+                  .then((current) => {
+                    if (!signal.aborted) setCourse(current);
+                  })
+                  .catch((cause: unknown) => {
+                    if (!signal.aborted) setMutationError(catalogErrorMessage(cause));
+                  });
               }}
             />
           ) : selected ? (

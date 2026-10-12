@@ -53,8 +53,9 @@ function CheckoutContent() {
         </Link>
       </header>
       <p className={styles.notice}>
-        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. PayOS chưa có link hoặc QR; tiền
-        mặt chưa có chức năng xác nhận. Quyền học sẽ theo trạng thái được hệ thống cấp.
+        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. Với PayOS, mở chi tiết đơn để tạo
+        liên kết hoặc quét QR. Với tiền mặt, chờ giảng viên xác nhận đã thu đủ tiền. Quyền học được
+        hệ thống kiểm tra sau thanh toán.
       </p>
       {state.phase === 'loading' ? (
         <LoadingState label="Đang đọc giỏ hàng và đơn của bạn…" />
@@ -157,7 +158,7 @@ function CheckoutContent() {
                 </Link>
               </section>
               <aside className={styles.summary}>
-                <p className={styles.eyebrow}>YOUR NEXT CHAPTER</p>
+                <p className={styles.eyebrow}>HÀNH TRÌNH TIẾP THEO</p>
                 <h2>Tạo đơn giữ chỗ.</h2>
                 <div className={styles.total}>
                   <span>{state.cart.items.length} lớp · Tổng hiện tại</span>
@@ -187,7 +188,7 @@ function CheckoutContent() {
                       />
                       <span>
                         <strong>Tiền mặt</strong>
-                        <small>Tách một đơn cho mỗi mentor.</small>
+                        <small>Tách một đơn cho mỗi giảng viên.</small>
                       </span>
                     </label>
                     <label>
@@ -200,7 +201,7 @@ function CheckoutContent() {
                       />
                       <span>
                         <strong>PayOS</strong>
-                        <small>Một đơn cho toàn bộ giỏ. Tạo link PayOS ở chi tiết đơn.</small>
+                        <small>Một đơn cho toàn bộ giỏ. Tạo liên kết PayOS ở chi tiết đơn.</small>
                       </span>
                     </label>
                   </fieldset>

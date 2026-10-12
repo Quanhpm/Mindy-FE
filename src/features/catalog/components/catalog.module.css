@@ -105,3 +105,38 @@
     padding: 10px 16px;
   }
 }
+
+.categoryDialog {
+  max-width: min(560px, calc(100vw - 32px));
+}
+.dialogHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.dialogHeading h2 {
+  margin: 0;
+}
+.categoryTable {
+  min-width: 640px;
+}
+.categoryTable td {
+  overflow-wrap: anywhere;
+}
+.categoryDescription {
+  max-width: 32rem;
+  white-space: pre-wrap;
+}
+
+.courseToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.courseToolbar .tabs {
+  margin-bottom: 0;
+}

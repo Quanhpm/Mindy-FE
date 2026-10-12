@@ -9,17 +9,17 @@ export async function forwardCompiler(request: Request): Promise<Response> {
     );
   const origin = process.env.APP_ORIGIN || new URL(request.url).origin;
   if (request.headers.get('origin') !== origin)
-    return failure(403, 'Request origin is not allowed.');
+    return failure(403, 'Nguồn gửi yêu cầu không được phép.');
 
   if (
     request.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() !== 'application/json'
   )
-    return failure(415, 'Content-Type must be application/json.');
+    return failure(415, 'Yêu cầu phải có định dạng JSON.');
 
   let payload: unknown;
   const reader = request.body?.getReader();
   try {
-    if (!reader) return failure(400, 'Request body is required.');
+    if (!reader) return failure(400, 'Thiếu nội dung yêu cầu.');
     const chunks: Uint8Array[] = [];
     let bytes = 0;
     while (true) {
@@ -28,13 +28,13 @@ export async function forwardCompiler(request: Request): Promise<Response> {
       bytes += chunk.value.byteLength;
       if (bytes > 128 * 1024) {
         await reader.cancel();
-        return failure(413, 'Request body vượt quá 128 KiB.');
+        return failure(413, 'Nội dung yêu cầu vượt quá 128 KiB.');
       }
       chunks.push(chunk.value);
     }
     payload = JSON.parse(Buffer.concat(chunks).toString('utf8'));
   } catch {
-    return failure(400, 'Request body must be valid JSON.');
+    return failure(400, 'Nội dung yêu cầu phải là JSON hợp lệ.');
   } finally {
     reader?.releaseLock();
   }
@@ -69,7 +69,7 @@ export async function forwardCompiler(request: Request): Promise<Response> {
       {
         ok: false,
         status: 'infrastructure_error',
-        error: 'Không kết nối được compiler. Hãy chạy API runner và Docker rồi thử lại.',
+        error: 'Không thể kết nối hệ thống chạy mã. Vui lòng thử lại sau.',
       },
       { status: 503, headers: { 'Cache-Control': 'no-store' } },
     );

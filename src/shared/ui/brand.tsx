@@ -10,7 +10,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
     >
       <Image className="brand-logo" src="/brand/mindy-logo.jpg" width={56} height={56} alt="" />
       <span className="brand-name">
-        Mindy<span className="brand-caption">Coding</span>
+        Mindy<span className="brand-caption">Lập trình</span>
       </span>
     </Link>
   );

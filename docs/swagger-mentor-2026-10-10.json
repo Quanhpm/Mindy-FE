@@ -1,0 +1,446 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mindy Center API",
+    "description": "API for course operations, enrollment, ordering and payments.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "paths": {
+    "/api/v1/mentor/classes": {
+      "get": {
+        "operationId": "MentorClassRosterController_classes_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MentorClassPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List classes currently assigned to the signed-in mentor",
+        "tags": ["mentor classes"]
+      }
+    },
+    "/api/v1/mentor/classes/{classId}/students": {
+      "get": {
+        "description": "Cash confirmation still uses the full order total. A single cash order can cover multiple classes.",
+        "operationId": "MentorClassRosterController_students_v1",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "paymentType",
+            "required": false,
+            "in": "query",
+            "description": "Phase 2 accepts CASH or PAYOS",
+            "schema": {
+              "type": "string",
+              "enum": ["PAYOS", "CASH"]
+            }
+          },
+          {
+            "name": "orderStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "PAID", "EXPIRED", "CANCELLED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MentorRosterPageDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in or the session is no longer valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The role or resource ownership does not allow this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist or is not public",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request data is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access_token": []
+          }
+        ],
+        "summary": "List effective enrollments and payment status for an assigned class",
+        "tags": ["mentor classes"]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MentorClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "WEB101-2026A"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": ["ONLINE", "OFFLINE"]
+          },
+          "maxStudents": {
+            "type": "number",
+            "example": 20
+          },
+          "availableSeats": {
+            "type": "number",
+            "example": 5,
+            "description": "Seats not held or enrolled yet"
+          },
+          "mentor": {
+            "$ref": "#/components/schemas/ClassMentorDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"]
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "code",
+          "name",
+          "startDate",
+          "endDate",
+          "deliveryMode",
+          "maxStudents",
+          "availableSeats",
+          "mentor",
+          "status"
+        ]
+      },
+      "ClassMentorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["id", "displayName"]
+      },
+      "MentorClassPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MentorClassDto"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "MentorRosterStudentDto": {
+        "type": "object",
+        "properties": {
+          "enrollmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enrollmentStatus": {
+            "type": "string",
+            "enum": ["PENDING_PAYMENT", "ACTIVE", "COMPLETED", "CANCELLED"]
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentName": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Pass to POST /mentor/cash-orders/:orderId/confirm"
+          },
+          "orderCode": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "string",
+            "enum": ["PENDING", "PAID", "EXPIRED", "CANCELLED"]
+          },
+          "paymentType": {
+            "type": "string",
+            "enum": ["PAYOS", "CASH"]
+          },
+          "classAmount": {
+            "type": "number",
+            "description": "Amount for this class in the immutable order detail"
+          },
+          "orderTotalAmount": {
+            "type": "number",
+            "description": "Full order amount required for cash confirmation; may cover multiple classes"
+          },
+          "orderClassCount": {
+            "type": "number"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "canConfirmCash": {
+            "type": "boolean",
+            "description": "Read-time hint; confirmation rechecks all rules transactionally"
+          }
+        },
+        "required": [
+          "enrollmentId",
+          "enrollmentStatus",
+          "studentId",
+          "studentName",
+          "orderId",
+          "orderCode",
+          "orderStatus",
+          "paymentType",
+          "classAmount",
+          "orderTotalAmount",
+          "orderClassCount",
+          "expiresAt",
+          "paidAt",
+          "canConfirmCash"
+        ]
+      },
+      "MentorRosterPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MentorRosterStudentDto"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": ["items", "page", "pageSize", "total"]
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 409
+          },
+          "code": {
+            "type": "string",
+            "example": "CLASS_FULL"
+          },
+          "message": {
+            "type": "string",
+            "example": "The class has no seats left"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "requestId": {
+            "type": "string"
+          }
+        },
+        "required": ["statusCode", "code", "message"]
+      }
+    }
+  }
+}

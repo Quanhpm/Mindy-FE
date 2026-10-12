@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import type { User } from '@/shared/api/contracts/identity';
+import { statusLabels, type User } from '@/shared/api/contracts/identity';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
+import { MutationFeedback } from '@/shared/components/mutation-feedback';
+import { useUiMutation } from '@/shared/hooks/use-ui-mutation';
 import { formatDate } from '@/shared/lib/date';
-import { errorMessage } from '@/shared/lib/http/api-error';
+import { ApiError, errorMessage } from '@/shared/lib/http/api-error';
 import { Avatar, RoleBadge, StatusBadge } from '@/shared/ui/user-display';
 import { getUser, updateUserStatus } from '../api/users.browser';
 
@@ -14,10 +16,12 @@ export function UserDetail({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null);
   const [revision, setRevision] = useState(0);
   const [open, setOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [mutationError, setMutationError] = useState<string | null>(null);
+  const [requested, setRequested] = useState<{ status: 'ACTIVE' | 'SUSPENDED'; label: string }>();
+  const mutation = useUiMutation();
+  const saving = mutation.busy;
   const [message, setMessage] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   // biome-ignore lint/correctness/useExhaustiveDependencies: revision triggers an explicit user retry.
   useEffect(() => {
     const controller = new AbortController();
@@ -38,19 +42,29 @@ export function UserDetail({ id }: { id: string }) {
   }, [open]);
 
   async function confirm(): Promise<void> {
-    if (!user) return;
-    setSaving(true);
-    setMutationError(null);
+    if (!user || !requested || user.status === requested.status) return;
     setMessage(null);
-    try {
-      setUser(await updateUserStatus(user.id, user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'));
-      setOpen(false);
-      setMessage('Đã cập nhật trạng thái tài khoản.');
-    } catch (cause) {
-      setMutationError(errorMessage(cause));
-    } finally {
-      setSaving(false);
-    }
+    await mutation.run(
+      (signal) => updateUserStatus(user.id, requested.status, signal),
+      (updated) => {
+        setUser(updated);
+        setOpen(false);
+        setMessage('Đã cập nhật trạng thái tài khoản.');
+      },
+      async (cause, signal) => {
+        if (cause instanceof ApiError && cause.status === 409) {
+          const current = await getUser(id, signal);
+          if (!signal.aborted) setUser(current);
+        }
+      },
+    );
+  }
+  async function checkResult() {
+    await mutation.check(async (signal) => {
+      const current = await getUser(id, signal);
+      if (!signal.aborted) setUser(current);
+      return `Trạng thái hiện tại của ${current.displayName}: ${statusLabels[current.status]}. Kiểm tra trước khi thay đổi tiếp.`;
+    });
   }
   if (error) return <ErrorPanel message={error} retry={() => setRevision((value) => value + 1)} />;
   if (!user) return <LoadingState />;
@@ -116,8 +130,13 @@ export function UserDetail({ id }: { id: string }) {
           <button
             type="button"
             className={`button ${user.status === 'ACTIVE' ? 'button-danger' : 'button-primary'}`}
+            ref={trigger}
+            disabled={saving}
             onClick={() => {
-              setMutationError(null);
+              setRequested({
+                status: user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE',
+                label: action,
+              });
               setOpen(true);
             }}
           >
@@ -129,24 +148,27 @@ export function UserDetail({ id }: { id: string }) {
         ref={dialog}
         className="confirm-dialog"
         aria-labelledby="confirm-title"
+        onClose={() => {
+          setOpen(false);
+          trigger.current?.focus();
+        }}
         onCancel={(event) => {
           if (saving) event.preventDefault();
           else setOpen(false);
         }}
       >
-        <h2 id="confirm-title">{action}?</h2>
+        <h2 id="confirm-title">{requested?.label}?</h2>
         <p>
-          {user.status === 'ACTIVE'
+          {requested?.status === 'SUSPENDED'
             ? `${user.displayName} sẽ không thể tiếp tục đăng nhập và sử dụng tài khoản.`
             : user.status === 'PENDING_VERIFICATION'
               ? `Quản trị viên sẽ kích hoạt tài khoản của ${user.displayName} bằng thao tác này. Đây là thay đổi trạng thái tài khoản, không phải xác thực email.`
               : `${user.displayName} có thể đăng nhập và sử dụng lại tài khoản.`}
         </p>
-        {mutationError && (
-          <p className="inline-error" role="alert">
-            {mutationError}
-          </p>
+        {requested && user.status === requested.status && (
+          <p role="status">Tài khoản đã ở trạng thái yêu cầu. Bạn có thể đóng xác nhận.</p>
         )}
+        <MutationFeedback mutation={mutation} onCheck={() => void checkResult()} />
         <div className="form-actions">
           <button
             className="button button-secondary"
@@ -159,7 +181,7 @@ export function UserDetail({ id }: { id: string }) {
           <button
             className="button button-primary"
             type="button"
-            disabled={saving}
+            disabled={mutation.blocked || user.status === requested?.status}
             onClick={() => void confirm()}
           >
             {saving ? 'Đang cập nhật…' : 'Xác nhận'}

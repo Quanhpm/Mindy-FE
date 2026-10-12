@@ -1,5 +1,128 @@
 # Frontend progress
 
+## 2026-10-10 — Thu gọn trang chi tiết khóa học quản trị
+
+- Bỏ khối tiêu đề lớn gồm eyebrow, tên khóa và dòng mã/trạng thái ở đầu
+  trang chi tiết. Giữ tên khóa tại rail học phần và h1 ẩn cho trợ năng.
+- Tab học phần/thông tin và nút kích hoạt (khóa chưa hoạt động) nằm chung
+  thanh gọn; workspace có thêm chiều cao, không đổi API/hành vi học phần.
+- Validation: Biome, boundaries, TypeScript/build, 139 unit tests và 11
+  Chromium E2E pass; workspace bắt đầu trước 250px và nằm trong viewport
+  desktop. Đã xem ảnh desktop/mobile, không có khối heading lớn.
+
+## 2026-10-10 — Tạo danh mục trong modal quản trị
+
+- Trang danh mục dùng CTA “Tạo danh mục” trên heading; chuyển form vào native
+  dialog, mở focus trường tên, đóng bằng Hủy/nút đóng/Escape và trả focus.
+  Tạo thành công đóng dialog, xóa form, thông báo kết quả và đọc lại bảng.
+- Bảng dùng primitive quản trị chung, thêm cột trạng thái, bộ chọn pageSize
+  trên URL (đổi kích thước reset trang 1), cuộn ngang cục bộ trên mobile.
+- Đang tạo/kiểm tra kết quả khóa đóng và gửi trùng. Lỗi giữ input, mất phản hồi
+  giữ recovery kể cả sau đóng/mở modal; chỉ đọc kiểm tra trước cho thử lại.
+- Validation: Biome, boundaries, TypeScript/build, 139 unit tests và 11
+  Chromium E2E pass. Đã xem ảnh danh sách desktop và modal desktop/375px.
+  Kiểm tra validation, focus/Escape/Hủy, khóa đóng khi đang gửi và recovery
+  sau mở lại modal. API mô phỏng; ảnh QA giữ trong test-results.
+
+## 2026-10-10 — Nhãn đăng ký trên header trang chủ
+
+- Đổi CTA “Bắt đầu học” thành “Đăng ký”, giữ liên kết `/register`.
+- Validation: Biome trên file thay đổi và git diff --check pass.
+
+## 2026-10-10 — Kiểm tra phiên âm thầm ở header public
+
+- HomeShell và PublicShell bỏ dòng “Đang kiểm tra tài khoản…” khi bootstrap.
+  Desktop dùng vùng giữ chỗ vô hình; mobile/menu không chừa hàng trống. Nội
+  dung và điều hướng public xuất hiện ngay, không hiện nhầm nút đăng nhập hay
+  quản trị khi chưa xác định phiên. Giữ nguyên trạng thái lỗi/nút thử lại.
+- Tham khảo placeholder loading của Vercel Geist; chọn ẩn trực quan theo yêu
+  cầu thay vì thêm spinner hoặc hiệu ứng skeleton cho vùng tài khoản.
+- Thêm sáu E2E trì hoãn phiên cho trang chủ/catalog: đăng nhập, khách và lỗi;
+  kiểm tra nội dung/menu dùng được, không có copy loading/CTA sai phiên,
+  desktop/mobile không tràn và navigation cập nhật đúng sau phản hồi.
+- Validation: Biome, boundaries, TypeScript/build, 139 unit tests và 14
+  Chromium E2E pass (gồm sáu ca phiên bị trì hoãn). Đã xem ảnh initial-session
+  desktop/mobile; header không có chữ loading và không tràn trang.
+
+## 2026-10-10 — Đồng bộ tiếng Việt trên frontend
+
+- Việt hóa tiêu đề, nhãn, mô tả, điều hướng và tên truy cập ở trang chủ,
+  danh mục/khóa học/lớp, quản trị người dùng, giỏ hàng, đơn hàng, thanh toán,
+  không gian giảng viên và công cụ thực hành. Thống nhất MENTOR hiển thị là
+  “Giảng viên”, code là “mã nguồn”, link là “liên kết”.
+- Trang thực hành có mẫu chào/lỗi tiếng Việt, nhãn dữ liệu đầu vào/đầu ra,
+  mã thoát và thông báo lỗi adapter tiếng Việt; số byte theo vi-VN.
+- Đối soát dịch trạng thái/lý do/nguồn theo mã thực tế của backend; mã mới
+  chưa hỗ trợ có thông báo tiếng Việt. Lỗi API chưa được ánh xạ theo mã dùng
+  thông báo tiếng Việt theo HTTP status, không đưa lỗi tiếng Anh thô vào UI.
+- Giữ nguyên enum, payload, URL, tên công nghệ và nội dung khóa học/người dùng
+  hoặc kết quả chương trình trả về. Không thay nghiệp vụ hay endpoint.
+- Cập nhật các selector E2E theo nhãn mới; bổ sung unit test lỗi API dự phòng.
+- Validation: Biome, module boundaries, TypeScript và production build pass;
+  139 unit tests pass. Chromium E2E: 84/86 pass lần đầu, hai selector cũ
+  được sửa và chạy lại 2/2 pass. Đã xem ảnh trang chủ mobile, lớp desktop,
+  đối soát mobile và thực hành desktop; không tràn trang. Các E2E dùng API
+  mô phỏng, chưa nghiệm thu dịch vụ bên ngoài. Giữ ảnh QA sinh ra trong
+  test-results, không đưa thay đổi ảnh snapshot lịch sử vào diff.
+
+## 2026-10-09 — Kiểm tra phân quyền frontend và phiên trên trang chủ
+
+- Rà PublicShell, AuthBoundary, management layout và backend catalog guard:
+  nút Quản trị/trang management chỉ dành cho ADMIN; không tìm thấy nhánh tự
+  nâng quyền khi mở khóa học. Chưa xác minh role của phiên người dùng báo lỗi.
+- Trang chủ trước đó luôn hiện đăng nhập/đăng ký dù cookie còn phiên admin.
+  Thêm session provider cho homepage; header/menu hiện tên và role từ auth/me,
+  chỉ ADMIN có Quản trị, loading/error có trạng thái và retry đúng phiên.
+- Thêm permissions E2E cho khách/ADMIN/STUDENT/MENTOR, chuyển home → courses
+  và truy cập trực tiếp users/courses/classes/categories/reconciliation.
+  Non-admin bị chặn trước mọi request admin; khách về login.
+- Validation: type-check, boundaries, 138 unit tests, production build,
+  8 Chromium mock E2E (4 home + 4 permissions) pass. Permissions mở rộng
+  1440/768/390px, menu mobile/Escape và overflow pass; xem screenshot admin
+  desktop/mobile. Đây là mock API, chưa xác minh phiên/backend triển khai.
+- Runtime: pnpm hiện có 11.25.0 dùng Node 24.19.0 có engine warning; build và
+  Chromium cuối chạy trực tiếp bằng Node 22.20.0. Không deploy.
+
+
+## 2026-10-08 — Áp dụng UI.md toàn app trên redesign-ui
+
+- Tạo nhánh `redesign-ui` từ `dev`/`9b99b13`, giữ tài liệu UI.md đang làm việc.
+  [Audit toàn app](./ui-redesign/logic-audit-2026-10-08.md) ghi rõ từng khu vực
+  đã khớp chuẩn và từng điểm được sửa; giữ hướng trình bày hiện tại vì UI.md
+  quy định logic, không quy định layout.
+- Dùng chung khóa mutation/AbortSignal và feedback cho users/catalog/classes;
+  lỗi chưa rõ kết quả yêu cầu đọc kiểm tra, giữ input và người dùng chủ động mở
+  khóa trước retry. Không replay thao tác ghi; đọc mới đồng bộ số liệu khóa/học
+  phần mà không reset form. 409 tải lại trạng thái và giữ dữ liệu đang nhập.
+- Boundary remount theo principal/role; login/register/verify/onboarding/logout
+  có khóa tức thời. Health/compiler bỏ response sau unmount. Public navigation
+  phân biệt lỗi/loading phiên, có CASH cho MENTOR; sửa copy checkout lỗi thời.
+- Lifecycle lớp dùng native confirmation dialog, giữ lỗi, kiểm tra lệnh còn
+  hợp lệ, trả focus về trigger hoặc hành động tiếp theo. Dialog trạng thái user
+  giữ đúng hành động đã chọn khi read recovery cập nhật status, không đảo lệnh.
+- Validation: Biome đầy đủ trên các file code sửa, module boundaries, TypeScript,
+  production build và 138 unit tests pass. Toàn bộ 82 Chromium E2E pass với một
+  worker; sau chỉnh cuối theo screenshot QA, kiểm tra lại 28 ca của identity,
+  classes, catalog, images và recovery. Browser tests dùng API mô phỏng.
+- Đã xem screenshot desktop/mobile recovery; không đưa screenshot lịch sử do
+  test tạo lại vào diff. Preview nhánh mới chạy tại http://localhost:3002/.
+  Chưa commit/push/merge/deploy hoặc nghiệm thu provider thật.
+
+## 2026-10-08 — Chuẩn logic UI theo dev
+
+- Thay nội dung [UI.md](../UI.md) bằng logic UI toàn app, đối chiếu `origin/dev`
+  tại `9b99b133786236261b408c10d66ca6bbbda0be0a` sau fetch.
+- Đọc trang chủ, login, điểm vào quản lý người dùng và các luồng theo role;
+  ghi điều hướng, quyền, trạng thái, hành động, recovery và phạm vi chưa có.
+- Tách hành vi hiện tại khỏi quy tắc áp dụng tiếp; ghi copy checkout còn cũ,
+  CTA homepage tĩnh và khác biệt fallback password/Google. Không mô tả layout.
+- Đối chiếu chéo homepage lần hai: dev vẫn cùng revision; bổ sung bảng toàn bộ
+  CTA, query bốn khóa, fallback mô tả/ảnh, health request và menu/anchor. Đọc
+  source E2E homepage để đối chiếu scenario, không chạy lại browser tests.
+- Chỉ cập nhật tài liệu tại checkout hiện tại, không sửa runtime/chuyển branch.
+  Kiểm tra Markdown/source references và `git diff --check`; không chạy lại
+  test runtime hoặc giao dịch/provider thật cho thay đổi tài liệu.
+
 ## Trạng thái hiện tại — 06/10/2026
 
 Đã đồng bộ theo Swagger live https://api.quanh123.id.vn/docs#/ (snapshot JSON
@@ -572,3 +695,66 @@ sessionStorage riêng; product cart không sử dụng dữ liệu đó.
 
 - Removed outer gray canvas, padding, frame radius and shadow from the migrated admin shell; kept inner workspace styling. Updated UI.md to match.
 - Targeted Biome and Chromium checks passed at 1440/768/390px: frame starts at (0,0), fills viewport width and has no horizontal overflow.
+
+
+## 10/10/2026 — Lớp giảng dạy và danh sách học viên MENTOR
+
+- Tích hợp GET `/mentor/classes` và GET `/mentor/classes/:classId/students`
+  theo Swagger live; runtime schemas, query allowlist và BFF GET UUID allowlist.
+- Thêm menu Lớp giảng dạy, routes `/mentor/classes` và
+  `/mentor/classes/:classId/students`; trạng thái lớp, filter/page lưu URL,
+  danh sách học viên/đăng ký/thanh toán và số tiền lớp tách tổng đơn.
+- Chuyển sang trang thu tiền hiện có khi roster cho phép; một đơn nhiều lớp
+  vẫn xác nhận toàn bộ tổng đơn. Không thêm quyền quản trị/lịch học chưa có API.
+- Role gate trước request, kiểm tra mentor trong class response, abort và reset
+  dữ liệu khi đổi phiên/query/lớp; có loading/error/retry/empty.
+- Validation: type-check, module boundaries, Biome cho các file thay đổi,
+  144 unit tests, production build và 3 mentor E2E đều pass. Đã xem ảnh
+  desktop/mobile; kiểm tra tràn ngang 1440/768/390/375px. Live smoke với tài khoản
+  mentor test trả 200; chưa được phân công lớp (total 0), roster có dữ liệu được
+  kiểm tra bằng API mocks. Chưa deploy FE.
+
+## 10/10/2026 — Điều hướng lớp cho giảng viên
+
+Bỏ mục Khóa học `/courses` khỏi sidebar MENTOR; CTA sidebar, điều hướng
+header/mobile/footer trang chủ và menu catalog của mentor dùng nhãn Lớp giảng dạy
+và `/mentor/classes`. Menu catalog không lặp link lớp. Các role khác giữ route cũ.
+Validation: Biome, type-check, module boundaries, build và 13 E2E permissions/mentor pass; đã xem screenshot sidebar desktop, kiểm tra responsive qua E2E.
+
+
+## 11/10/2026 — Hỗ trợ MANAGER
+
+- Trước thay đổi FE chưa có MANAGER trong identity schema. Đã bổ sung nhận diện,
+  nhãn Quản lý, home `/manager/classes`, sidebar và điều hướng riêng.
+- Thêm `/manager/classes`, `/manager/classes/:classId/students`, reuse read-only
+  class/roster UI theo role, filter/page URL, abort và reset dữ liệu riêng phiên.
+- Thêm `/manager/materials` và sidebar Tài liệu môn học, chỉ placeholder theo yêu
+  cầu; chưa có upload/chọn môn/chương.
+- Backend local mở GET `/mentor/classes` và `/mentor/classes/:classId/students`
+  cho MANAGER để đọc toàn bộ lớp/roster. Giữ ownership mentor, ADMIN mutations,
+  MENTOR cash. Không dùng quyền admin thay manager, không sửa dữ liệu server.
+- Live login manager 200 nhưng hai class list API hiện 403. Cần deploy backend
+  sửa quyền và FE trước khi sử dụng trên server.
+- Validation: FE type-check, Biome, boundaries, 145 unit tests, production build
+  và 27 E2E identity/permissions/mentor/manager pass. Đã xem ảnh manager desktop/
+  mobile, không tràn ngang tại 1440/768/390/375px. Backend 4 test quyền đọc và
+  type-check riêng dependency graph controller/service/tests pass. Full backend
+  build/type-check chưa qua vì node_modules thiếu các dependency files có sẵn
+  trong package.json (@aws-sdk, sharp, pdf-lib, ...); pnpm install bị chặn bởi
+  engines Node 22/pnpm 12.6 trong môi trường Node 24/pnpm 11.25 hiện tại.
+  Không thay package/lock/config để vượt kiểm tra, chưa deploy.
+
+
+## 12/10/2026 — Trang mặc định theo role
+
+- Root `/` chờ session; ADMIN → `/management/users`, MANAGER → `/manager/classes`,
+  MENTOR → `/mentor/classes`. Không hiển thị landing khi chờ/chuyển workspace.
+- Mentor password/email verification/onboarding fallback chuyển vào lớp giảng dạy.
+  Password login và Google marker dùng policy return path theo role: staff giữ
+  deep link đúng khu vực, public/foreign next về home của role. STUDENT/khách
+  giữ public landing và student return paths cũ. Hồ sơ `/account` vẫn truy cập được.
+- Không sửa quyền backend, cookie recovery hoặc lưu role vào browser storage.
+- Validation: type-check, Biome, module boundaries, production build và 147 unit
+  tests pass. E2E role-routing/permissions/identity pass; 4 home-theme scenarios
+  pass sau khi sửa test chờ đúng nút retry. Đã xem screenshot homepage desktop
+  và mobile. Chưa deploy.

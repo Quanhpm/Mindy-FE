@@ -85,7 +85,7 @@ export type ManagementClassUnit = ManagementClassDetail['units'][number];
 export const classFieldsSchema = z
   .object({
     name: z.string().trim().min(1, 'Nhập tên lớp.').max(250),
-    mentorId: z.uuid({ version: 'v4', error: 'Chọn mentor đang hoạt động.' }),
+    mentorId: z.uuid({ version: 'v4', error: 'Chọn giảng viên đang hoạt động.' }),
     startDate: dateOnly,
     endDate: dateOnly,
     maxStudents: z.number().int('Số chỗ phải là số nguyên.').min(1).max(1000),

@@ -49,7 +49,7 @@ const classData = {
   deliveryMode: 'ONLINE',
   maxStudents: 20,
   availableSeats: 10,
-  mentor: { id: mentorId, displayName: 'Mentor Minh' },
+  mentor: { id: mentorId, displayName: 'Giảng viên Minh' },
   meetingUrl: 'https://private.invalid/should-not-render',
   units: [
     {
@@ -269,7 +269,7 @@ test('QR renders payload inside Mindy, hides when stale/paid and profile dropdow
     'href',
     payment.checkoutUrl,
   );
-  const profile = page.getByRole('button', { name: 'Mở menu tài khoản' });
+  const profile = page.getByRole('button', { name: 'Mở trình đơn tài khoản' });
   await profile.focus();
   await page.keyboard.press('Enter');
   await expect(profile).toHaveAttribute('aria-expanded', 'true');
@@ -281,7 +281,7 @@ test('QR renders payload inside Mindy, hides when stale/paid and profile dropdow
   await expect(profile).toBeFocused();
   await expect(profile).toHaveAttribute('aria-expanded', 'false');
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('button', { name: 'Mở menu', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Mở trình đơn', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({
     path: 'docs/ui-redesign/screenshots/payment-qr-mobile.png',

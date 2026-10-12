@@ -18,7 +18,7 @@ export const paymentSchema = z.object({
         !url.password &&
         !url.port
       );
-    }, 'Link PayOS chưa hợp lệ.')
+    }, 'Liên kết PayOS chưa hợp lệ.')
     .nullable(),
   qrCode: z.string().nullable(),
   expiresAt: z.iso.datetime({ offset: true }),
@@ -26,7 +26,7 @@ export const paymentSchema = z.object({
 });
 export type Payment = z.infer<typeof paymentSchema>;
 export const paymentStatusLabels: Record<Payment['status'], string> = {
-  CREATING: 'Đang tạo link thanh toán',
+  CREATING: 'Đang tạo liên kết thanh toán',
   PENDING: 'Chờ thanh toán PayOS',
   SUCCEEDED: 'Thanh toán thành công',
   REQUIRES_REVIEW: 'Cần đối soát',

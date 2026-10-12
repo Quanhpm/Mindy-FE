@@ -7,6 +7,6 @@ test('retired UI references open the current Mindy homepage', async ({ page }) =
   for (const route of ['/learnthru', '/ui-lab', '/ui-lab/ocean-editorial/home']) {
     await page.goto(route);
     await expect(page).toHaveURL('/');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Học code.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Học lập trình.');
   }
 });

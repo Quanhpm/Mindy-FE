@@ -14,10 +14,12 @@ import local from './classes.module.css';
 export function SessionForm({
   unitId,
   busy,
+  blocked = false,
   onSubmit,
 }: {
   unitId: string;
   busy: boolean;
+  blocked?: boolean;
   onSubmit: (values: SessionFormInput, unitId: string) => Promise<ManagementClassDetail | null>;
 }) {
   const {
@@ -32,6 +34,7 @@ export function SessionForm({
   return (
     <form
       onSubmit={handleSubmit(async (values) => {
+        if (busy || blocked) return;
         if (await onSubmit(values, unitId)) reset();
       })}
       noValidate
@@ -95,7 +98,7 @@ export function SessionForm({
             />
           </ClassField>
         </div>
-        <button className={styles.button} type="submit">
+        <button className={styles.button} type="submit" disabled={blocked}>
           {busy ? 'Đang xếp lịch…' : 'Thêm buổi học'}
         </button>
       </fieldset>

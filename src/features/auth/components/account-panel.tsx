@@ -12,10 +12,14 @@ export function AccountPanel() {
   const { user, signOut } = useSession();
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const locked = useRef(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
   if (!user) return null;
   async function logoutAll(): Promise<void> {
+    if (locked.current) return;
+    locked.current = true;
     setBusy(true);
     setError(undefined);
     try {
@@ -24,6 +28,7 @@ export function AccountPanel() {
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
+      locked.current = false;
       setBusy(false);
     }
   }
@@ -82,7 +87,12 @@ export function AccountPanel() {
         <button
           type="button"
           className="button button-secondary"
-          onClick={() => dialog.current?.showModal()}
+          ref={trigger}
+          disabled={busy}
+          onClick={() => {
+            setError(undefined);
+            dialog.current?.showModal();
+          }}
         >
           Đăng xuất mọi thiết bị
         </button>
@@ -91,6 +101,7 @@ export function AccountPanel() {
         ref={dialog}
         className="confirm-dialog"
         aria-labelledby="logout-title"
+        onClose={() => trigger.current?.focus()}
         onCancel={(event) => {
           if (busy) event.preventDefault();
         }}

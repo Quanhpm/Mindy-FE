@@ -12,7 +12,7 @@ export default function GlobalError({
     <html lang="vi">
       <body>
         <main id="main-content" className="standalone-state">
-          <p className="eyebrow">MINDY CENTER</p>
+          <p className="eyebrow">TRUNG TÂM MINDY</p>
           <h1>Mindy tạm thời chưa sẵn sàng</h1>
           <p>Vui lòng tải lại trang để tiếp tục.</p>
           <button className="button button-primary" type="button" onClick={reset}>

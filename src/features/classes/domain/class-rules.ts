@@ -131,7 +131,7 @@ const classErrors: Record<string, string> = {
   CLASS_UNIT_NOT_FOUND: 'Học phần không thuộc lớp này.',
   CLASS_CODE_ALREADY_EXISTS: 'Mã lớp đã được sử dụng.',
   CLASS_COURSE_INACTIVE: 'Khóa học chưa hoạt động; hãy chọn khóa học khác.',
-  CLASS_MENTOR_NOT_ELIGIBLE: 'Mentor phải có tài khoản đang hoạt động.',
+  CLASS_MENTOR_NOT_ELIGIBLE: 'Giảng viên phải có tài khoản đang hoạt động.',
   CLASS_DATE_RANGE_INVALID: 'Ngày kết thúc phải từ ngày bắt đầu trở đi.',
   CLASS_NOT_EDITABLE: 'Trạng thái hiện tại không cho phép thay đổi những trường này.',
   CLASS_INVALID_TRANSITION: 'Trạng thái lớp đã thay đổi. Hãy kiểm tra lại trước khi thao tác.',
@@ -140,7 +140,7 @@ const classErrors: Record<string, string> = {
   CLASS_SESSION_TIME_RANGE_INVALID: 'Giờ kết thúc phải sau giờ bắt đầu.',
   CLASS_SESSION_OUTSIDE_CLASS_PERIOD: 'Buổi học phải nằm trong thời gian của lớp.',
   CLASS_SESSION_OVERLAP: 'Buổi học trùng giờ với một buổi khác của lớp.',
-  CLASS_MENTOR_SCHEDULE_CONFLICT: 'Mentor đã có lịch dạy lớp khác trong khoảng giờ này.',
+  CLASS_MENTOR_SCHEDULE_CONFLICT: 'Giảng viên đã có lịch dạy lớp khác trong khoảng giờ này.',
 };
 export function classErrorMessage(error: unknown): string {
   return error instanceof ApiError

@@ -4,7 +4,7 @@ import { CompilerPlayground } from '@/features/compiler/client';
 import { Brand } from '@/shared/ui/brand';
 
 export const metadata: Metadata = {
-  title: 'Test compiler',
+  title: 'Thực hành lập trình',
   robots: { index: false, follow: false },
 };
 export default function CompilerPage() {
@@ -18,10 +18,10 @@ export default function CompilerPage() {
       </header>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">MINDY PLAYGROUND</p>
-          <h1>Test compiler</h1>
+          <p className="eyebrow">MINDY / THỰC HÀNH</p>
+          <h1>Thực hành lập trình</h1>
           <p className="page-description">
-            Viết và chạy JavaScript với code mẫu hoặc dữ liệu stdin của bạn.
+            Viết và chạy JavaScript với mã nguồn mẫu hoặc dữ liệu đầu vào của bạn.
           </p>
         </div>
       </div>

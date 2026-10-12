@@ -183,8 +183,11 @@ test('admin creates category/course, adds and reorders units, updates fields and
 }) => {
   const { mutations } = await mockCatalog(page);
   await page.goto('/management/course-categories');
-  await page.getByLabel('Tên danh mục').fill('Lập trình Web');
   await page.getByRole('button', { name: 'Tạo danh mục', exact: true }).click();
+  const categoryDialog = page.getByRole('dialog', { name: 'Tạo danh mục', exact: true });
+  await categoryDialog.getByLabel('Tên danh mục').fill('Lập trình Web');
+  await categoryDialog.getByRole('button', { name: 'Tạo danh mục', exact: true }).click();
+  await expect(categoryDialog).not.toBeVisible();
   await expect(page.getByRole('status').filter({ hasText: 'Đã tạo danh mục' })).toBeVisible();
   await page.getByRole('link', { name: 'Quản lý khóa học', exact: true }).click();
   await page.getByRole('link', { name: 'Tạo khóa học', exact: true }).click();
@@ -321,7 +324,7 @@ test('desktop workspace has independent scrolling and mobile drawer keeps deep-l
   await expect(page.getByRole('heading', { name: 'Bài 2', exact: true })).toBeVisible();
 });
 
-test('long course heading keeps the workspace bounded to the desktop viewport', async ({
+test('course detail omits the large header and keeps a long title inside the bounded workspace', async ({
   page,
 }) => {
   await mockCatalog(page, {
@@ -333,6 +336,10 @@ test('long course heading keeps the workspace bounded to the desktop viewport', 
   await page.goto(`/management/courses/${courseId}?unitId=${unitId(1)}`);
   const workspace = page.locator('[data-unit-workspace]');
   await expect(workspace).toBeVisible();
+  await expect(page.getByText('MINDY / QUẢN LÝ KHÓA HỌC', { exact: true })).toHaveCount(0);
+  await expect
+    .poll(() => workspace.evaluate((element) => element.getBoundingClientRect().top))
+    .toBeLessThan(250);
   await expect
     .poll(() => workspace.evaluate((element) => element.getBoundingClientRect().bottom))
     .toBeLessThanOrEqual(901);
@@ -350,4 +357,89 @@ test('student cannot open catalog management', async ({ page }) => {
   await page.goto('/management/courses');
   await expect(page.getByRole('heading', { name: 'Bạn chưa có quyền truy cập' })).toBeVisible();
   expect(mutations).toHaveLength(0);
+});
+
+test('category modal keeps the list clear, supports keyboard cancellation and fits desktop/mobile', async ({
+  page,
+}, info) => {
+  const { mutations } = await mockCatalog(page);
+  await page.goto('/management/course-categories');
+  const trigger = page.getByRole('button', { name: 'Tạo danh mục', exact: true });
+  const dialog = page.getByRole('dialog', { name: 'Tạo danh mục', exact: true });
+  await expect(page.getByRole('table', { name: 'Danh mục khóa học' })).toBeVisible();
+  await expect(page.getByLabel('Tên danh mục')).not.toBeVisible();
+  await page.getByLabel('Số mục mỗi trang').selectOption('10');
+  await expect(page).toHaveURL(/page=1&pageSize=10/);
+  for (const width of [1440, 768, 390, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.screenshot({ path: info.outputPath(`categories-list-${width}.png`) });
+    await trigger.click();
+    await expect(dialog.getByLabel('Tên danh mục')).toBeFocused();
+    await dialog.getByRole('button', { name: 'Tạo danh mục', exact: true }).click();
+    await expect(dialog.getByRole('alert')).toContainText('Vui lòng nhập tên danh mục.');
+    await dialog.getByLabel('Tên danh mục').fill('Danh mục bản nháp');
+    await page.keyboard.press('Shift+Tab');
+    expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    const bounds = await dialog.boundingBox();
+    expect(bounds?.width).toBeLessThanOrEqual(width - 32);
+    await page.screenshot({ path: info.outputPath(`categories-modal-${width}.png`) });
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    await expect(dialog.getByLabel('Tên danh mục')).toHaveValue('Danh mục bản nháp');
+    await dialog.getByRole('button', { name: 'Hủy', exact: true }).click();
+    await expect(trigger).toBeFocused();
+    // Leave the name empty for the next validation check.
+    await trigger.click();
+    await dialog.getByLabel('Tên danh mục').fill('');
+    await dialog.getByRole('button', { name: 'Đóng tạo danh mục' }).click();
+  }
+  expect(mutations).toHaveLength(0);
+});
+
+test('category modal blocks closing during creation and keeps unknown-result recovery after reopening', async ({
+  page,
+}) => {
+  await mockCatalog(page);
+  let release = () => {};
+  const pending = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let attempts = 0;
+  let fail = true;
+  await page.route('**/api/v1/admin/course-categories', async (route) => {
+    if (!fail) return route.fallback();
+    attempts++;
+    await pending;
+    return route.fulfill({ status: 503, json: { code: 'API_UNAVAILABLE' } });
+  });
+  await page.goto('/management/course-categories');
+  const trigger = page.getByRole('button', { name: 'Tạo danh mục', exact: true });
+  await trigger.click();
+  const dialog = page.getByRole('dialog', { name: 'Tạo danh mục', exact: true });
+  const submit = dialog.getByRole('button', { name: 'Tạo danh mục', exact: true });
+  await dialog.getByLabel('Tên danh mục').fill('Danh mục thử nghiệm');
+  await submit.click();
+  await expect.poll(() => attempts).toBe(1);
+  await expect(dialog.getByRole('button', { name: 'Hủy', exact: true })).toBeDisabled();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeVisible();
+  release();
+  await expect(dialog.getByRole('alert')).toContainText('Kết quả thao tác chưa rõ.');
+  await dialog.getByRole('button', { name: 'Hủy', exact: true }).click();
+  await trigger.click();
+  await expect(dialog.getByLabel('Tên danh mục')).toHaveValue('Danh mục thử nghiệm');
+  await expect(submit).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Kiểm tra kết quả', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('Đã đọc 1 danh mục.');
+  await dialog.getByRole('button', { name: 'Đã kiểm tra, cho phép thử lại' }).click();
+  fail = false;
+  await submit.click();
+  await expect(dialog).not.toBeVisible();
+  await expect(page.getByRole('table')).toContainText('Danh mục thử nghiệm');
+  await expect(trigger).toBeFocused();
 });
