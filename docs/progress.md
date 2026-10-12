@@ -8,6 +8,8 @@ hướng dẫn ba bước và CTA thống nhất. Desktop dùng bố cục QR/th
 xếp tuần tự, CTA toàn chiều rộng và không tràn ngang. Giữ nguyên create/reuse, polling,
 recovery, stale-data guard và checkoutUrl fallback. Khi mở own PayOS order còn hạn mà
 chưa có payment, FE tự gọi create/reuse đúng một lần; lỗi dừng tự động và giữ nút retry.
+Sau checkout PayOS thành công hoặc recovery tìm lại đúng PayOS order, FE chuyển thẳng
+tới order đó để QR tự hiện; người dùng không cần bấm “Xem chi tiết đơn”.
 Unit tests, type-check, boundaries,
 production build và hai browser tests PayOS/QR pass; ảnh desktop/mobile đã cập nhật.
 
@@ -82,6 +84,19 @@ Materials, attendance, assignments, chat, notifications và dashboard là các p
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
 
 [Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-12 — Xác minh FE-P22-09 và FE-P22-10
+
+- FE-P22-09 hoàn tất: `paymentSchema` giữ field bắt buộc
+  `providerOrderCode: number | null`. PayOS dùng mã số nguyên dương an toàn; payment
+  CASH đã thanh toán giữ `null`. `orderId` vẫn là UUID. Bổ sung regression cho
+  parsed result, thiếu field, numeric string, UUID và mã số không hợp lệ.
+- FE-P22-10 hoàn tất: `safeReturnTo` hỗ trợ lớp đầy đủ, CASH preview, payment result,
+  mentor CASH và ADMIN reconciliation. Password login, Google start/callback đều
+  dùng policy hiện hành; query/hash hợp lệ được giữ và redirect ra ngoài bị chặn.
+- Runtime đã có sẵn; lượt này bổ sung test kiểm chứng và tài liệu. 33 unit tests
+  liên quan, 5 Chromium E2E return paths, type-check, boundaries và production
+  build pass. E2E dùng API mô phỏng; chưa nghiệm thu OAuth Google thật.
 
 ## 2026-10-09 — Thu tiền mặt theo lớp và học viên
 

@@ -16,6 +16,14 @@ xác nhận PAID; result mapping đọc quyền owner rồi mở internal order.
 Không proxy readiness và webhook provider. Danh sách/progress lớp phía học viên
 vẫn là phạm vi khác; roster mentor không được dùng để suy ra quyền học.
 
+Xác minh FE-P22-09/10 ngày 12/10/2026: parsed Payment giữ nguyên
+`providerOrderCode` là mã số của provider hoặc `null` cho CASH, tách biệt với
+`orderId` UUID và `Order.orderCode` dạng `MD...`. Field bắt buộc phải có trong
+response, không ép chuỗi sang số. Safe return paths dùng chung cho password login
+và Google: `/learning/classes/:id`, `/learning/classes/:id/preview`,
+`/payment/result`, `/mentor/cash-orders`, `/management/payments/reconciliation`;
+giữ query/hash và chặn URL khác origin hoặc path ngoài allowlist.
+
 ## Snapshot tích hợp cũ (giữ để truy vết)
 
 > Snapshot integration FE tại `5c9e581`. Audit 06/10/2026 xác minh BE hiện tại

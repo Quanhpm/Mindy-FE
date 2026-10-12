@@ -59,6 +59,28 @@ async function mockIdentity(page: Page, role = 'ADMIN') {
   });
 }
 
+const returnClassId = '123e4567-e89b-42d3-a456-426614174000';
+for (const { role, next } of [
+  { role: 'STUDENT', next: `/learning/classes/${returnClassId}?unitId=${returnClassId}#timetable` },
+  { role: 'STUDENT', next: `/learning/classes/${returnClassId}/preview?unitId=${returnClassId}` },
+  { role: 'STUDENT', next: '/payment/result?orderCode=123456&cancel=true' },
+  { role: 'MENTOR', next: `/mentor/cash-orders?classId=${returnClassId}&studentPage=2` },
+  { role: 'ADMIN', next: '/management/payments/reconciliation?page=2' },
+]) {
+  test(`safe return: login and Google link preserve ${next}`, async ({ page }) => {
+    await mockIdentity(page, role);
+    await page.goto(`/login?${new URLSearchParams({ next })}`);
+    await expect(page.getByRole('link', { name: 'Tiếp tục với Google' })).toHaveAttribute(
+      'href',
+      `/api/v1/auth/google?${new URLSearchParams({ returnTo: next })}`,
+    );
+    await page.getByLabel('Email', { exact: true }).fill('student@example.com');
+    await page.getByLabel('Mật khẩu', { exact: true }).fill('correct-password');
+    await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click();
+    await expect(page).toHaveURL(`http://localhost:3101${next}`);
+  });
+}
+
 test('login, filter, create, suspend and logout through the UI', async ({ page }) => {
   await mockIdentity(page);
   await page.goto('/login');

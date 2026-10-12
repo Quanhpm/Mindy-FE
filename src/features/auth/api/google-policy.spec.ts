@@ -1,7 +1,36 @@
 import { describe, expect, it } from 'vitest';
-import { googleResponseCookies, googleStateCookie, trustedGoogleRedirect } from './google-policy';
+import {
+  googleResponseCookies,
+  googleStateCookie,
+  trustedGoogleRedirect,
+  trustedGoogleReturnPath,
+} from './google-policy';
 
 describe('OAuth cookie and redirect policy', () => {
+  it('preserves learning, payment and mentor callback paths with query and hash on the app origin', () => {
+    const origin = 'https://mindy.example';
+    const id = '123e4567-e89b-42d3-a456-426614174000';
+    for (const path of [
+      `/learning/classes/${id}?unitId=${id}#timetable`,
+      `/learning/classes/${id}/preview?unitId=${id}`,
+      '/management/payments/reconciliation?page=2',
+      '/payment/result?orderCode=123456&cancel=true',
+      `/mentor/cash-orders?classId=${id}&studentPage=2`,
+    ]) {
+      expect(trustedGoogleRedirect(`${origin}${path}`, 'callback', origin)).toBe(
+        `${origin}${path}`,
+      );
+      expect(trustedGoogleReturnPath(path, origin)).toBe(path);
+      expect(trustedGoogleRedirect(`https://evil.example${path}`, 'callback', origin)).toBeNull();
+    }
+    for (const path of [
+      '//evil.example/payment/result',
+      '/payment/result/extra',
+      `/learning/classes/${id}/preview/extra`,
+      '/mentor/cash-orders%0d%0aLocation:https://evil.example',
+    ])
+      expect(trustedGoogleReturnPath(path, origin)).toBeNull();
+  });
   it('rejects unscoped, non-HttpOnly and foreign-domain cookies', () => {
     expect(
       googleResponseCookies(

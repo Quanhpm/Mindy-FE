@@ -117,6 +117,28 @@ it('maps numeric provider codes, rejects invalid code and mismatched payment wit
   });
   await expect(resolvePaymentResult('123456')).rejects.toMatchObject({ code: 'INVALID_RESPONSE' });
 });
+it('keeps a settled CASH payment provider code null when reading the own order', async () => {
+  const order = ordersFixture[0];
+  if (!order) throw new Error('Missing fixture');
+  const detail = {
+    ...order,
+    paymentType: 'CASH',
+    status: 'PAID',
+    paidAt: order.createdAt,
+    payment: {
+      paymentId: order.id,
+      orderId: order.id,
+      providerOrderCode: null,
+      status: 'SUCCEEDED',
+      checkoutUrl: null,
+      qrCode: null,
+      amount: order.totalAmount,
+      expiresAt: order.expiresAt,
+    },
+  };
+  vi.mocked(authenticatedRequest).mockResolvedValue(detail);
+  expect(await getOrder(order.id)).toEqual(detail);
+});
 it('mentor list uses pagination and confirmation sends only the received integer amount', async () => {
   const order = ordersFixture[0];
   if (!order) throw new Error('Missing fixture');
