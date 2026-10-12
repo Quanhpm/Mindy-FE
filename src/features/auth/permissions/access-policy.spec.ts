@@ -22,8 +22,10 @@ describe('navigation policy', () => {
       `/orders/${id}`,
       '/payment/result?orderCode=123456&cancel=true',
       '/mentor/cash-orders?page=2',
+      `/mentor/cash-orders?classId=${id}&studentPage=2&orderStatus=PENDING`,
       `/learning/classes/${id}?unitId=${id}`,
       `/learning/classes/${id}/preview`,
+      `/learning/classes/${id}/preview?unitId=${id}#timetable`,
       '/management/payments/reconciliation?page=2',
     ])
       expect(safeReturnTo(path, '/account')).toBe(path);
@@ -49,5 +51,14 @@ describe('navigation policy', () => {
     expect(safeReturnTo('/account/../../api/v1/auth/google', '/account')).toBe('/account');
     expect(safeReturnTo('/management/classes/new', '/account')).toBe('/management/classes/new');
     expect(safeReturnTo('/management/users?page=2', '/account')).toBe('/management/users?page=2');
+    for (const path of [
+      'https://evil.example/payment/result?orderCode=123456',
+      '//evil.example/mentor/cash-orders',
+      '/%2f%2fevil.example',
+      '/payment/result?orderCode=123456%0d%0aLocation:https://evil.example',
+      '/learning/classes/not-a-uuid',
+      '/management/payments/reconciliation/extra',
+    ])
+      expect(safeReturnTo(path, '/account')).toBe('/account');
   });
 });

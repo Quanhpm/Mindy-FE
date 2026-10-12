@@ -4,7 +4,15 @@ import { formatAmount } from '../domain/order-display';
 import { type Order, orderStatusLabels, paymentLabels } from '../schemas/order.schema';
 import styles from './orders.module.css';
 
-export function OrderSummary({ order, link = true }: { order: Order; link?: boolean }) {
+export function OrderSummary({
+  order,
+  link = true,
+  showId = false,
+}: {
+  order: Order;
+  link?: boolean;
+  showId?: boolean;
+}) {
   return (
     <article className={styles.order} aria-label={`Đơn ${order.orderCode}`}>
       <div className={styles.orderHeading}>
@@ -18,6 +26,12 @@ export function OrderSummary({ order, link = true }: { order: Order; link?: bool
           {orderStatusLabels[order.status]}
         </span>
       </div>
+      {showId && (
+        <p className={styles.orderId}>
+          <span>Order ID</span>
+          <code>{order.id}</code>
+        </p>
+      )}
       <dl className={styles.meta}>
         <div>
           <dt>Phương thức</dt>

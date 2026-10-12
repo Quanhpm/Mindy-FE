@@ -40,6 +40,23 @@ it('accepts nullable links/QR during creation and all real statuses', () => {
   ])
     expect(paymentSchema.safeParse({ ...payment, checkoutUrl }).success).toBe(false);
 });
+it('preserves the numeric PayOS code and required null CASH code without confusing order UUIDs', () => {
+  expect(paymentSchema.parse(payment).providerOrderCode).toBe(123456);
+  expect(
+    paymentSchema.parse({
+      ...payment,
+      status: 'SUCCEEDED',
+      providerOrderCode: null,
+      checkoutUrl: null,
+      qrCode: null,
+    }).providerOrderCode,
+  ).toBeNull();
+  const { providerOrderCode: _code, ...withoutCode } = payment;
+  expect(paymentSchema.safeParse(withoutCode).success).toBe(false);
+  for (const providerOrderCode of ['123456', id, 0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1])
+    expect(paymentSchema.safeParse({ ...payment, providerOrderCode }).success).toBe(false);
+  expect(paymentSchema.safeParse({ ...payment, orderId: 123456 }).success).toBe(false);
+});
 it('rejects another order payment or malformed success without replay', async () => {
   vi.mocked(authenticatedRequest).mockResolvedValue({
     ...payment,

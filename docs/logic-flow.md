@@ -1,16 +1,16 @@
 # Mindy FE — API audit và logic flow cho lần làm lại UI
 
-## Cập nhật hiện hành — 06/10/2026
+## Cập nhật hiện hành — 09/10/2026
 
-Chuẩn API hiện tại là [Swagger live](https://api.quanh123.id.vn/docs#/) và
-[snapshot JSON](./swagger-live-2026-10-06.json). Đã nối toàn bộ **53 endpoint nghiệp vụ**
-trong 55 endpoint Swagger, gồm hai Google adapters riêng. Readiness và webhook PayOS
-thuộc hạ tầng/provider và không đưa qua FE.
+Chuẩn API hiện tại là [Swagger live](https://api.quanh123.id.vn/docs#/); [snapshot
+JSON](./swagger-live-2026-10-06.json) là mốc lịch sử. Đã nối toàn bộ **55 endpoint
+nghiệp vụ** trong 57 endpoint Swagger, gồm hai Google adapters riêng. Readiness và
+webhook PayOS thuộc hạ tầng/provider và không đưa qua FE.
 
 | Route mới | Quyền | API và logic |
 | --- | --- | --- |
 | /payment/result?orderCode=... | STUDENT owner | GET /me/orders/payment-result; validate mã PayOS decimal/safe integer, chỉ gửi orderCode, kiểm tra payment/order matching rồi mở /orders/:id. Không tin cancel/status trên URL. |
-| /mentor/cash-orders?page=... | MENTOR | GET /mentor/cash-orders; danh sách theo mentor snapshot. POST /mentor/cash-orders/:id/confirm chỉ gửi receivedAmount bằng tổng đơn, sau khi người dùng nhập số tiền thực nhận. Không replay khi mất response; đọc danh sách rồi mới cho thử lại. |
+| /mentor/cash-orders?classId=... | MENTOR | GET /mentor/classes để chọn lớp; GET /mentor/classes/:classId/students với paymentType=CASH để xem học viên và lấy orderId. POST /mentor/cash-orders/:orderId/confirm chỉ gửi receivedAmount bằng orderTotalAmount, không phải classAmount. Không replay khi mất response; đọc lại roster rồi mới cho thử lại. |
 | /learning/classes/:classId/preview?unitId=... | STUDENT CASH pending | GET /me/classes/:id/preview; học phần, lịch, phòng; schema strip meeting URLs. Hold hết hạn/bị hủy thì BE từ chối; PAID mở route learning đầy đủ từ đơn. |
 
 Payment schema giữ providerOrderCode number|null theo Swagger. PaymentPanel encode
