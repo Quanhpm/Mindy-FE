@@ -5,6 +5,8 @@ import type { Order, PaymentType } from '../../src/features/orders/schemas/order
 const classIds = ['123e4567-e89b-42d3-a456-426614174001', '123e4567-e89b-42d3-a456-426614174002'];
 const orderIds = ['223e4567-e89b-42d3-a456-426614174001', '223e4567-e89b-42d3-a456-426614174002'];
 const foreignId = '223e4567-e89b-42d3-a456-426614174099';
+const payosQr =
+  '00020101021238570010A00000072701270006970422011312345678901230208QRIBFTTA5303704540720000005802VN6304A1B2';
 const user = {
   id: '323e4567-e89b-42d3-a456-426614174001',
   email: 'student@example.com',
@@ -83,10 +85,20 @@ async function mockCommerce(
   let signedIn = true;
   let orders = options.orders ?? [];
   let cart = { items: [...cartItems], totalAmount: 2_000_000 };
+  let payment: {
+    paymentId: string;
+    orderId: string;
+    providerOrderCode: number;
+    status: 'PENDING';
+    checkoutUrl: string;
+    qrCode: string;
+    expiresAt: string;
+    amount: number;
+  } | null = null;
   let mode = options.mode ?? 'success';
   let recoveryReadsFail = false;
   let release: () => void = () => undefined;
-  const counts = { checkout: 0, cart: 0, orders: 0, detail: 0, admin: 0 };
+  const counts = { checkout: 0, cart: 0, orders: 0, detail: 0, payment: 0, admin: 0 };
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request();
     const url = new URL(request.url());
@@ -122,6 +134,7 @@ async function mockCommerce(
         });
       if (mode === 'success' || mode === 'unknown-committed') {
         orders = makeOrders(payload.paymentType);
+        payment = null;
         cart = { items: [], totalAmount: 0 };
       }
       if (mode === 'unknown-read-fails') recoveryReadsFail = true;
@@ -152,6 +165,21 @@ async function mockCommerce(
         },
       });
     }
+    if (path.endsWith('/payments/payos')) {
+      counts.payment += 1;
+      const orderId = path.split('/').at(-3) ?? '';
+      payment = {
+        paymentId: '623e4567-e89b-42d3-a456-426614174001',
+        orderId,
+        providerOrderCode: 123456,
+        status: 'PENDING',
+        checkoutUrl: 'https://pay.payos.vn/web/checkout-auto',
+        qrCode: payosQr,
+        expiresAt: new Date(Date.now() + 30 * 60_000).toISOString(),
+        amount: 2_000_000,
+      };
+      return route.fulfill({ status: 201, json: payment });
+    }
     if (path.includes('/me/orders/')) {
       counts.detail += 1;
       const id = path.split('/').at(-1);
@@ -162,7 +190,7 @@ async function mockCommerce(
         });
       const order = orders.find((item) => item.id === id);
       return order
-        ? route.fulfill({ json: { ...order, payment: null } })
+        ? route.fulfill({ json: { ...order, payment } })
         : route.fulfill({ status: 404, json: { code: 'ORDER_NOT_FOUND', message: 'Not found' } });
     }
     return route.fulfill({ status: 404, json: { code: 'NOT_FOUND', message: 'Not found' } });
@@ -240,20 +268,19 @@ test('CASH checkout blocks duplicate submission and displays every split order w
   expect(mock.counts.admin).toBe(0);
 });
 
-test('PayOS returns one pending order for all classes and no invented payment link', async ({
-  page,
-}) => {
+test('PayOS checkout opens its order and renders QR without a detail click', async ({ page }) => {
   const mock = await mockCommerce(page);
   await page.goto('/checkout');
   await page.getByRole('radio', { name: /PayOS/ }).check();
-  await page.getByRole('button', { name: 'Tạo đơn giữ chỗ', exact: true }).click();
-  await expect(page.getByRole('article', { name: 'Đơn MD-PAYOS-ALL', exact: true })).toBeVisible();
-  await expect(page.getByRole('article')).toHaveCount(1);
-  await expect(page.getByRole('article')).toContainText('Lớp nền tảng buổi tối');
-  await expect(page.getByRole('article')).toContainText('Lớp thực hành cuối tuần');
-  await expect(page.getByRole('article')).toContainText('Chờ thanh toán');
-  await expect(page.getByRole('link', { name: /Thanh toán ngay|Mở PayOS|Hủy đơn/ })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Tạo đơn và mở mã QR', exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/orders/${orderIds[0]}$`));
+  await expect(page.getByRole('img', { name: 'QR thanh toán PayOS' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Mở PayOS để thanh toán' })).toHaveAttribute(
+    'href',
+    'https://pay.payos.vn/web/checkout-auto',
+  );
   expect(mock.counts.checkout).toBe(1);
+  expect(mock.counts.payment).toBe(1);
 });
 
 test('lost checkout response reconciles own orders and cart, displaying all committed orders without retry', async ({

@@ -123,12 +123,23 @@
   Kiểm tra Markdown/source references và `git diff --check`; không chạy lại
   test runtime hoặc giao dịch/provider thật cho thay đổi tài liệu.
 
-## Trạng thái hiện tại — 06/10/2026
+## Trạng thái hiện tại — 09/10/2026
 
-Đã đồng bộ theo Swagger live https://api.quanh123.id.vn/docs#/ (snapshot JSON
-trong docs): đủ 53 endpoint nghiệp vụ/55 tổng; hai endpoint còn lại là readiness
-và provider webhook. Thêm PayOS result mapping, mentor CASH list/confirmation và
-CASH pending preview. Payment.providerOrderCode giữ đúng DTO; QR payload encode
+PaymentPanel PayOS đã được làm mới thành payment card responsive: trạng thái dạng badge,
+số tiền và hạn thanh toán có thứ bậc rõ, QR từ `react-qr-code` nằm trong vùng quét riêng,
+hướng dẫn ba bước và CTA thống nhất. Desktop dùng bố cục QR/thông tin hai cột; mobile
+xếp tuần tự, CTA toàn chiều rộng và không tràn ngang. Giữ nguyên create/reuse, polling,
+recovery, stale-data guard và checkoutUrl fallback. Khi mở own PayOS order còn hạn mà
+chưa có payment, FE tự gọi create/reuse đúng một lần; lỗi dừng tự động và giữ nút retry.
+Sau checkout PayOS thành công hoặc recovery tìm lại đúng PayOS order, FE chuyển thẳng
+tới order đó để QR tự hiện; người dùng không cần bấm “Xem chi tiết đơn”.
+Unit tests, type-check, boundaries,
+production build và hai browser tests PayOS/QR pass; ảnh desktop/mobile đã cập nhật.
+
+Đã đồng bộ theo Swagger live https://api.quanh123.id.vn/docs#/: đủ 55 endpoint
+nghiệp vụ/57 tổng; hai endpoint còn lại là readiness và provider webhook. Snapshot
+JSON ngày 06/10 được giữ để truy vết. Thêm PayOS result mapping, mentor CASH
+class/roster/confirmation và CASH pending preview. Payment.providerOrderCode giữ đúng DTO; QR payload encode
 ngay trong FE bằng react-qr-code, có checkoutUrl fallback nếu nullable QR.
 
 UI bên trong: sidebar trái theo role, dropdown profile (tài khoản/trang chủ/logout),
@@ -169,7 +180,7 @@ integration hiện có, phần chờ FE và backlog BE.
 | Ảnh khóa học | Đã tích hợp imgUrl, admin tạo/sửa/xóa và public image fallback |
 | Giỏ hàng và checkout | Đã tích hợp giỏ thật, CASH tách theo mentor, PAYOS một đơn, giữ chỗ, expiry và own orders |
 | PayOS | Đã tích hợp tạo/reuse link, result mapping, polling/recovery, QR trong trang từ payload; checkoutUrl fallback |
-| Thu tiền mặt MENTOR | Danh sách đơn được giao, xác nhận toàn bộ số tiền, recovery khi mất response |
+| Thu tiền mặt MENTOR | Chọn lớp được phân công, xem roster CASH, dùng orderId của học viên và xác nhận đủ orderTotalAmount; recovery khi mất response |
 | CASH preview STUDENT | Xem học phần/lịch/phòng khi hold còn hiệu lực; không meeting URL |
 | Lớp sau thanh toán | Đã tích hợp private class, units/lịch/phòng/meeting URL và kiểm tra quyền từ BE; chưa có danh sách lớp hoặc progress API |
 | Đối soát ADMIN | Đã tích hợp review events, phân trang và reconcile; kết quả phải đọc lại từ BE |
@@ -190,11 +201,60 @@ Chưa nghiệm thu PayOS/provider email thật hoặc deploy trong đợt tích 
 **Đã hoàn tất phần chờ FE:** mapping return/cancel cho `/payment/result`, mentor
 cash-order list/confirmation, CASH preview, providerOrderCode, safe return paths
 và copy CASH. Chi tiết current contract ở đầu logic-flow.md và api-contracts.md.
-**Còn chờ BE:** danh sách enrollment/lớp đã đăng ký và API đọc/cập nhật progress.
+**Còn chờ BE/phạm vi sau:** danh sách enrollment/lớp đã đăng ký phía STUDENT và
+API đọc/cập nhật progress. Mentor class roster đã được tích hợp riêng.
 Materials, attendance, assignments, chat, notifications và dashboard là các phase sau.
 Phase 2 chưa đóng toàn bộ vì các dependency và nghiệm thu live trên vẫn còn mở.
 
 [Chi tiết triển khai và cách kiểm thử](./implement_phase/PHASE_2_2_FRONTEND_INTEGRATION.md).
+
+## 2026-10-12 — Xác minh FE-P22-09 và FE-P22-10
+
+- FE-P22-09 hoàn tất: `paymentSchema` giữ field bắt buộc
+  `providerOrderCode: number | null`. PayOS dùng mã số nguyên dương an toàn; payment
+  CASH đã thanh toán giữ `null`. `orderId` vẫn là UUID. Bổ sung regression cho
+  parsed result, thiếu field, numeric string, UUID và mã số không hợp lệ.
+- FE-P22-10 hoàn tất: `safeReturnTo` hỗ trợ lớp đầy đủ, CASH preview, payment result,
+  mentor CASH và ADMIN reconciliation. Password login, Google start/callback đều
+  dùng policy hiện hành; query/hash hợp lệ được giữ và redirect ra ngoài bị chặn.
+- Runtime đã có sẵn; lượt này bổ sung test kiểm chứng và tài liệu. 33 unit tests
+  liên quan, 5 Chromium E2E return paths, type-check, boundaries và production
+  build pass. E2E dùng API mô phỏng; chưa nghiệm thu OAuth Google thật.
+
+## 2026-10-09 — Thu tiền mặt theo lớp và học viên
+
+- `/mentor/cash-orders` đọc `GET /mentor/classes`, cho mentor chọn lớp rồi đọc
+  `GET /mentor/classes/:classId/students?paymentType=CASH`.
+- UI tự chọn lớp đầu tiên, tải tối đa 6 lớp mỗi trang và chỉ làm nổi bật lớp đang
+  xem thay vì dàn toàn bộ lớp ra màn hình. Tái sử dụng Icon, ErrorPanel,
+  LoadingState và button/field patterns sẵn có; thẻ học viên tách rõ tổng tiền và
+  trạng thái xác nhận trên desktop/mobile.
+- Mỗi học viên hiển thị enrollment/payment status, mã đơn và `orderId`; nút xác
+  nhận gọi POST bằng chính `orderId` của roster.
+- Số tiền bắt buộc bằng `orderTotalAmount`. Với đơn gồm nhiều lớp, UI cảnh báo rõ
+  không được chỉ thu `classAmount`; `canConfirmCash` chỉ là hint và backend vẫn
+  quyết định ownership/idempotency.
+- Giữ cơ chế unknown-result: không tự gửi lại POST sau lỗi mạng, phải đọc lại
+  roster trước. Targeted Biome, module boundaries, type-check và production build
+  pass; toàn bộ 139 unit tests cùng 4 Chromium E2E PayOS/CASH/preview pass. Ảnh mentor cash
+  desktop/mobile đã được cập nhật và kiểm tra trực quan; responsive 1440/768/390/375
+  không tràn ngang.
+
+## 2026-10-08 — Mentor chọn đơn CASH bằng Order ID
+
+- Thêm ô nhập UUID `order.id` và nút **Chọn đơn theo Order ID** tại
+  `/mentor/cash-orders`. Mã hiển thị `orderCode` bắt đầu bằng `MD` bị từ chối với
+  hướng dẫn rõ ràng.
+- Chi tiết own order của STUDENT hiển thị `Order ID` UUID lấy trực tiếp từ response;
+  giá trị hỗ trợ chọn toàn bộ để chuyển cho mentor, tách biệt với `orderCode` và
+  `mentorId`.
+- Order ID chỉ chọn một đơn CASH đang chờ, còn hạn và đã có trong danh sách được
+  backend giao cho mentor hiện tại. Mentor vẫn phải nhập đúng toàn bộ số tiền đã
+  nhận trước khi FE gọi `POST /mentor/cash-orders/:orderId/confirm`; không mở quyền
+  xác nhận cho STUDENT và không bỏ qua kiểm tra ownership của backend.
+- Targeted Biome, module boundaries, TypeScript, production build, 7 unit tests
+  order API và browser E2E xác nhận CASH pass. Đã xem lại ảnh desktop; E2E kiểm tra
+  không tràn ngang tại 1440/768/390/375px.
 
 ## 2026-10-06 — Thay toàn bộ UI Mindy, giữ logic
 
@@ -758,3 +818,11 @@ Validation: Biome, type-check, module boundaries, build và 13 E2E permissions/m
   tests pass. E2E role-routing/permissions/identity pass; 4 home-theme scenarios
   pass sau khi sửa test chờ đúng nút retry. Đã xem screenshot homepage desktop
   và mobile. Chưa deploy.
+
+## 12/10/2026 — Đồng bộ dev
+
+- Gộp cập nhật PayOS QR tự mở và mentor cash roster hiện có trên origin/dev,
+  giữ manager workspace, role landing và các cải tiến UI/logic local.
+- Validation sau merge: Biome, module boundaries, TypeScript, production build,
+  152 unit tests và 63 E2E identity/role/permissions/mentor/checkout/payments pass.
+- Push mã nguồn lên dev theo yêu cầu; không thao tác triển khai trực tiếp.

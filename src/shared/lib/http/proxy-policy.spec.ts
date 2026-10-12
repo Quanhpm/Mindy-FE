@@ -94,6 +94,10 @@ describe('API proxy boundary', () => {
     ])
       expect(isAllowedEndpoint('DELETE', path)).toBe(false);
     expect(isAllowedEndpoint('POST', `me/orders/${id}/cancel`)).toBe(false);
+    expect(isAllowedEndpoint('GET', 'mentor/classes')).toBe(true);
+    expect(isAllowedEndpoint('GET', `mentor/classes/${id}/students`)).toBe(true);
+    expect(isAllowedEndpoint('POST', `mentor/classes/${id}/students`)).toBe(false);
+    expect(isAllowedEndpoint('GET', 'mentor/classes/not-a-uuid/students')).toBe(false);
     expect(isAllowedOrigin('DELETE', null, 'http://localhost:3101')).toBe(false);
     expect(authCookies('access_token=a; refresh_token=r; registration_intent=i', 'me/cart')).toBe(
       'access_token=a',

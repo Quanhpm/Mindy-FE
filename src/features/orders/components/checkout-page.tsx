@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { announceCartChanged, getCart } from '@/features/cart/client';
 import { ErrorPanel, LoadingState } from '@/shared/components/feedback';
@@ -17,9 +18,11 @@ export function CheckoutPage() {
 }
 
 function CheckoutContent() {
+  const router = useRouter();
   const [state, setState] = useState<CheckoutState>(initialCheckoutState);
   const [paymentType, setPaymentType] = useState<PaymentType>('CASH');
   const flow = useRef<CheckoutFlow | null>(null);
+  const openedPayosOrder = useRef<string | undefined>(undefined);
   useEffect(() => {
     const active = new CheckoutFlow(
       { getCart, recentOrders: (signal) => listOrders('page=1&pageSize=100', signal), checkout },
@@ -35,6 +38,13 @@ function CheckoutContent() {
   useEffect(() => {
     if (state.phase === 'recovered') announceCartChanged();
   }, [state.phase]);
+  useEffect(() => {
+    if (!['success', 'recovered'].includes(state.phase)) return;
+    const payosOrder = state.orders.find((order) => order.paymentType === 'PAYOS');
+    if (!payosOrder || openedPayosOrder.current === payosOrder.id) return;
+    openedPayosOrder.current = payosOrder.id;
+    router.replace(`/orders/${payosOrder.id}`);
+  }, [router, state.orders, state.phase]);
 
   const result = state.phase === 'success' || state.phase === 'recovered';
   const uncertain = ['checking', 'unknown', 'retryable'].includes(state.phase);
@@ -53,9 +63,9 @@ function CheckoutContent() {
         </Link>
       </header>
       <p className={styles.notice}>
-        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. Với PayOS, mở chi tiết đơn để tạo
-        liên kết hoặc quét QR. Với tiền mặt, chờ giảng viên xác nhận đã thu đủ tiền. Quyền học được
-        hệ thống kiểm tra sau thanh toán.
+        Đây là bước tạo đơn và giữ chỗ, chưa hoàn tất thanh toán. Với PayOS, mã QR sẽ được mở tự
+        động ngay sau khi tạo đơn; tiền mặt chờ giảng viên xác nhận đã nhận đủ. Quyền học chỉ được
+        cấp theo trạng thái từ hệ thống.
       </p>
       {state.phase === 'loading' ? (
         <LoadingState label="Đang đọc giỏ hàng và đơn của bạn…" />
@@ -201,7 +211,7 @@ function CheckoutContent() {
                       />
                       <span>
                         <strong>PayOS</strong>
-                        <small>Một đơn cho toàn bộ giỏ. Tạo liên kết PayOS ở chi tiết đơn.</small>
+                        <small>Một đơn cho toàn bộ giỏ. Mã QR sẽ hiện tự động.</small>
                       </span>
                     </label>
                   </fieldset>
@@ -214,7 +224,9 @@ function CheckoutContent() {
                       ? 'Đang tạo đơn…'
                       : state.phase === 'retryable'
                         ? 'Tạo đơn lại sau khi kiểm tra'
-                        : 'Tạo đơn giữ chỗ'}
+                        : paymentType === 'PAYOS'
+                          ? 'Tạo đơn và mở mã QR'
+                          : 'Tạo đơn giữ chỗ'}
                   </button>
                 </form>
               </aside>

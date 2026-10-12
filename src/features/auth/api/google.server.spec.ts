@@ -39,6 +39,32 @@ afterEach(() => {
 });
 
 describe('Google navigation adapter', () => {
+  it('forwards supported payment, mentor and learning return paths unchanged to Google start', async () => {
+    const fetch = vi
+      .fn()
+      .mockImplementation(async () =>
+        redirect('https://accounts.google.com/o/oauth2/v2/auth?state=opaque', [stateCookie]),
+      );
+    vi.stubGlobal('fetch', fetch);
+    const id = '123e4567-e89b-42d3-a456-426614174000';
+    for (const returnTo of [
+      `/learning/classes/${id}?unitId=${id}#timetable`,
+      `/learning/classes/${id}/preview?unitId=${id}`,
+      '/payment/result?orderCode=123456&cancel=true',
+      `/mentor/cash-orders?classId=${id}&studentPage=2`,
+      '/management/payments/reconciliation?page=2',
+    ]) {
+      const response = await googleNavigation(
+        navigation(`?${new URLSearchParams({ returnTo })}`),
+        'start',
+      );
+      expect(response.status).toBe(302);
+      expect(fetch).toHaveBeenLastCalledWith(
+        `http://localhost:3000/api/v1/auth/google?${new URLSearchParams({ returnTo })}`,
+        expect.objectContaining({ redirect: 'manual' }),
+      );
+    }
+  });
   it('starts Google with a safe local return path and a scoped HttpOnly state cookie', async () => {
     const fetch = vi
       .fn()
